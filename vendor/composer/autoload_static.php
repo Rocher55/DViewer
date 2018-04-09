@@ -16,6 +16,7 @@ class ComposerStaticInit0e42e571cf8d6d5f6a16bc026d1fb058
         'f0906e6318348a765ffb6eb24e0d0938' => __DIR__ . '/..' . '/laravel/framework/src/Illuminate/Foundation/helpers.php',
         '58571171fd5812e6e447dce228f52f4d' => __DIR__ . '/..' . '/laravel/framework/src/Illuminate/Support/helpers.php',
         'e7223560d890eab89cda23685e711e2c' => __DIR__ . '/..' . '/psy/psysh/src/Psy/functions.php',
+        'f18cc91337d49233e5754e93f3ed9ec3' => __DIR__ . '/..' . '/laravelcollective/html/src/helpers.php',
     );
 
     public static $prefixLengthsPsr4 = array (
@@ -78,6 +79,11 @@ class ComposerStaticInit0e42e571cf8d6d5f6a16bc026d1fb058
             'League\\Flysystem\\' => 17,
             'Laravel\\Tinker\\' => 15,
         ),
+        'K' => 
+        array (
+            'Krlove\\EloquentModelGenerator\\' => 30,
+            'Krlove\\CodeGenerator\\' => 21,
+        ),
         'I' => 
         array (
             'Illuminate\\' => 11,
@@ -104,6 +110,7 @@ class ComposerStaticInit0e42e571cf8d6d5f6a16bc026d1fb058
         'C' => 
         array (
             'Cron\\' => 5,
+            'Collective\\Html\\' => 16,
             'Carbon\\' => 7,
         ),
         'A' => 
@@ -231,6 +238,14 @@ class ComposerStaticInit0e42e571cf8d6d5f6a16bc026d1fb058
         array (
             0 => __DIR__ . '/..' . '/laravel/tinker/src',
         ),
+        'Krlove\\EloquentModelGenerator\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/krlove/eloquent-model-generator/src',
+        ),
+        'Krlove\\CodeGenerator\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/krlove/code-generator/src',
+        ),
         'Illuminate\\' => 
         array (
             0 => __DIR__ . '/..' . '/laravel/framework/src/Illuminate',
@@ -278,6 +293,10 @@ class ComposerStaticInit0e42e571cf8d6d5f6a16bc026d1fb058
         'Cron\\' => 
         array (
             0 => __DIR__ . '/..' . '/dragonmantank/cron-expression/src/Cron',
+        ),
+        'Collective\\Html\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/laravelcollective/html/src',
         ),
         'Carbon\\' => 
         array (
@@ -353,17 +372,15 @@ class ComposerStaticInit0e42e571cf8d6d5f6a16bc026d1fb058
     public static $classMap = array (
         'App\\Console\\Kernel' => __DIR__ . '/../..' . '/app/Console/Kernel.php',
         'App\\Exceptions\\Handler' => __DIR__ . '/../..' . '/app/Exceptions/Handler.php',
-        'App\\Http\\Controllers\\Auth\\ForgotPasswordController' => __DIR__ . '/../..' . '/app/Http/Controllers/Auth/ForgotPasswordController.php',
-        'App\\Http\\Controllers\\Auth\\LoginController' => __DIR__ . '/../..' . '/app/Http/Controllers/Auth/LoginController.php',
-        'App\\Http\\Controllers\\Auth\\RegisterController' => __DIR__ . '/../..' . '/app/Http/Controllers/Auth/RegisterController.php',
-        'App\\Http\\Controllers\\Auth\\ResetPasswordController' => __DIR__ . '/../..' . '/app/Http/Controllers/Auth/ResetPasswordController.php',
         'App\\Http\\Controllers\\Controller' => __DIR__ . '/../..' . '/app/Http/Controllers/Controller.php',
+        'App\\Http\\Controllers\\HomeController' => __DIR__ . '/../..' . '/app/Http/Controllers/HomeController.php',
+        'App\\Http\\Controllers\\SelectController' => __DIR__ . '/../..' . '/app/Http/Controllers/SelectController.php',
         'App\\Http\\Kernel' => __DIR__ . '/../..' . '/app/Http/Kernel.php',
         'App\\Http\\Middleware\\EncryptCookies' => __DIR__ . '/../..' . '/app/Http/Middleware/EncryptCookies.php',
-        'App\\Http\\Middleware\\RedirectIfAuthenticated' => __DIR__ . '/../..' . '/app/Http/Middleware/RedirectIfAuthenticated.php',
         'App\\Http\\Middleware\\TrimStrings' => __DIR__ . '/../..' . '/app/Http/Middleware/TrimStrings.php',
         'App\\Http\\Middleware\\TrustProxies' => __DIR__ . '/../..' . '/app/Http/Middleware/TrustProxies.php',
         'App\\Http\\Middleware\\VerifyCsrfToken' => __DIR__ . '/../..' . '/app/Http/Middleware/VerifyCsrfToken.php',
+        'App\\Patient' => __DIR__ . '/../..' . '/app/Patient.php',
         'App\\Providers\\AppServiceProvider' => __DIR__ . '/../..' . '/app/Providers/AppServiceProvider.php',
         'App\\Providers\\AuthServiceProvider' => __DIR__ . '/../..' . '/app/Providers/AuthServiceProvider.php',
         'App\\Providers\\BroadcastServiceProvider' => __DIR__ . '/../..' . '/app/Providers/BroadcastServiceProvider.php',
@@ -374,6 +391,13 @@ class ComposerStaticInit0e42e571cf8d6d5f6a16bc026d1fb058
         'Carbon\\CarbonInterval' => __DIR__ . '/..' . '/nesbot/carbon/src/Carbon/CarbonInterval.php',
         'Carbon\\Exceptions\\InvalidDateException' => __DIR__ . '/..' . '/nesbot/carbon/src/Carbon/Exceptions/InvalidDateException.php',
         'Carbon\\Translator' => __DIR__ . '/..' . '/nesbot/carbon/src/Carbon/Translator.php',
+        'Collective\\Html\\Componentable' => __DIR__ . '/..' . '/laravelcollective/html/src/Componentable.php',
+        'Collective\\Html\\Eloquent\\FormAccessible' => __DIR__ . '/..' . '/laravelcollective/html/src/Eloquent/FormAccessible.php',
+        'Collective\\Html\\FormBuilder' => __DIR__ . '/..' . '/laravelcollective/html/src/FormBuilder.php',
+        'Collective\\Html\\FormFacade' => __DIR__ . '/..' . '/laravelcollective/html/src/FormFacade.php',
+        'Collective\\Html\\HtmlBuilder' => __DIR__ . '/..' . '/laravelcollective/html/src/HtmlBuilder.php',
+        'Collective\\Html\\HtmlFacade' => __DIR__ . '/..' . '/laravelcollective/html/src/HtmlFacade.php',
+        'Collective\\Html\\HtmlServiceProvider' => __DIR__ . '/..' . '/laravelcollective/html/src/HtmlServiceProvider.php',
         'Cron\\AbstractField' => __DIR__ . '/..' . '/dragonmantank/cron-expression/src/Cron/AbstractField.php',
         'Cron\\CronExpression' => __DIR__ . '/..' . '/dragonmantank/cron-expression/src/Cron/CronExpression.php',
         'Cron\\DayOfMonthField' => __DIR__ . '/..' . '/dragonmantank/cron-expression/src/Cron/DayOfMonthField.php',
@@ -2145,6 +2169,54 @@ class ComposerStaticInit0e42e571cf8d6d5f6a16bc026d1fb058
         'JakubOnderka\\PhpConsoleColor\\ConsoleColor' => __DIR__ . '/..' . '/jakub-onderka/php-console-color/src/JakubOnderka/PhpConsoleColor/ConsoleColor.php',
         'JakubOnderka\\PhpConsoleColor\\InvalidStyleException' => __DIR__ . '/..' . '/jakub-onderka/php-console-color/src/JakubOnderka/PhpConsoleColor/InvalidStyleException.php',
         'JakubOnderka\\PhpConsoleHighlighter\\Highlighter' => __DIR__ . '/..' . '/jakub-onderka/php-console-highlighter/src/JakubOnderka/PhpConsoleHighlighter/Highlighter.php',
+        'Krlove\\CodeGenerator\\Exception\\GeneratorException' => __DIR__ . '/..' . '/krlove/code-generator/src/Exception/GeneratorException.php',
+        'Krlove\\CodeGenerator\\Exception\\ValidationException' => __DIR__ . '/..' . '/krlove/code-generator/src/Exception/ValidationException.php',
+        'Krlove\\CodeGenerator\\LineableInterface' => __DIR__ . '/..' . '/krlove/code-generator/src/LineableInterface.php',
+        'Krlove\\CodeGenerator\\Model\\ArgumentModel' => __DIR__ . '/..' . '/krlove/code-generator/src/Model/ArgumentModel.php',
+        'Krlove\\CodeGenerator\\Model\\BaseMethodModel' => __DIR__ . '/..' . '/krlove/code-generator/src/Model/BaseMethodModel.php',
+        'Krlove\\CodeGenerator\\Model\\BasePropertyModel' => __DIR__ . '/..' . '/krlove/code-generator/src/Model/BasePropertyModel.php',
+        'Krlove\\CodeGenerator\\Model\\ClassModel' => __DIR__ . '/..' . '/krlove/code-generator/src/Model/ClassModel.php',
+        'Krlove\\CodeGenerator\\Model\\ClassNameModel' => __DIR__ . '/..' . '/krlove/code-generator/src/Model/ClassNameModel.php',
+        'Krlove\\CodeGenerator\\Model\\ConstantModel' => __DIR__ . '/..' . '/krlove/code-generator/src/Model/ConstantModel.php',
+        'Krlove\\CodeGenerator\\Model\\DocBlockModel' => __DIR__ . '/..' . '/krlove/code-generator/src/Model/DocBlockModel.php',
+        'Krlove\\CodeGenerator\\Model\\MethodModel' => __DIR__ . '/..' . '/krlove/code-generator/src/Model/MethodModel.php',
+        'Krlove\\CodeGenerator\\Model\\NamespaceModel' => __DIR__ . '/..' . '/krlove/code-generator/src/Model/NamespaceModel.php',
+        'Krlove\\CodeGenerator\\Model\\PropertyModel' => __DIR__ . '/..' . '/krlove/code-generator/src/Model/PropertyModel.php',
+        'Krlove\\CodeGenerator\\Model\\Traits\\AbstractModifierTrait' => __DIR__ . '/..' . '/krlove/code-generator/src/Model/Traits/AbstractModifierTrait.php',
+        'Krlove\\CodeGenerator\\Model\\Traits\\AccessModifierTrait' => __DIR__ . '/..' . '/krlove/code-generator/src/Model/Traits/AccessModifierTrait.php',
+        'Krlove\\CodeGenerator\\Model\\Traits\\DocBlockTrait' => __DIR__ . '/..' . '/krlove/code-generator/src/Model/Traits/DocBlockTrait.php',
+        'Krlove\\CodeGenerator\\Model\\Traits\\FinalModifierTrait' => __DIR__ . '/..' . '/krlove/code-generator/src/Model/Traits/FinalModifierTrait.php',
+        'Krlove\\CodeGenerator\\Model\\Traits\\StaticModifierTrait' => __DIR__ . '/..' . '/krlove/code-generator/src/Model/Traits/StaticModifierTrait.php',
+        'Krlove\\CodeGenerator\\Model\\Traits\\ValueTrait' => __DIR__ . '/..' . '/krlove/code-generator/src/Model/Traits/ValueTrait.php',
+        'Krlove\\CodeGenerator\\Model\\UseClassModel' => __DIR__ . '/..' . '/krlove/code-generator/src/Model/UseClassModel.php',
+        'Krlove\\CodeGenerator\\Model\\UseTraitModel' => __DIR__ . '/..' . '/krlove/code-generator/src/Model/UseTraitModel.php',
+        'Krlove\\CodeGenerator\\Model\\VirtualMethodModel' => __DIR__ . '/..' . '/krlove/code-generator/src/Model/VirtualMethodModel.php',
+        'Krlove\\CodeGenerator\\Model\\VirtualPropertyModel' => __DIR__ . '/..' . '/krlove/code-generator/src/Model/VirtualPropertyModel.php',
+        'Krlove\\CodeGenerator\\RenderableInterface' => __DIR__ . '/..' . '/krlove/code-generator/src/RenderableInterface.php',
+        'Krlove\\CodeGenerator\\RenderableModel' => __DIR__ . '/..' . '/krlove/code-generator/src/RenderableModel.php',
+        'Krlove\\EloquentModelGenerator\\Command\\GenerateModelCommand' => __DIR__ . '/..' . '/krlove/eloquent-model-generator/src/Command/GenerateModelCommand.php',
+        'Krlove\\EloquentModelGenerator\\Config' => __DIR__ . '/..' . '/krlove/eloquent-model-generator/src/Config.php',
+        'Krlove\\EloquentModelGenerator\\EloquentModelBuilder' => __DIR__ . '/..' . '/krlove/eloquent-model-generator/src/EloquentModelBuilder.php',
+        'Krlove\\EloquentModelGenerator\\Exception\\ConfigException' => __DIR__ . '/..' . '/krlove/eloquent-model-generator/src/Exception/ConfigException.php',
+        'Krlove\\EloquentModelGenerator\\Exception\\GeneratorException' => __DIR__ . '/..' . '/krlove/eloquent-model-generator/src/Exception/GeneratorException.php',
+        'Krlove\\EloquentModelGenerator\\Generator' => __DIR__ . '/..' . '/krlove/eloquent-model-generator/src/Generator.php',
+        'Krlove\\EloquentModelGenerator\\Helper\\EmgHelper' => __DIR__ . '/..' . '/krlove/eloquent-model-generator/src/Helper/EmgHelper.php',
+        'Krlove\\EloquentModelGenerator\\Model\\BelongsTo' => __DIR__ . '/..' . '/krlove/eloquent-model-generator/src/Model/BelongsTo.php',
+        'Krlove\\EloquentModelGenerator\\Model\\BelongsToMany' => __DIR__ . '/..' . '/krlove/eloquent-model-generator/src/Model/BelongsToMany.php',
+        'Krlove\\EloquentModelGenerator\\Model\\EloquentModel' => __DIR__ . '/..' . '/krlove/eloquent-model-generator/src/Model/EloquentModel.php',
+        'Krlove\\EloquentModelGenerator\\Model\\HasMany' => __DIR__ . '/..' . '/krlove/eloquent-model-generator/src/Model/HasMany.php',
+        'Krlove\\EloquentModelGenerator\\Model\\HasOne' => __DIR__ . '/..' . '/krlove/eloquent-model-generator/src/Model/HasOne.php',
+        'Krlove\\EloquentModelGenerator\\Model\\Relation' => __DIR__ . '/..' . '/krlove/eloquent-model-generator/src/Model/Relation.php',
+        'Krlove\\EloquentModelGenerator\\Processor\\CustomPrimaryKeyProcessor' => __DIR__ . '/..' . '/krlove/eloquent-model-generator/src/Processor/CustomPrimaryKeyProcessor.php',
+        'Krlove\\EloquentModelGenerator\\Processor\\CustomPropertyProcessor' => __DIR__ . '/..' . '/krlove/eloquent-model-generator/src/Processor/CustomPropertyProcessor.php',
+        'Krlove\\EloquentModelGenerator\\Processor\\ExistenceCheckerProcessor' => __DIR__ . '/..' . '/krlove/eloquent-model-generator/src/Processor/ExistenceCheckerProcessor.php',
+        'Krlove\\EloquentModelGenerator\\Processor\\FieldProcessor' => __DIR__ . '/..' . '/krlove/eloquent-model-generator/src/Processor/FieldProcessor.php',
+        'Krlove\\EloquentModelGenerator\\Processor\\NamespaceProcessor' => __DIR__ . '/..' . '/krlove/eloquent-model-generator/src/Processor/NamespaceProcessor.php',
+        'Krlove\\EloquentModelGenerator\\Processor\\ProcessorInterface' => __DIR__ . '/..' . '/krlove/eloquent-model-generator/src/Processor/ProcessorInterface.php',
+        'Krlove\\EloquentModelGenerator\\Processor\\RelationProcessor' => __DIR__ . '/..' . '/krlove/eloquent-model-generator/src/Processor/RelationProcessor.php',
+        'Krlove\\EloquentModelGenerator\\Processor\\TableNameProcessor' => __DIR__ . '/..' . '/krlove/eloquent-model-generator/src/Processor/TableNameProcessor.php',
+        'Krlove\\EloquentModelGenerator\\Provider\\GeneratorServiceProvider' => __DIR__ . '/..' . '/krlove/eloquent-model-generator/src/Provider/GeneratorServiceProvider.php',
+        'Krlove\\EloquentModelGenerator\\TypeRegistry' => __DIR__ . '/..' . '/krlove/eloquent-model-generator/src/TypeRegistry.php',
         'Laravel\\Tinker\\ClassAliasAutoloader' => __DIR__ . '/..' . '/laravel/tinker/src/ClassAliasAutoloader.php',
         'Laravel\\Tinker\\Console\\TinkerCommand' => __DIR__ . '/..' . '/laravel/tinker/src/Console/TinkerCommand.php',
         'Laravel\\Tinker\\TinkerCaster' => __DIR__ . '/..' . '/laravel/tinker/src/TinkerCaster.php',

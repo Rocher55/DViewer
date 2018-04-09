@@ -1,0 +1,59 @@
+body{
+    color: black;
+}
+
+/*Navbar & font*/
+.navbar {
+    background-color: #8bccff;
+}
+
+.navbar-default .navbar-nav>li>a {
+    color:black;
+}
+.navbar-default .navbar-brand {
+    color: black;
+}
+
+
+
+.buttons-group{
+    padding-top: 20%;
+}
+.button{
+    height: 100px;
+    border-radius: 15px;
+}
+.button-success{
+    padding-top: 35px;
+    background-color: #63FFBB;
+    border-color: #1e7e34;
+    border-width: 1px;
+    color: black;
+}
+.button-info{
+    padding-top: 35px;
+    background-color: #8bccff;
+    border-color: #005cbf;
+    border-width: 1px;
+    color: black;
+}
+
+
+
+.table>thead>tr>th{
+    border-bottom: 1px solid #1b1e21;
+}
+
+th {
+    background-color: #8bccff;
+    text-align: center;
+}
+
+table{
+    border: 1px solid #1b1e21;
+}
+.table>tbody>tr>td, .table>tbody>tr>th,
+.table>tfoot>tr>td, .table>tfoot>tr>th,
+.table>thead>tr>td, .table>thead>tr>th{
+    border-top: none;
+}
