@@ -11,18 +11,9 @@
 |
 */
 
-<<<<<<< HEAD
+
 
 Route::get('/', 'HomeController@index')->name('home');
 
 Route::get('research/select', 'SelectController@index')->name('select');
 Route::post('research/select', 'SelectController@postSelect')->name('select');
-=======
-Route::get('/', function () {
-    return view('layouts/template');
-});
-
-Auth::routes();
-
-Route::get('/home', 'HomeController@index')->name('home');
->>>>>>> master
