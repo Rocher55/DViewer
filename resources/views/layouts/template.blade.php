@@ -5,6 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta name="description" content="">
     <meta name="author" content="Paul CARRERE">
+    <link rel="shortcut icon" type="image/x-icon" href="{{asset('img/favicon.ico')}}" />
+
 
     <title>Data Viewer</title>
 
@@ -12,7 +14,9 @@
     <!--Feuilles CSS-->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
-    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="{{asset('/css/style.css') }}">
+    <link rel="stylesheet" href="https://harvesthq.github.io/chosen/chosen.css">
+
 
 
 
@@ -72,6 +76,9 @@
 
 <!-- Scripts -->
 <script src="{{ asset('js/app.js') }}"></script>
+<script src="{!! asset('js/chosen.js') !!}"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.2.2/jquery.min.js"></script>
+<script src="https://harvesthq.github.io/chosen/chosen.jquery.js"></script>
 </body>
 
 </html>

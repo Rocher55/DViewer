@@ -2,7 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Biochemistry;
+use App\Nomenclature;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Input;
+use Illuminate\Support\Facades\Session;
 use Validator;
 use App\Http\Controllers\Controller;
 
@@ -16,7 +21,13 @@ class SelectController extends Controller
      */
     public function index()
     {
-        return view('select');
+        //Recuperation des "nomenclature_id" differents
+        $bio_id = Biochemistry::distinct()->pluck('nomenclature_id') ;
+
+        //Avec chacun des id on recupere le contenu de la table nomenclature
+        $nomenclatures = Nomenclature::whereIn('nomenclature_id', $bio_id )->orderBy("NameN")->get() ;
+        $i = 1;
+        return view('select', compact('nomenclatures'));
     }
 
 
@@ -29,9 +40,10 @@ class SelectController extends Controller
      */
     public function postSelect()
     {
+        //Recupere les données du select a choix multiple
+        $data = Input::get('select');
 
-
-
-        return view('home');
+        Session::put('bioToView',$data);
+        return view('test', compact('data'));
     }
 }

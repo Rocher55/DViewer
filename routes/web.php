@@ -16,4 +16,4 @@
 Route::get('/', 'HomeController@index')->name('home');
 
 Route::get('research/select', 'SelectController@index')->name('select');
-Route::post('research/select', 'SelectController@postSelect')->name('select');
+Route::post('research/select', 'SelectController@postSelect')->name('postSelect');

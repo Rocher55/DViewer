@@ -1,12 +1,17 @@
 body{
     color: black;
 }
+.container-body{
+    padding-top: 50px;
+}
+
+
+
 
 /*Navbar & font*/
 .navbar {
     background-color: #8bccff;
 }
-
 .navbar-default .navbar-nav>li>a {
     color:black;
 }
@@ -15,7 +20,7 @@ body{
 }
 
 
-
+/*Boutons Accueil*/
 .buttons-group{
     padding-top: 20%;
 }
@@ -40,15 +45,17 @@ body{
 
 
 
+/*Tableaux page : 1*/
 .table>thead>tr>th{
     border-bottom: 1px solid #1b1e21;
 }
-
 th {
     background-color: #8bccff;
     text-align: center;
 }
-
+td {
+    text-align: center;
+}
 table{
     border: 1px solid #1b1e21;
 }
@@ -56,4 +63,35 @@ table{
 .table>tfoot>tr>td, .table>tfoot>tr>th,
 .table>thead>tr>td, .table>thead>tr>th{
     border-top: none;
+}
+
+
+/*Boutons de navigation*/
+.next-button{
+    /*Dimensions*/
+    width: 140px;
+    height: 50px;
+
+    /*Design*/
+    background-color: #63FFBB;
+    border-color: #1e7e34;
+    border-width: 1px;
+    border-radius: 30px;
+    color: black;
+
+    /*Position*/
+    position: fixed;
+    z-index: 10;
+    bottom: 10%;
+    right: 10%;
+}
+
+
+
+
+
+/**/
+.select{
+    margin-right: 50%;
+    margin-top: 40%;
 }
