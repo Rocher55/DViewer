@@ -2,19 +2,11 @@
 
 @section('content')
 
-    <div class="container container-body">
-        @if(count($data)&& isset($data))
-            @foreach($data as $d)
-                   {!! $d  !!}
-            @endforeach
-        @else
-            rien
-        @endif
 
-        from session
-        @if(Session::has('bioToView'))
-            @foreach(Session::get('bioToView') as $t)
-                {!! $t !!}
+
+        @if(isset($type) && count($type))
+            @foreach($type as $t)
+                {!! $t->Protocol_Type !!}
                 @endforeach
             @endif
     </div>
