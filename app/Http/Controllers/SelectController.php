@@ -21,9 +21,7 @@ class SelectController extends Controller
      */
     public function index()
     {
-        //Vide la session et en recre une
-        Session::flush();
-        Session::regenerate();
+
 
         //Recuperation des "nomenclature_id" differents
         $bio_id = Biochemistry::distinct()->pluck('nomenclature_id') ;
@@ -34,7 +32,7 @@ class SelectController extends Controller
         //Ajout en sesion au cas ou on souhaite afficher toutes les données de biochemistry
         Session::put('nomIdInBio', $nomenclatures);
 
-        return view('select', compact('nomenclatures'));
+        return view('Forms.select', compact('nomenclatures'));
     }
 
 
@@ -64,7 +62,7 @@ class SelectController extends Controller
         }
         Session::forget('nomIdInBio');
 
-
+        //Change the return
        return redirect()->route('conditions');
     }
 }

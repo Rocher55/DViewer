@@ -12,6 +12,7 @@
 */
 
 
+Route::get('test','tests@index');
 
 Route::get('/', 'HomeController@index')->name('home');
 

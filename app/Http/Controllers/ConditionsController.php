@@ -22,7 +22,10 @@ class ConditionsController extends Controller
      */
     public function index()
     {
-        return view('conditions');
+        //Vide la session et en recre une
+        Session::flush();
+        Session::regenerate();
+        return view('Forms.conditions');
     }
 
 

@@ -4,10 +4,7 @@
 
 
 
-        @if(isset($type) && count($type))
-            @foreach($type as $t)
-                {!! $t->Protocol_Type !!}
-                @endforeach
-            @endif
+        {!! $param !!}
+
     </div>
 @endsection

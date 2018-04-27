@@ -4,7 +4,7 @@
 
     <div class="container container-body  select">
         {!! Form::open(['url' => 'research/protocol', 'method' => 'post']) !!}
-        <select data-placeholder="Choose something..." class="chosen-tag" multiple="true" name="select[]">
+        <select data-placeholder="Choose something..." class="chosen-tag" multiple="true" name="protocol[]">
             <option value=""></option>
 
             //Creation du groupe Longitudinal
