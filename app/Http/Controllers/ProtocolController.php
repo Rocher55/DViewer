@@ -41,7 +41,10 @@ class ProtocolController extends Controller
             Session::put('protocolID',$data);
         }else{
 
+            //Recuperation de tous les "id de protocol"
             $protocols = Protocol::get(['Protocol_ID']);
+
+            //Pour chaque id, ajout en session
             foreach($protocols as $protocol) {
                 Session::push('protocolID', $protocol->Protocol_ID);
             }
@@ -49,27 +52,12 @@ class ProtocolController extends Controller
 
 
 
-        //Position actuelle dans le tableau du chemin a suivre
-        $position = array_search($this->lastURLPart(), Session::get('whereToSearch'));
 
-        //Si il n'y a pas de page suivante alors direction le choix des données biochimique
-        if(isset(Session::get('whereToSearch')[$position+1])){
-            return redirect()->route(Session::get('whereToSearch')[$position+1]);
-        }else{
-            return redirect()->route('select');
-        }
+
+            return redirect()->route('center');
+
     }
 
 
-    /**
-     *  Retourne la derniere partie de l'URL
-     *
-     *  @return une chaine
-     */
-    public function lastURLPart(){
-        $urlPlusKey = URL::current();
-        $urlArray = explode('/', $urlPlusKey);
-        return end($urlArray);
-    }
-
+   
 }
