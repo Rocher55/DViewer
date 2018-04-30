@@ -49,15 +49,10 @@ class ProtocolController extends Controller
                 Session::push('protocolID', $protocol->Protocol_ID);
             }
         }
-
-
-
-
-
             return redirect()->route('center');
 
     }
 
 
-   
+
 }
