@@ -17,12 +17,9 @@ Route::get('test','tests@index');
 Route::get('/', 'HomeController@index')->name('home');
 
 
-Route::get('research/select', 'SelectController@index')->name('select');
-Route::post('research/select', 'SelectController@postSelect')->name('postSelect');
+Route::get('research/select-bio', 'SelectController@index')->name('select');
+Route::post('research/select-bio', 'SelectController@postSelect')->name('postSelect');
 
-//Choix des pages sur lesquelles on va trier
-Route::get('research/conditions', 'ConditionsController@index')->name('conditions');
-Route::post('research/conditions', 'ConditionsController@postSelect')->name('postConditions');
 
 /*------------------------------------------------------------------------------------------
                                 Pages de criteres

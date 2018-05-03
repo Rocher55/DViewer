@@ -35,7 +35,7 @@
                     <span class="icon-bar"></span>
                 </button>
                 <a class="navbar-brand" href="{{ url('/') }}">
-                    {{ config('app.name', 'LRO Data Viewer') }}
+                    {{ config('app.name', 'Data Viewer') }}
                 </a>
             </div>
             <!--Contenu de la navBar-->
@@ -75,6 +75,7 @@
 
 
 <!-- Scripts -->
+@yield("script")
 <script src="{{ asset('js/app.js') }}"></script>
 <script src="{!! asset('js/chosen.js') !!}"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.2.2/jquery.min.js"></script>

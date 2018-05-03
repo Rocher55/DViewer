@@ -2,7 +2,7 @@
 
 @section('content')
 
-    <div class="container container-body  select">
+    <div class="container-body">
         {!! Form::open(['url' => 'research/protocol', 'method' => 'post']) !!}
         <select data-placeholder="Choose something..." class="chosen-tag" multiple="true" name="protocol[]">
             <option value=""></option>
@@ -31,3 +31,5 @@
         {!! Form::close() !!}
     </div>
 @endsection
+
+

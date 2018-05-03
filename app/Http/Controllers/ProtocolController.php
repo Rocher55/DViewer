@@ -44,10 +44,9 @@ class ProtocolController extends Controller
             //Recuperation de tous les "id de protocol"
             $protocols = Protocol::get(['Protocol_ID']);
 
-            //Pour chaque id, ajout en session
-            foreach($protocols as $protocol) {
-                Session::push('protocolID', $protocol->Protocol_ID);
-            }
+
+                Session::put('protocolID', $protocols);
+
         }
             return redirect()->route('center');
 

@@ -2,14 +2,14 @@
 
 @section('content')
 
-    <div class="container container-body  select">
+    <div class="container-body">
         {!! Form::open(['url' => 'research/center', 'method' => 'post']) !!}
         <select data-placeholder="Choose something..." class="chosen-tag" multiple="true" name="center[]">
             <option value=""></option>
 
 
                 @foreach($centers as $center)
-                        <option value="{!! $center->Center_ID !!}">{!! $center->Center_Acronym .' - '. $center->Center_City .' - '. $center->Center_Country .' - '. $center->Site_ID!!}</option>
+                        <option value="{!! $center->Center_ID !!}">{!! $center->Center_Acronym .' - '. $center->Center_City .' - '. $center->Center_Country !!}</option>
                 @endforeach
 
         </select>
@@ -19,3 +19,4 @@
         {!! Form::close() !!}
     </div>
 @endsection
+
