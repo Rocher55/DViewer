@@ -6,6 +6,7 @@ $(function(){
 
     $(".single-chosen-tag").chosen({
         max_selected_options: 1,
-        width: "40%"
+        width: "40%",
+        disable_search: true
     })
 });

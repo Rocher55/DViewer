@@ -10,6 +10,12 @@ use Illuminate\Support\Facades\Session;
 
 class PatientController extends Controller
 {
+
+    /**
+     *  Recupere les patiens concernes par un centre et protocol
+     *
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     */
     public function index()
     {
         //Recupere les patients concernes par un centre et protocole
@@ -20,13 +26,15 @@ class PatientController extends Controller
         //Ajout des id en session
         Session::put('patientID', $patientId);
 
-
         return view('Forms.patient');
     }
 
 
-
-
+    /**
+     * Traitement des donnees postees
+     *
+     * @return \Illuminate\Http\RedirectResponse
+     */
     public function postSelect()
     {
         //Recuperation de tous les Input sauf le token
@@ -68,14 +76,20 @@ class PatientController extends Controller
             }
         }
 
+        //Si ma chaine deparametre est valide alors
         if(isset($paramReq) && $paramReq != null){
+
+            //Creation de la liste des Patient_ID de l'etape precedente
             $patientID =  $this->createListOfPatient(Session::get('patientID'));
 
+
+            //Execution de la requete avec les parametres
             $newPatientID = DB::Select('SELECT Patient_ID as Patient_ID 
                                         FROM patients
                                         WHERE Patient_ID in'.$patientID
                                        . $paramReq);
 
+            //Ajout des resultats dans la sesion precedente
             Session::put('patientID', $newPatientID);
         }
 
@@ -83,6 +97,15 @@ class PatientController extends Controller
     }
 
 
+
+    /**
+     * Permet de generer une liste comprehensible pour
+     * effectuer un "in" dans une requete
+     *
+     *
+     * @param $data
+     * @return string
+     */
     public function createListOfPatient($data){
         $return=" (";
         foreach ($data as $item){
