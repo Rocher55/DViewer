@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Cid;
 use App\Cid_patient;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Session;
 
 class CidController extends Controller
@@ -16,11 +17,25 @@ class CidController extends Controller
      */
     public function index()
     {
-        $cid_id = Cid_patient::distinct()->whereIn('Patient_ID', Session::get('patientID'))->get(['CID_ID']);
+        $patient=Session::get('patientID');
+        $list=null;
 
-        $cids = Cid::whereIn('CID_ID', $cid_id)->get();
+        //Creation d'une liste avec les id patient
+        if(count($patient)) {
+            $list = $this->createListOfCID($patient,'Patient_ID');
+        }else{
+            $list = $this->createListOfCID($patient, 'Patient_ID');
+        }
 
-        return view('Forms.cid',compact('cids'));
+
+        //Recuperation et cretion d'une liste des tous les CID_ID
+        $cid_id = DB::Select('SELECT CID_ID as CID_ID FROM cid_patient WHERE Patient_ID in'.$list);
+        $cid_final = $this->createListOfCID($cid_id, 'CID_ID');
+
+        //Recuperation des infos sur les CID_ID
+        $cids = DB::Select('SELECT CID_ID as CID_ID, CID_Name as CID_Name FROM cids WHERE CID_ID IN'. $cid_final);
+
+        return view('Forms.cid', compact('cids'));
     }
 
 
@@ -40,7 +55,6 @@ class CidController extends Controller
         $params = Input::except('_token');
         $paramReq= "";
 
-
         //Si il existe des parametres alors
         if(isset($params)) {
 
@@ -53,7 +67,7 @@ class CidController extends Controller
                 if (isset($param) && isset($value)){
                     $key = explode("-", $param);
 
-                    //Si il existe une partie apres le point alors
+                    //Si il existe une partie apres le - alors
                     //en fonction de sa valeur (from ou to) definir la chaine de requete
                     //correspondante
                     if (isset($key[1])) {
@@ -65,38 +79,44 @@ class CidController extends Controller
                                 $req = " AND " . $key[0] . " <= " . $value;
                                 break;
                         }
-                    } else {
-                        //sinon requete avec simple =
-                        $req = " AND " . $param . " = " . $value;
                     }
                 }
                 //Concatenation des differents bouts de requete
                 $paramReq .=  $req;
             }
         }
-
-        //Si ma chaine deparametre est valide alors
-        if(isset($paramReq) && $paramReq != null){
-
-            //Creation de la liste des Patient_ID de l'etape precedente
-            $patientID =  $this->createListOfPatient(Session::get('patientID'));
-
-
-            //Execution de la requete avec les parametres
-            $newPatientID = DB::Select('SELECT Patient_ID as Patient_ID 
-                                        FROM patients
-                                        WHERE Patient_ID in'.$patientID
-                . $paramReq);
-
-            //Ajout des resultats dans la sesion precedente
-            Session::put('patientID', $newPatientID);
-        }
-
-        return redirect()->route('cid');
     }
 
+/*
+
+    SELECT * FROM food_diaries f, unite_mesure u, nomenclatures n
+    WHERE f.Nomenclature_ID = n.Nomenclature_ID
+    AND f.Unite_Mesure_ID = u.Unite_Mesure_ID
+    AND( n.Nomenclature_ID =165 and  f.Valeur<=12 and f.Valeur >=1 and u.Unite_Mesure_ID = 34)
+
+*/
 
 
+
+
+
+    /**
+     * Permet de generer une liste comprehensible pour
+     * effectuer un "in" dans une requete
+     *
+     *
+     * @param $data
+     * @return string
+     */
+    public function createListOfCID($data, $column){
+        $return=" (";
+        foreach ($data as $item){
+            $return .= $item->$column .", ";
+        }
+        $return = substr($return, 0, -2) .") ";
+
+        return $return;
+    }
 
 
 

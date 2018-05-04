@@ -19,15 +19,32 @@ class PatientController extends Controller
     public function index()
     {
         //Recupere les patients concernes par un centre et protocole
-        $patientId = Patient::whereIn('Protocol_ID' , Session::get('protocolID'))
-                        ->whereIn('Center_ID' , Session::get('centerID'))
-                        ->get(['Patient_ID']) ;
+        $patient = Patient::whereIn('Protocol_ID', Session::get('protocolID'))
+            ->whereIn('Center_ID', Session::get('centerID'))
+            ->get(['Patient_ID']);
 
-        //Ajout des id en session
-        Session::put('patientID', $patientId);
+        Session::put('patientID', $patient);
 
-        return view('Forms.patient');
+
+
+        //Recuperation des sexes
+        $sex = Patient::whereIn('Protocol_ID', Session::get('protocolID'))
+            ->whereIn('Center_ID', Session::get('centerID'))
+            ->get(['Sex']);
+
+        $allSex = array();
+        foreach($sex as $item){
+            array_push($allSex, $item->Sex);
+        }
+        $uniqueSex = array_keys(array_flip($allSex));;
+
+
+        return view('Forms.patient', compact('uniqueSex'));
     }
+
+
+
+
 
 
     /**
@@ -37,10 +54,10 @@ class PatientController extends Controller
      */
     public function postSelect()
     {
+
         //Recuperation de tous les Input sauf le token
         $params = Input::except('_token');
         $paramReq= "";
-
 
         //Si il existe des parametres alors
         if(isset($params)) {
@@ -54,7 +71,7 @@ class PatientController extends Controller
                 if (isset($param) && isset($value)){
                     $key = explode("-", $param);
 
-                    //Si il existe une partie apres le point alors
+                    //Si il existe une partie apres le - alors
                     //en fonction de sa valeur (from ou to) definir la chaine de requete
                     //correspondante
                     if (isset($key[1])) {
@@ -70,24 +87,23 @@ class PatientController extends Controller
                         //sinon requete avec simple =
                         $req = " AND " . $param . " = " . $value;
                     }
-            }
+                }
                 //Concatenation des differents bouts de requete
                 $paramReq .=  $req;
             }
         }
 
-        //Si ma chaine deparametre est valide alors
-        if(isset($paramReq) && $paramReq != null){
+        //Si ma chaine de parametres est valide alors
+        if(isset($paramReq) && $paramReq != ""){
 
             //Creation de la liste des Patient_ID de l'etape precedente
             $patientID =  $this->createListOfPatient(Session::get('patientID'));
 
-
             //Execution de la requete avec les parametres
-            $newPatientID = DB::Select('SELECT Patient_ID as Patient_ID 
+            $newPatientID = DB::Select('SELECT Patient_ID as Patient_ID
                                         FROM patients
-                                        WHERE Patient_ID in'.$patientID
-                                       . $paramReq);
+                                        WHERE Patient_ID in'. $patientID . $paramReq);
+
 
             //Ajout des resultats dans la sesion precedente
             Session::put('patientID', $newPatientID);
@@ -113,7 +129,7 @@ class PatientController extends Controller
         }
         $return = substr($return, 0, -2) .") ";
 
-        return $return;
+       return $return;
     }
 
 

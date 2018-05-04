@@ -26,7 +26,7 @@
             </optgroup>
         </select>
 
-            {!! Form::button('Previous', ['class' => 'previous-button', 'onclick' => "location.href='".$_SERVER['HTTP_REFERER']."';"]) !!}
+            {!! Form::button('Previous', ['class' => 'previous-button', 'onclick' => "location.href='".route('home')."';"]) !!}
             {!! Form::submit('Next', ['class' => 'next-button']) !!}
         {!! Form::close() !!}
     </div>

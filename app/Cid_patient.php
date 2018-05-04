@@ -9,10 +9,10 @@ use Illuminate\Database\Eloquent\Model;
  * @property int $Patient_ID
  * @property Cid $cid
  * @property Patient $patient
- * @property Biochemistry[] $biochemistries
- * @property Biochemistry[] $biochemistries
- * @property PhysicalActivity[] $physicalActivities
- * @property PhysicalActivity[] $physicalActivities
+ * @property Biochemistry[] $biochemistries_cid
+ * @property Biochemistry[] $biochemistries_patient
+ * @property PhysicalActivity[] $physicalActivities_patient
+ * @property PhysicalActivity[] $physicalActivities_cid
  */
 class Cid_patient extends Model
 {

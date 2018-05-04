@@ -19,8 +19,23 @@
                 <div class="col-md-5 offset-md-2">
                     {!! Form::label('sex', 'Sex')  !!}
                     <select data-placeholder="Choose a sex ..." class="single-chosen-tag" multiple="false" name="sex">
-                        <option value="1">Male</option>
-                        <option value="2">Female</option>
+
+                      @foreach($uniqueSex as $one)
+                        <option value="{!! $one !!}">
+                            @switch($one)
+                                @case(1)
+                                    Male
+                                    @break
+
+                                @case(2)
+                                    Female
+                                @break
+                            @endswitch
+
+                        </option>
+                        @endforeach
+
+
                     </select>
                 </div>
             </div>
