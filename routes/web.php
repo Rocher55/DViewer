@@ -32,13 +32,13 @@ Route::post('research/protocol', 'ProtocolController@postSelect')->name('postPro
 Route::get('research/center', 'CenterController@index')->name('center');
 Route::post('research/center', 'CenterController@postSelect')->name('postCenter');
 
-//CID
-Route::get('research/cid', 'CidController@index')->name('cid');
-Route::post('research/cid', 'CidController@postSelect')->name('postCid');
-
 //Patient
 Route::get('research/patient', 'PatientController@index')->name('patient');
 Route::post('research/patient', 'PatientController@postSelect')->name('postPatient');
+
+//CID
+Route::get('research/cid', 'CidController@index')->name('cid');
+Route::post('research/cid', 'CidController@postSelect')->name('postCid');
 
 //Food-diaries
 Route::get('research/food', 'FoodController@index')->name('food');

@@ -2,10 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-use App\Cid;
-use App\Cid_patient;
+
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Input;
 use Illuminate\Support\Facades\Session;
 
 class CidController extends Controller
@@ -22,25 +21,22 @@ class CidController extends Controller
 
         //Creation d'une liste avec les id patient
         if(count($patient)) {
-            $list = $this->createListOfCID($patient,'Patient_ID');
+            $list = $this->createList($patient,'Patient_ID');
         }else{
-            $list = $this->createListOfCID($patient, 'Patient_ID');
+            $list = $this->createList($patient, 'Patient_ID');
         }
-
 
         //Recuperation et cretion d'une liste des tous les CID_ID
         $cid_id = DB::Select('SELECT CID_ID as CID_ID FROM cid_patient WHERE Patient_ID in'.$list);
-        $cid_final = $this->createListOfCID($cid_id, 'CID_ID');
+        $cid_final = $this->createList($cid_id, 'CID_ID');
 
         //Recuperation des infos sur les CID_ID
         $cids = DB::Select('SELECT CID_ID as CID_ID, CID_Name as CID_Name FROM cids WHERE CID_ID IN'. $cid_final);
 
+        Session::put('cidID',$cid_final);
+
         return view('Forms.cid', compact('cids'));
     }
-
-
-
-
 
 
 
@@ -73,10 +69,10 @@ class CidController extends Controller
                     if (isset($key[1])) {
                         switch ($key[1]) {
                             case "from":
-                                $req = " AND " . $key[0] . " >= " . $value;
+                                $req = " AND " . $key[0] . "_id >= " . $value;
                                 break;
                             case "to":
-                                $req = " AND " . $key[0] . " <= " . $value;
+                                $req = " AND " . $key[0] . "_id <= " . $value;
                                 break;
                         }
                     }
@@ -85,19 +81,29 @@ class CidController extends Controller
                 $paramReq .=  $req;
             }
         }
+        //Creation de la liste des Patient_ID de l'etape precedente
+        $patientID =  $this->createList(Session::get('patientID'),'Patient_ID');
+
+        //Si ma chaine de parametres est valide alors
+        if(isset($paramReq) && $paramReq != ""){
+            //Execution de la requete avec les parametres
+            $results_p = DB::Select('SELECT distinct Patient_ID as Patient_ID
+                                        FROM cid_patient
+                                        WHERE Patient_ID in'. $patientID . $paramReq);
+            $results_c = $this->getCID($patientID,$paramReq);
+
+            //Ajout des resultats dans les sesions
+            Session::put('patientID', $results_p);
+            Session::put('cidID', $results_c);
+        } else {
+            $results_c = $this->getCID($patientID,$paramReq="");
+            Session::put('cidID', $results_c);
+        }
+
+
+        return redirect()->route('food');
+
     }
-
-/*
-
-    SELECT * FROM food_diaries f, unite_mesure u, nomenclatures n
-    WHERE f.Nomenclature_ID = n.Nomenclature_ID
-    AND f.Unite_Mesure_ID = u.Unite_Mesure_ID
-    AND( n.Nomenclature_ID =165 and  f.Valeur<=12 and f.Valeur >=1 and u.Unite_Mesure_ID = 34)
-
-*/
-
-
-
 
 
     /**
@@ -108,7 +114,7 @@ class CidController extends Controller
      * @param $data
      * @return string
      */
-    public function createListOfCID($data, $column){
+    public function createList($data, $column){
         $return=" (";
         foreach ($data as $item){
             $return .= $item->$column .", ";
@@ -119,5 +125,21 @@ class CidController extends Controller
     }
 
 
+
+
+    /**
+     * Recupere les cid
+     *
+     * @param $patientID
+     * @param $paramReq
+     * @return mixed
+     */
+    public function getCID($patientID, $paramReq){
+        $results = DB::Select('SELECT distinct CID_ID as CID_ID
+                                        FROM cid_patient
+                                        WHERE Patient_ID in'. $patientID . $paramReq);
+
+        return $results;
+    }
 
 }

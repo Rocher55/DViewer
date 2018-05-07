@@ -4,7 +4,6 @@
 
 
 
-        {!! $param !!}
-
-    </div>
+        {!! var_dump(Session::get('cidID')) !!}
+        {!! var_dump(Session::get('patientID')) !!}
 @endsection
