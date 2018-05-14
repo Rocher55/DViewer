@@ -8,9 +8,15 @@ body{
     right:18%;
     top: 15vmax;
     font-size: large;
-
 }
-
+.container-big-body{
+    margin: 0 auto;
+    position: absolute;
+    left: 8%;
+    right:8%;
+    top: 15vmax;
+    font-size: large;
+}
 
 
 
@@ -129,12 +135,16 @@ body{
 }
 .group{
     margin: 10px;
+    padding-bottom: 10px;
 }
 
 
 .input{
-    width: 40%;
+    width: 15%;
 }
 .chosen-tag .single-chosen-tag{
     width: 100%;
+}
+.unite-chosen-tag{
+    width: 20%;
 }

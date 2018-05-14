@@ -9,4 +9,9 @@ $(function(){
         width: "40%",
         disable_search: true
     })
+
+    $(".unite-chosen-tag").chosen({
+        max_selected_options: 1,
+        disable_search: true
+    })
 });
