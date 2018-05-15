@@ -15,6 +15,50 @@ class FoodController extends Controller
 
         return view('Forms.food');
     }
+
+
+    /**
+     * Traitement des donnees postees
+     *
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function postSelect()
+    {
+        //Recuperation de tous les Input sauf le token
+        $params = Input::except('_token');
+        $paramReq= "";
+
+        //Si il existe des parametres alors
+        if(isset($params)) {
+
+        }
+            //return redirect()->route('food');
+        return view('test', compact('params'));
+    }
+
+
+
+
+
+
+    /**
+     * Permet de generer une liste comprehensible pour
+     * effectuer un "in" dans une requete
+     *
+     *
+     * @param $data
+     * @return string
+     */
+    public function createList($data, $column){
+        $return=" (";
+        foreach ($data as $item){
+            $return .= $item->$column .", ";
+        }
+        $return = substr($return, 0, -2) .") ";
+
+        return $return;
+    }
+
 }
 /**
  * Exemple de requete

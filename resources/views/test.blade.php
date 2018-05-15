@@ -4,6 +4,5 @@
 
 
 
-        {!! var_dump(Session::get('cidID')) !!}
-        {!! var_dump(Session::get('patientID')) !!}
+        {!! var_dump($params) !!}
 @endsection

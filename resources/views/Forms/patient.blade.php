@@ -4,18 +4,18 @@
 
     <div class="container-body select">
         {!! Form::open(['url' => 'research/patient', 'method' => 'post']) !!}
-            <div class="group">
+
                 <div class="col-md-3 offset-md-1">
                     {!! Form::label('age-from', 'Age   From')  !!}
-                    {!! Form::Number('age-from',null,['class' => 'input']) !!}
+                    {!! Form::Number('age-from',null,['class' => 'input-age']) !!}
                 </div>
                 <div class="col-md-3">
                     {!! Form::label('age-to', 'To')  !!}
-                    {!! Form::Number('age-to',null,['class' => 'input']) !!}
+                    {!! Form::Number('age-to',null,['class' => 'input-age']) !!}
                 </div>
-            </div>
 
-            <div class="group">
+
+
                 <div class="col-md-5 offset-md-2">
                     {!! Form::label('sex', 'Sex')  !!}
                     <select data-placeholder="Choose a sex ..." class="single-chosen-tag" multiple="false" name="sex">
@@ -38,7 +38,7 @@
 
                     </select>
                 </div>
-            </div>
+
 
 
 

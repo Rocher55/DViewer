@@ -15,6 +15,7 @@ body{
     left: 8%;
     right:8%;
     top: 15vmax;
+    bottom: 15%;
     font-size: large;
 }
 
@@ -141,6 +142,9 @@ body{
 
 .input{
     width: 15%;
+}
+.input-age{
+    width: 40%;
 }
 .chosen-tag .single-chosen-tag{
     width: 100%;
