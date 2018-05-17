@@ -6,13 +6,12 @@
     <option value="35">g/kg/day</option>
 @endsection
 
-
-
 @section("3-options")
     <option value="34">g/day</option>
     <option value="35">g/kg/day</option>
     <option value="36">%kcal/day</option>
 @endsection
+
 
 
 @section('content')

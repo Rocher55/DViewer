@@ -3,6 +3,7 @@
 @section('content')
 
 
-
+        {{$paramReq}}
         {!! var_dump($params) !!}
+
 @endsection

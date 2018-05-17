@@ -14,4 +14,9 @@ $(function(){
         max_selected_options: 1,
         disable_search: true
     })
+
+    $(".cid-chosen-tag").chosen({
+        width: "40%",
+        disable_search: true
+    })
 });

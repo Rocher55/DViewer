@@ -36,7 +36,7 @@ class PatientController extends Controller
         foreach($sex as $item){
             array_push($allSex, $item->Sex);
         }
-        $uniqueSex = array_keys(array_flip($allSex));;
+        $uniqueSex = array_keys(array_flip($allSex));
 
 
         return view('Forms.patient', compact('uniqueSex'));

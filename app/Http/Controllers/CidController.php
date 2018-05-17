@@ -48,39 +48,14 @@ class CidController extends Controller
     public function postSelect()
     {
         //Recuperation de tous les Input sauf le token
-        $params = Input::except('_token');
+        $params = Input::get('cid');
         $paramReq= "";
 
         //Si il existe des parametres alors
         if(isset($params)) {
-
-            //Pour chaque parametre
-            foreach ($params as $param => $value) {
-                $req = "";
-
-                //Si la clef et valide ainsi que la valeur alors
-                //Separer la chaine (clef) en fonction du "-" (marche pas avec ".")
-                if (isset($param) && isset($value)){
-                    $key = explode("-", $param);
-
-                    //Si il existe une partie apres le - alors
-                    //en fonction de sa valeur (from ou to) definir la chaine de requete
-                    //correspondante
-                    if (isset($key[1])) {
-                        switch ($key[1]) {
-                            case "from":
-                                $req = " AND " . $key[0] . "_id >= " . $value;
-                                break;
-                            case "to":
-                                $req = " AND " . $key[0] . "_id <= " . $value;
-                                break;
-                        }
-                    }
-                }
-                //Concatenation des differents bouts de requete
-                $paramReq .=  $req;
-            }
+            $paramReq = "AND CID_ID IN ".$this->simpleCreateList($params);
         }
+
         //Creation de la liste des Patient_ID de l'etape precedente
         $patientID =  $this->createList(Session::get('patientID'),'Patient_ID');
 
@@ -102,7 +77,6 @@ class CidController extends Controller
 
 
         return redirect()->route('food');
-
     }
 
 
@@ -124,7 +98,24 @@ class CidController extends Controller
         return $return;
     }
 
+    /**
+     * Permet de generer une liste comprehensible pour
+     * effectuer un "in" dans une requete
+     * directement à partir de la saisie
+     *
+     *
+     * @param $data
+     * @return string
+     */
+    public function simpleCreateList($data){
+        $return=" (";
+        foreach ($data as $item){
+            $return .= $item .", ";
+        }
+        $return = substr($return, 0, -2) .") ";
 
+        return $return;
+    }
 
 
     /**

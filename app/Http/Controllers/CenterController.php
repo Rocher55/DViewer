@@ -48,8 +48,6 @@ class CenterController extends Controller
             Session::put('centerID', $cid);
             Session::put('protocolID', $pid);
 
-
-
         } else {
 
             $cid = Center_protocol::whereIn('Protocol_ID', Session::get('protocolID'))
