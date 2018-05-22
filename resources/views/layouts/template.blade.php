@@ -67,6 +67,13 @@
             </div>
         </div>
     @endif
+    @if(session('nothing'))
+        <div class="container text-center">
+            <div class="alert alert-danger">
+                {{ session('nothing') }}
+            </div>
+        </div>
+    @endif
 
     @yield("content")
 </div>

@@ -105,8 +105,14 @@ class PatientController extends Controller
                                         WHERE Patient_ID in'. $patientID . $paramReq);
 
 
-            //Ajout des resultats dans la sesion precedente
-            Session::put('patientID', $newPatientID);
+            if(count($newPatientID)){
+                //Ajout des resultats dans la sesion precedente
+                Session::put('patientID', $newPatientID);
+            }else{
+                Session::flash('nothing',"Aucune donnée n'existe avec vos critères");
+                return redirect()->route('patient')->withInput();
+            }
+
         }
 
         return redirect()->route('cid');

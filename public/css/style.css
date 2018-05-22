@@ -11,9 +11,10 @@ body{
 }
 .container-big-body{
     margin: 0 auto;
-    position: absolute;
-    left: 8%;
-    right:8%;
+    position: fixed;
+    margin-right: 8%;
+    margin-left: 8%;
+
     top: 15vmax;
     margin-bottom: 25%;
     font-size: large;

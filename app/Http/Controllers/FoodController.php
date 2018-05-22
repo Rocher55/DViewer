@@ -22,7 +22,7 @@ class FoodController extends Controller
      */
     public function postSelect()    {
         $params = Input::except('_token');  //Recuperation de tous les Input sauf le token
-        $paramReq = "";                     //String de la requete
+        $request = "";                     //String de la requete
 
         //Si il existe des parametres alors
         if (isset($params)) {
@@ -47,32 +47,47 @@ class FoodController extends Controller
                         //je cree la requete avec la partie patient
                         //sinon sans la partie patient
                         if (count($seenID) == 0) {
-                            $paramReq .= $this->createRequestPart("base", "");
-                            $paramReq .= $this->createRequestPart("nomenclature", $actualElt[0]);
-                            $paramReq .= $this->createRequestPart($actualElt[1], $value);
+                            $request .= $this->createRequestPart("base", "");
+                            $request .= $this->createRequestPart("nomenclature", $actualElt[0]);
+                            $request .= $this->createRequestPart($actualElt[1], $value);
                         } else {
-                            $paramReq .= $this->createRequestPart("intersect", "");
-                            $paramReq .= $this->createRequestPart("base", "");
-                            $paramReq .= $this->createRequestPart("nomenclature", $actualElt[0]);
-                            $paramReq .= $this->createRequestPart($actualElt[1], $value);
+                            $request .= $this->createRequestPart("intersect", "");
+                            $request .= $this->createRequestPart("base", "");
+                            $request .= $this->createRequestPart("nomenclature", $actualElt[0]);
+                            $request .= $this->createRequestPart($actualElt[1], $value);
                         }
 
                         //Ajout de l'id dans mon tableau des vues
                         array_push($seenID, $actualElt[0]);
                     } else {
-                        $paramReq .= $this->createRequestPart($actualElt[1], $value);
+                        $request .= $this->createRequestPart($actualElt[1], $value);
                     }
                     $end = true;
                 }
             }
 
             if($end){
-                $paramReq .= $this->createRequestPart("patient", $this->createList(Session::get('patientID'), "Patient_ID"));
+                $request .= $this->createRequestPart("patient", $this->createList(Session::get('patientID'), "Patient_ID"));
+            }
+
+
+            if($request != ""){
+                $res = DB::SELECT($request);
+
+
+                //Si il y a des resultats -> session
+                //sinon message d'erreur et retour arriere avec les données
+                if(count($res)){
+                    Session::put('patientID', $res);
+                }else{
+                    Session::flash('nothing',"Aucune donnée n'existe avec vos critères");
+                    return redirect()->route('food')->withInput();
+                }
             }
         }
 
-        //return redirect()->route('food');
-        return view('test', compact('paramReq', 'params'));
+        return redirect()->route('biochemistry');
+        //return view('test', compact('request', 'params'));
     }
 
 
