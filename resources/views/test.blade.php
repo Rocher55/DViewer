@@ -3,9 +3,9 @@
 @section('content')
 
 
-        {{$request}}
-        {!! var_dump($params) !!}
-        {!! count(Session::get('patientID')) !!}
+        {!! count($concerned) !!}
+        {!! var_dump($concerned) !!}
+
         {!! var_dump(Session::get('patientID')) !!}
 
 
