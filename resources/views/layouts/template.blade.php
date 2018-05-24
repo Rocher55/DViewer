@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta name="description" content="">
     <meta name="author" content="Paul CARRERE">
-    <link rel="shortcut icon" type="image/x-icon" href="{{asset('img/favicon.ico')}}" />
+    <link rel="shortcut icon" type="image/x-icon" href="{{asset('img/favicon.ico')}}"/>
 
 
     <title>Data Viewer</title>
@@ -18,8 +18,6 @@
     <link rel="stylesheet" href="https://harvesthq.github.io/chosen/chosen.css">
 
 
-
-
 </head>
 
 <body>
@@ -28,7 +26,8 @@
         <!--Nom du site-->
         <div class="container">
             <div class="navbar-header">
-                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#app-navbar-collapse" aria-expanded="false">
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse"
+                        data-target="#app-navbar-collapse" aria-expanded="false">
                     <span class="sr-only">Toggle Navigation</span>
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
@@ -42,8 +41,8 @@
             <div class="collapse navbar-collapse" id="app-navbar-collapse">
                 <!--A gauche-->
                 <ul class="nav navbar-nav navbar-left">
-                    <li class="nav-item "><a  href="{{ url('/research/protocol') }}"> Research </a></li>
-                    <li class="nav-item "><a  href="{{ url('/import') }}"> Import </a></li>
+                    <li class="nav-item "><a href="{{ url('/research/protocol') }}"> Research </a></li>
+                    <li class="nav-item "><a href="{{ url('/import') }}"> Import </a></li>
 
                 </ul>
 
@@ -79,14 +78,14 @@
 </div>
 
 
-
-
 <!-- Scripts -->
 @yield("script")
 <script src="{{ asset('js/app.js') }}"></script>
 <script src="{!! asset('js/chosen.js') !!}"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.2.2/jquery.min.js"></script>
 <script src="https://harvesthq.github.io/chosen/chosen.jquery.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 </body>
+
 
 </html>

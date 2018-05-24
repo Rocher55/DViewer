@@ -2,32 +2,61 @@
 
 
 @section('content')
-    <div class="container-body">
+
+
+
+
+
+
+    <div class="container">
+        <ul class="nav nav-tabs">
+            @foreach($family as $item => $value)
+                @if(key($family) == $item)
+                    <li class="active"><a data-toggle="tab" href={!! "#".$item !!}>{!! $value !!}</a></li>
+
+                    @else
+                    <li><a data-toggle="tab"  href={!! "#".$item !!}>{!! $value !!}</a></li>
+                @endif
+            @endforeach
+        </ul>
+
         {!! Form::open(['url' => 'research/biochemistry', 'method' => 'post']) !!}
 
-            <div class="row group">
-                <div class="col-md-6 text-right">
-                    {!! Form::label('161-from', 'Energy Intake (kJ/day)   From')  !!}
-                    {!! Form::Number('161-from',null,['class' => 'input', 'step' => 'any']) !!}
+            <div class="tab-content biochemistry">
+                @foreach($family as $item => $value)
 
-                    {!! Form::label('161-to', 'To')  !!}
-                    {!! Form::Number('161-to',null,['class' => 'input', 'step' => 'any']) !!}
-                </div>
-                <div class="col-md-6 text-right">
-                    {!! Form::label('165-from', 'Alcohol   From')  !!}
-                    {!! Form::Number('165-from',null,['class' => 'input', 'step' => 'any']) !!}
+                @if(key($family) == $item)
+                    <div id={!!'"'.$item.'"' !!} class="tab-pane fade in active">
 
-                    {!! Form::label('165-to', 'To')  !!}
-                    {!! Form::Number('165-to',null,['class' => 'input', 'step' => 'any']) !!}
+                @else
+                    <div id={!!'"'.$item.'"' !!} class="tab-pane fade">
+                @endif
 
-                </div>
+                    @foreach($concerned as $itemC)
+                        @if($itemC->Family_ID == $item)
+                        <div class="col-md-6 text-right">
+
+                            @if($itemC->NameUM === 'Pas d unite')
+                                {!! Form::label($itemC->Nomenclature_ID.'-from', $itemC->NameN .' From')  !!}
+                            @else
+                                {!! Form::label($itemC->Nomenclature_ID.'-from', $itemC->NameN .' ('. $itemC->NameUM.') From')  !!}
+                            @endif
+
+                            {!! Form::Number($itemC->Nomenclature_ID.'-from',null,['class' => 'input', 'step' => 'any']) !!}
+
+                            {!! Form::label($itemC->Nomenclature_ID.'-to', 'To')  !!}
+                            {!! Form::Number($itemC->Nomenclature_ID.'-to',null,['class' => 'input', 'step' => 'any']) !!}
+                        </div>
+                        @endif
+                    @endforeach
+                    </div>
+                @endforeach
             </div>
 
-
-
-            {!! Form::button('Previous', ['class' => 'previous-button', 'onclick' => "location.href='".$_SERVER['HTTP_REFERER']."';"]) !!}
-            {!! Form::submit('Next', ['class' => 'next-button']) !!}
-
+            <div class="container ">
+                {!! Form::button('Previous', ['class' => 'previous-button', 'onclick' => "location.href='".$_SERVER['HTTP_REFERER']."';"]) !!}
+                {!! Form::submit('Next', ['class' => 'next-button']) !!}
+            </div>
         {!! Form::close() !!}
     </div>
 @endsection

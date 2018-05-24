@@ -3,10 +3,10 @@
 @section('content')
 
 
-        {!! count($concerned) !!}
-        {!! var_dump($concerned) !!}
+        {!! count($family) !!}
+        {!! var_dump($family) !!}
 
-        {!! var_dump(Session::get('patientID')) !!}
+
 
 
 @endsection

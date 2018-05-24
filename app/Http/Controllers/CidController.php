@@ -16,6 +16,9 @@ class CidController extends Controller
      */
     public function index()
     {
+
+
+
         $patient=Session::get('patientID');
         $list=null;
 

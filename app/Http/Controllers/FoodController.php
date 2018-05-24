@@ -11,6 +11,8 @@ use App\Food;
 class FoodController extends Controller
 {
     public  function  index(){
+
+
         return view('Forms.food');
     }
 
@@ -180,7 +182,7 @@ class FoodController extends Controller
         //Inversion des clefs/valeurs puis retour des clefs
         $uniqueID = array_keys(array_flip($allID));
 
-        //retour du nombre de clefs
+        //retour des clefs
         return $uniqueID;
     }
 

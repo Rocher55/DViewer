@@ -20,6 +20,9 @@ body{
     font-size: large;
 }
 
+.biochemistry{
+    margin-top: 5%;
+}
 
 
 /*Navbar & font*/
@@ -61,7 +64,9 @@ body{
 
 
 
-/*Boutons de navigation*/
+/*Boutons de formulaire*/
+
+
 .next-button{
     /*Dimensions*/
     width: 140px;

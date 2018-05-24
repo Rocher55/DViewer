@@ -9,19 +9,44 @@ use Illuminate\Support\Facades\Session;
 
 class BiochemistryController extends Controller
 {
-
+    /** Recuperation des données pour affichage
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     */
     public  function  index(){
 
-        //Recuperation des biochemistryID et ajout en session
-        $biochemistryID = $this->getBiochemistryID();
-        //Session::put('biochemistryID', $biochemistryID);
-
+        //cf. fonction
         $concerned = $this->getConcernedBIO();
 
 
-        //return view('Forms.biochemistry');
-        return view('test', compact('concerned'));
+
+        $family = $this->getUniqueFamily($concerned);
+        asort($family);
+
+
+
+        return view('Forms.biochemistry', compact('family','concerned', 'patientID'));
+        //return view('test', compact('family'));
     }
+
+
+
+    /**
+     * Permet de creer un tableau avec les familles uniques
+     *
+     * @param $concerned les donnees biochemistry concernees
+     * @return array
+     */
+    public function getUniqueFamily($concerned){
+        $unique = array();
+
+        foreach ($concerned as $item ){
+               $unique[$item->Family_ID] = $item->NameF;
+        }
+
+        //retour des clefs
+        return $unique;
+    }
+
 
 
     /**
@@ -30,33 +55,16 @@ class BiochemistryController extends Controller
      * @return mixed
      */
     public function getConcernedBIO(){
-        $concerned = DB::SELECT('SELECT DISTINCT b.Nomenclature_ID, n.NameN, u.NameUM, f.NameF
+        $concerned = DB::SELECT('SELECT DISTINCT b.Nomenclature_ID, n.NameN, u.NameUM, f.NameF, f.Family_ID
                                  FROM biochemistry b, nomenclatures n, unite_mesure u, families f
                                  WHERE b.Unite_Mesure_ID = u.Unite_Mesure_ID
                                  AND b.Nomenclature_ID = n.Nomenclature_ID 
                                  AND n.Family_ID = f.Family_ID
                                  AND b.Patient_ID in'. $this->createList(Session::get('patientID'),'Patient_ID').
+                                'AND b.Patient_ID in'. $this->createList(Session::get('cidID'),'CID_ID').
                                 'ORDER BY n.NameN');
 
         return $concerned;
-    }
-
-
-
-
-
-    /**
-     * Permet de recuperer les biochemistryID concernant les patients et cid
-     *
-     * @return mixed
-     */
-    public function getBiochemistryID(){
-        $biochemistryID = Biochemistry::whereIn('Patient_ID', $this->createArray(Session::get('patientID'),'Patient_ID'))
-            ->whereIn('CID_ID', $this->createArray(Session::get('cidID'), 'CID_ID'))
-            ->orderBy('biochemistry_ID', 'ASC')
-            ->get(['biochemistry_ID']);
-
-        return $biochemistryID;
     }
 
 
