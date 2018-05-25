@@ -28,7 +28,6 @@ class FoodController extends Controller
 
         //Si il existe des parametres alors
         if (isset($params)) {
-            $array_ID = $this->uniqueID($params);   //recuperation des ID unique
             $seenID = array();                      //tableau permettant de savoir si une id a deja ete vue
             $end=false;                             //variable pour savoir si l'on peut faire la fin de la requete
                                                             //(car sinon generation de la partie "patient" meme sans valeur)
