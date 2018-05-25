@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 
+use App\Cid;
+use App\Cid_patient;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Input;
 use Illuminate\Support\Facades\Session;
@@ -16,27 +18,18 @@ class CidController extends Controller
      */
     public function index()
     {
-
-
-
         $patient=Session::get('patientID');
-        $list=null;
-
-        //Creation d'une liste avec les id patient
-        if(count($patient)) {
-            $list = $this->createList($patient,'Patient_ID');
-        }else{
-            $list = $this->createList($patient, 'Patient_ID');
-        }
 
         //Recuperation et cretion d'une liste des tous les CID_ID
-        $cid_id = DB::Select('SELECT CID_ID as CID_ID FROM cid_patient WHERE Patient_ID in'.$list);
-        $cid_final = $this->createList($cid_id, 'CID_ID');
+        $cid_id = Cid_patient::whereIn('Patient_ID', $patient)
+                                ->orderBy('CID_ID', 'ASC')
+                                ->distinct()
+                                ->get(['CID_ID']);
 
         //Recuperation des infos sur les CID_ID
-        $cids = DB::Select('SELECT CID_ID as CID_ID, CID_Name as CID_Name FROM cids WHERE CID_ID IN'. $cid_final);
+        $cids = Cid::whereIn('CID_ID', $cid_id )->get(['CID_ID', 'CID_Name']);
 
-        Session::put('cidID',$cid_final);
+        Session::put('cidID',$this->createArray($cid_id, 'CID_ID'));
 
         return view('Forms.cid', compact('cids'));
     }
@@ -56,11 +49,11 @@ class CidController extends Controller
 
         //Si il existe des parametres alors
         if(isset($params)) {
-            $paramReq = "AND CID_ID IN ".$this->simpleCreateList($params);
+            $paramReq = "AND CID_ID IN ".$this->createList($params);
         }
 
         //Creation de la liste des Patient_ID de l'etape precedente
-        $patientID =  $this->createList(Session::get('patientID'),'Patient_ID');
+        $patientID =  $this->createList(Session::get('patientID'));
 
         //Si ma chaine de parametres est valide alors
         if(isset($paramReq) && $paramReq != ""){
@@ -71,46 +64,26 @@ class CidController extends Controller
             $results_c = $this->getCID($patientID,$paramReq);
 
             //Ajout des resultats dans les sesions
-            Session::put('patientID', $results_p);
-            Session::put('cidID', $results_c);
+            Session::put('patientID', $this->createArray($results_p, 'Patient_ID'));
+            Session::put('cidID', $this->createArray($results_c, 'CID_ID'));
         } else {
             $results_c = $this->getCID($patientID,$paramReq="");
-            Session::put('cidID', $results_c);
+            Session::put('cidID', $this->createArray($results_c, 'CID_ID'));
         }
-
 
         return redirect()->route('food');
     }
 
 
-    /**
-     * Permet de generer une liste comprehensible pour
-     * effectuer un "in" dans une requete
-     *
-     *
-     * @param $data
-     * @return string
-     */
-    public function createList($data, $column){
-        $return=" (";
-        foreach ($data as $item){
-            $return .= $item->$column .", ";
-        }
-        $return = substr($return, 0, -2) .") ";
-
-        return $return;
-    }
 
     /**
      * Permet de generer une liste comprehensible pour
      * effectuer un "in" dans une requete
-     * directement à partir de la saisie
-     *
      *
      * @param $data
      * @return string
      */
-    public function simpleCreateList($data){
+    public function createList($data){
         $return=" (";
         foreach ($data as $item){
             $return .= $item .", ";
@@ -119,6 +92,24 @@ class CidController extends Controller
 
         return $return;
     }
+
+
+
+    /**
+     * Permet de generer une liste comprehensible pour
+     * effectuer pour ajouter en session
+     *
+     * @param $data
+     * @return string
+     */
+    public function createArray($data, $column){
+        $return=array();
+        foreach ($data as $item){
+            array_push($return, strval($item->$column));
+        }
+        return $return;
+    }
+
 
 
     /**

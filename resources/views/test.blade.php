@@ -3,8 +3,12 @@
 @section('content')
 
 
-        {!! count($family) !!}
-        {!! var_dump($family) !!}
+
+    {!! var_dump(Session::get('protocolID')) !!}
+    {!! var_dump(Session::get('centerID')) !!}
+    {!! var_dump(Session::get('patientID')) !!}
+    {!! var_dump(Session::get('cidID')) !!}
+
 
 
 

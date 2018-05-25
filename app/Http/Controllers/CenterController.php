@@ -39,29 +39,51 @@ class CenterController extends Controller
 
             $cid = Center_protocol::whereIn('Protocol_ID', Session::get('protocolID'))
                 ->whereIn('Center_ID', $data)
+                ->distinct()
                 ->get(['Center_ID']);
 
             $pid = Center_protocol::whereIn('Protocol_ID', Session::get('protocolID'))
                 ->whereIn('Center_ID', $data)
+                ->distinct()
                 ->get(['Protocol_ID']);
 
-            Session::put('centerID', $cid);
-            Session::put('protocolID', $pid);
+            Session::put('centerID', $this->createArray($cid, 'Center_ID'));
+            Session::put('protocolID', $this->createArray($pid, 'Protocol_ID'));
 
         } else {
 
             $cid = Center_protocol::whereIn('Protocol_ID', Session::get('protocolID'))
+                ->distinct()
                 ->get(['Center_ID']);
             $pid = Center_protocol::whereIn('Protocol_ID', Session::get('protocolID'))
+                ->distinct()
                 ->get(['Protocol_ID']);
 
-            Session::put('centerID', $cid);
-            Session::put('protocolID', $pid);
+            Session::put('centerID', $this->createArray($cid, 'Center_ID'));
+            Session::put('protocolID', $this->createArray($pid, 'Protocol_ID'));
 
         }
 
         return redirect()->route('patient');
     }
+
+
+
+    /**
+     * Permet de generer une liste comprehensible pour
+     * effectuer pour ajouter en session
+     *
+     * @param $data
+     * @return string
+     */
+    public function createArray($data, $column){
+        $return=array();
+        foreach ($data as $item){
+            array_push($return, strval($item->$column));
+        }
+        return $return;
+    }
+
 }
 
 

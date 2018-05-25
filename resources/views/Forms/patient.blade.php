@@ -1,7 +1,6 @@
 @extends('layouts.template')
 
 @section('content')
-
     <div class="container-body select">
         {!! Form::open(['url' => 'research/patient', 'method' => 'post']) !!}
 
@@ -13,8 +12,6 @@
                     {!! Form::label('age-to', 'To')  !!}
                     {!! Form::Number('age-to',null,['class' => 'input-age']) !!}
                 </div>
-
-
 
                 <div class="col-md-5 offset-md-2">
                     {!! Form::label('sex', 'Sex')  !!}
@@ -39,15 +36,8 @@
                     </select>
                 </div>
 
-
-
-
             {!! Form::button('Previous', ['class' => 'previous-button', 'onclick' => "location.href='".$_SERVER['HTTP_REFERER']."';"]) !!}
             {!! Form::submit('Next', ['class' => 'next-button']) !!}
         {!! Form::close() !!}
     </div>
-
-
-
-
 @endsection

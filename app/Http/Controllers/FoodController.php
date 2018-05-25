@@ -69,18 +69,16 @@ class FoodController extends Controller
             }
 
             if($end){
-                $request .= $this->createRequestPart("patient", $this->createList(Session::get('patientID'), "Patient_ID"));
+                $request .= $this->createRequestPart("patient", $this->createList(Session::get('patientID')));
             }
-
 
             if($request != ""){
                 $res = DB::SELECT($request);
 
-
                 //Si il y a des resultats -> session
                 //sinon message d'erreur et retour arriere avec les données
                 if(count($res)){
-                    Session::put('patientID', $res);
+                    Session::put('patientID', $this->createArray($res, 'Patient_ID'));
                 }else{
                     Session::flash('nothing',"Aucune donnée n'existe avec vos critères");
                     return redirect()->route('food')->withInput();
@@ -89,7 +87,6 @@ class FoodController extends Controller
         }
 
         return redirect()->route('biochemistry');
-        //return view('test', compact('request', 'params'));
     }
 
 
@@ -144,10 +141,10 @@ class FoodController extends Controller
      * @param $data
      * @return string
      */
-    public function createList($data, $column){
+    public function createList($data){
         $return="";
         foreach ($data as $item){
-            $return .= $item->$column .", ";
+            $return .= $item .", ";
         }
         $return = substr($return, 0, -2) .") ";
 
@@ -188,81 +185,21 @@ class FoodController extends Controller
 
 
 
+    /**
+     * Permet de generer une liste comprehensible pour
+     * effectuer pour ajouter en session
+     *
+     * @param $data
+     * @return string
+     */
+    public function createArray($data, $column){
+        $return=array();
+        foreach ($data as $item){
+            array_push($return, strval($item->$column));
+        }
+        return $return;
+    }
+
 
 
 }
-
-/*
-SELECT distinct f.Patient_ID Patient_ID
-FROM food_diaries f, unite_mesure u, nomenclatures n
-WHERE f.Nomenclature_ID = n.Nomenclature_ID
-AND f.Unite_Mesure_ID = u.Unite_Mesure_ID
-AND n.Nomenclature_ID = 161 AND f.valeur >= 1 AND f.valeur <= 200000
-AND f.Patient_ID in ( SELECT distinct f.Patient_ID Patient_ID
-                     FROM food_diaries f, unite_mesure u, nomenclatures n
-                     WHERE f.Nomenclature_ID = n.Nomenclature_ID
-                     AND f.Unite_Mesure_ID = u.Unite_Mesure_ID
-                     AND n.Nomenclature_ID = 165
-                     AND f.valeur >= 1
-                     AND f.valeur <= 200000)
-AND f.Patient_ID in ( SELECT distinct f.Patient_ID Patient_ID
-                     FROM food_diaries f, unite_mesure u, nomenclatures n
-                     WHERE f.Nomenclature_ID = n.Nomenclature_ID
-                     AND f.Unite_Mesure_ID = u.Unite_Mesure_ID
-                     AND n.Nomenclature_ID = 171 AND f.valeur >= 1
-                     AND f.valeur <= 200000 )
-
-AND f.Patient_ID in ( SELECT distinct f.Patient_ID Patient_ID
-                     FROM food_diaries f, unite_mesure u, nomenclatures n
-                     WHERE f.Nomenclature_ID = n.Nomenclature_ID
-                     AND f.Unite_Mesure_ID = u.Unite_Mesure_ID
-                     AND n.Nomenclature_ID = 167 AND f.valeur >= 1
-                     AND f.valeur <= 200000 )
-
-AND f.Patient_ID in ( SELECT distinct f.Patient_ID Patient_ID
-                     FROM food_diaries f, unite_mesure u, nomenclatures n
-                     WHERE f.Nomenclature_ID = n.Nomenclature_ID
-                     AND f.Unite_Mesure_ID = u.Unite_Mesure_ID
-                     AND n.Nomenclature_ID = 170 AND f.valeur >= 1
-                     AND f.valeur <= 200000 )
-
-AND f.Patient_ID in ( SELECT distinct f.Patient_ID Patient_ID
-                     FROM food_diaries f, unite_mesure u, nomenclatures n
-                     WHERE f.Nomenclature_ID = n.Nomenclature_ID
-                     AND f.Unite_Mesure_ID = u.Unite_Mesure_ID
-                     AND n.Nomenclature_ID = 164 AND f.valeur >= 1
-                     AND f.valeur <= 200000 )
-
-AND f.Patient_ID in ( SELECT distinct f.Patient_ID Patient_ID
-                     FROM food_diaries f, unite_mesure u, nomenclatures n
-                     WHERE f.Nomenclature_ID = n.Nomenclature_ID
-                     AND f.Unite_Mesure_ID = u.Unite_Mesure_ID
-                     AND n.Nomenclature_ID = 169 AND f.valeur >= 1
-                     AND f.valeur <= 200000 )
-
-AND f.Patient_ID in ( SELECT distinct f.Patient_ID Patient_ID
-                     FROM food_diaries f, unite_mesure u, nomenclatures n
-                     WHERE f.Nomenclature_ID = n.Nomenclature_ID
-                     AND f.Unite_Mesure_ID = u.Unite_Mesure_ID
-                     AND n.Nomenclature_ID = 166
-                     AND f.valeur >= 1
-                     AND f.valeur <= 200000 )
-
-AND f.Patient_ID in ( SELECT distinct f.Patient_ID Patient_ID
-                     FROM food_diaries f, unite_mesure u, nomenclatures n
-                     WHERE f.Nomenclature_ID = n.Nomenclature_ID
-                     AND f.Unite_Mesure_ID = u.Unite_Mesure_ID
-                     AND n.Nomenclature_ID = 163
-                     AND f.valeur >= 1
-                     AND f.valeur <= 1200000 )
-
-AND f.Patient_ID in ( SELECT distinct f.Patient_ID Patient_ID
-                     FROM food_diaries f, unite_mesure u, nomenclatures n
-                     WHERE f.Nomenclature_ID = n.Nomenclature_ID
-                     AND f.Unite_Mesure_ID = u.Unite_Mesure_ID
-                     AND n.Nomenclature_ID = 168
-                     AND f.valeur >= 1 AND f.valeur <= 200000 )
-
-AND f.Patient_ID in ( 782, 783, 784, 785, 786, 787, 788, 789, 790, 791, 792, 793, 794, 795, 796, 797, 798, 799, 800, 801, 802, 803)
-
-*/

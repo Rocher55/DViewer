@@ -3,11 +3,6 @@
 
 @section('content')
 
-
-
-
-
-
     <div class="container">
         <ul class="nav nav-tabs">
             @foreach($family as $item => $value)

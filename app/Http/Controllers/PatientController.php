@@ -23,7 +23,7 @@ class PatientController extends Controller
             ->whereIn('Center_ID', Session::get('centerID'))
             ->get(['Patient_ID']);
 
-        Session::put('patientID', $patient);
+        Session::put('patientID', $this->createArray($patient, 'Patient_ID'));
 
 
 
@@ -54,9 +54,37 @@ class PatientController extends Controller
      */
     public function postSelect()
     {
-
         //Recuperation de tous les Input sauf le token
         $params = Input::except('_token');
+        $request = $this->createRequest($params);
+
+        //Si ma chaine de parametres est valide alors
+        if(isset($request) && $request != ""){
+
+            //Creation de la liste des Patient_ID de l'etape precedente
+            $patientID =  $this->createListOfPatient(Session::get('patientID'));
+
+            //Execution de la requete avec les parametres
+            $newPatientID = DB::Select('SELECT Patient_ID as Patient_ID
+                                        FROM patients
+                                        WHERE Patient_ID in'. $patientID . $request);
+
+
+            if(count($newPatientID)){
+                //Ajout des resultats dans la sesion precedente
+                Session::put('patientID', $this->createArray($newPatientID, 'Patient_ID'));
+            }else{
+                Session::flash('nothing',"Aucune donnée n'existe avec vos critères");
+                return redirect()->route('patient')->withInput();
+            }
+        }
+
+        return redirect()->route('cid');
+
+    }
+
+
+    public function createRequest($params){
         $paramReq= "";
 
         //Si il existe des parametres alors
@@ -92,31 +120,9 @@ class PatientController extends Controller
                 $paramReq .=  $req;
             }
         }
-
-        //Si ma chaine de parametres est valide alors
-        if(isset($paramReq) && $paramReq != ""){
-
-            //Creation de la liste des Patient_ID de l'etape precedente
-            $patientID =  $this->createListOfPatient(Session::get('patientID'));
-
-            //Execution de la requete avec les parametres
-            $newPatientID = DB::Select('SELECT Patient_ID as Patient_ID
-                                        FROM patients
-                                        WHERE Patient_ID in'. $patientID . $paramReq);
-
-
-            if(count($newPatientID)){
-                //Ajout des resultats dans la sesion precedente
-                Session::put('patientID', $newPatientID);
-            }else{
-                Session::flash('nothing',"Aucune donnée n'existe avec vos critères");
-                return redirect()->route('patient')->withInput();
-            }
-
-        }
-
-        return redirect()->route('cid');
+        return $paramReq;
     }
+
 
 
 
@@ -131,13 +137,29 @@ class PatientController extends Controller
     public function createListOfPatient($data){
         $return=" (";
         foreach ($data as $item){
-            $return .= $item->Patient_ID .", ";
+            $return .= $item .", ";
         }
         $return = substr($return, 0, -2) .") ";
 
        return $return;
     }
 
+
+
+    /**
+     * Permet de generer une liste comprehensible pour
+     * effectuer pour ajouter en session
+     *
+     * @param $data
+     * @return string
+     */
+    public function createArray($data, $column){
+        $return=array();
+        foreach ($data as $item){
+            array_push($return, strval($item->$column));
+        }
+        return $return;
+    }
 
 }
 

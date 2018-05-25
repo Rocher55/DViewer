@@ -13,20 +13,39 @@ class BiochemistryController extends Controller
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
     public  function  index(){
-
         //cf. fonction
         $concerned = $this->getConcernedBIO();
-
-
 
         $family = $this->getUniqueFamily($concerned);
         asort($family);
 
-
-
-        return view('Forms.biochemistry', compact('family','concerned', 'patientID'));
-        //return view('test', compact('family'));
+        return view('Forms.biochemistry', compact('family','concerned'));
     }
+
+
+
+    public function postSelect(){
+
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -38,12 +57,9 @@ class BiochemistryController extends Controller
      */
     public function getUniqueFamily($concerned){
         $unique = array();
-
         foreach ($concerned as $item ){
                $unique[$item->Family_ID] = $item->NameF;
         }
-
-        //retour des clefs
         return $unique;
     }
 
@@ -60,10 +76,9 @@ class BiochemistryController extends Controller
                                  WHERE b.Unite_Mesure_ID = u.Unite_Mesure_ID
                                  AND b.Nomenclature_ID = n.Nomenclature_ID 
                                  AND n.Family_ID = f.Family_ID
-                                 AND b.Patient_ID in'. $this->createList(Session::get('patientID'),'Patient_ID').
-                                'AND b.Patient_ID in'. $this->createList(Session::get('cidID'),'CID_ID').
+                                 AND b.Patient_ID in'. $this->createList(Session::get('patientID')).
+                                'AND b.CID_ID in'. $this->createList(Session::get('cidID')).
                                 'ORDER BY n.NameN');
-
         return $concerned;
     }
 
@@ -77,10 +92,10 @@ class BiochemistryController extends Controller
      * @param $data
      * @return string
      */
-    public function createList($data, $column){
+    public function createList($data){
         $return=" ( ";
         foreach ($data as $item){
-            $return .= $item->$column .", ";
+            $return .= $item .", ";
         }
         $return = substr($return, 0, -2) ." ) ";
 
