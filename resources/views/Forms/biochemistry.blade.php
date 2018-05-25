@@ -37,10 +37,10 @@
                                 {!! Form::label($itemC->Nomenclature_ID.'-from', $itemC->NameN .' ('. $itemC->NameUM.') From')  !!}
                             @endif
 
-                            {!! Form::Number($itemC->Nomenclature_ID.'-from',null,['class' => 'input', 'step' => 'any']) !!}
+                            {!! Form::Number($itemC->Nomenclature_ID.'-from',null,['class' => 'input', 'step' => 'any', 'min' => '0']) !!}
 
                             {!! Form::label($itemC->Nomenclature_ID.'-to', 'To')  !!}
-                            {!! Form::Number($itemC->Nomenclature_ID.'-to',null,['class' => 'input', 'step' => 'any']) !!}
+                            {!! Form::Number($itemC->Nomenclature_ID.'-to',null,['class' => 'input', 'step' => 'any', 'min' => '0']) !!}
                         </div>
                         @endif
                     @endforeach

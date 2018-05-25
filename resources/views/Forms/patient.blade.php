@@ -6,11 +6,11 @@
 
                 <div class="col-md-3 offset-md-1">
                     {!! Form::label('age-from', 'Age   From')  !!}
-                    {!! Form::Number('age-from',null,['class' => 'input-age']) !!}
+                    {!! Form::Number('age-from',null,['class' => 'input-age', 'min' => '0']) !!}
                 </div>
                 <div class="col-md-3">
                     {!! Form::label('age-to', 'To')  !!}
-                    {!! Form::Number('age-to',null,['class' => 'input-age']) !!}
+                    {!! Form::Number('age-to',null,['class' => 'input-age', 'min' => '0']) !!}
                 </div>
 
                 <div class="col-md-5 offset-md-2">
