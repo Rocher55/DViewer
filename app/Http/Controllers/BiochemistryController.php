@@ -83,7 +83,7 @@ class BiochemistryController extends Controller
                     Session::put('patientID', $this->createArray($res, 'Patient_ID'));
                 }else{
                     Session::flash('nothing',"Aucune donnée n'existe avec vos critères");
-                    return redirect()->route('food')->withInput();
+                    return redirect()->route('biochemistry')->withInput();
                 }
             }
         }
@@ -132,7 +132,7 @@ class BiochemistryController extends Controller
     }
 
 
-    
+
     /**
      * Permet de creer un tableau avec les familles uniques
      *
