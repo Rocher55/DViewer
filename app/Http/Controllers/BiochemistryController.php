@@ -14,6 +14,8 @@ class BiochemistryController extends Controller
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
     public  function  index(){
+        Session::forget('biochemistryToView');
+
         //cf. fonction
         $concerned = $this->getConcernedBIO();
 
@@ -58,7 +60,13 @@ class BiochemistryController extends Controller
                             $request .= $this->createRequestPart("intersect", "");
                             $request .= $this->createRequestPart("base", "");
                             $request .= $this->createRequestPart("nomenclature", $actualElt[0]);
-                            $request .= $this->createRequestPart($actualElt[1], $value);
+
+                            if($actualElt[1] === 'view'){
+                                Session::push('biochemistryToView', $value);
+                            }else{
+                                $request .= $this->createRequestPart($actualElt[1], $value);
+                            }
+
                         }
 
                         //Ajout de l'id dans mon tableau des vues
@@ -88,8 +96,7 @@ class BiochemistryController extends Controller
             }
         }
 
-        //return redirect()->route('biochemistry');
-        return view('test');
+        return redirect()->route('analyse');
     }
 
 
@@ -160,6 +167,7 @@ class BiochemistryController extends Controller
                                  WHERE b.Unite_Mesure_ID = u.Unite_Mesure_ID
                                  AND b.Nomenclature_ID = n.Nomenclature_ID 
                                  AND n.Family_ID = f.Family_ID
+                                 AND b.Valeur > 0
                                  AND b.Patient_ID in'. $this->createList(Session::get('patientID')).
                                 'AND b.CID_ID in'. $this->createList(Session::get('cidID')).
                                 'ORDER BY n.NameN');

@@ -3,7 +3,7 @@
 @section('content')
 
     <div class="container container-body">
-        {!! Form::open(['url' => 'research/select', 'method' => 'post']) !!}
+        {!! Form::open(['url' => 'research/select-bio', 'method' => 'post']) !!}
         <select data-placeholder="Choose something..." class="chosen-tag" multiple="true" name="select[]">
                 <option value=""></option>
             @foreach($nomenclatures as $nomenclature)

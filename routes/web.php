@@ -17,9 +17,6 @@ Route::get('test','tests@index');
 Route::get('/', 'HomeController@index')->name('home');
 
 
-Route::get('research/select-bio', 'SelectController@index')->name('select');
-Route::post('research/select-bio', 'SelectController@postSelect')->name('postSelect');
-
 
 /*------------------------------------------------------------------------------------------
                                 Pages de criteres
@@ -52,9 +49,16 @@ Route::post('research/biochemistry', 'BiochemistryController@postSelect')->name(
 Route::get('research/analyse', 'AnalyseController@index')->name('analyse');
 Route::post('research/analyse', 'AnalyseController@postSelect')->name('postAnalyse');
 
+
+
+
+/*------------------------------------------------------------------------------------------
+                                Pages de données à afficher
+------------------------------------------------------------------------------------------*/
+//Biochemistry
+Route::get('research/select-bio', 'SelectController@index')->name('select-bio');
+Route::post('research/select-bio', 'SelectController@postSelect')->name('postSelect-bio');
+
 //Gene
-Route::get('research/gene', 'GeneController@index')->name('gene');
-Route::post('research/gene', 'GeneController@postSelect')->name('postGene');
-
-
-
+Route::get('research/select-gene', 'GeneController@index')->name('select-gene');
+Route::post('research/select-gene', 'GeneController@postSelect')->name('postSelect-gene');

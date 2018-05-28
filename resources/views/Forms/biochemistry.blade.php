@@ -3,6 +3,10 @@
 
 @section('content')
 
+    {!! var_dump(Session::get('biochemistryToView')) !!}
+    {!! var_dump(Session::get('patientID')) !!}
+
+
     <div class="container">
         <ul class="nav nav-tabs">
             @foreach($family as $item => $value)
@@ -36,11 +40,11 @@
                             @else
                                 {!! Form::label($itemC->Nomenclature_ID.'-from', $itemC->NameN .' ('. $itemC->NameUM.') From')  !!}
                             @endif
-
                             {!! Form::Number($itemC->Nomenclature_ID.'-from',null,['class' => 'input', 'step' => 'any', 'min' => '0']) !!}
 
                             {!! Form::label($itemC->Nomenclature_ID.'-to', 'To')  !!}
                             {!! Form::Number($itemC->Nomenclature_ID.'-to',null,['class' => 'input', 'step' => 'any', 'min' => '0']) !!}
+                            {!! Form::checkbox($itemC->Nomenclature_ID.'-view',$itemC->Nomenclature_ID, false); !!}
                         </div>
                         @endif
                     @endforeach
@@ -49,7 +53,7 @@
             </div>
 
             <div class="container ">
-                {!! Form::button('Previous', ['class' => 'previous-button', 'onclick' => "location.href='".$_SERVER['HTTP_REFERER']."';"]) !!}
+                {!! Form::button('Previous', ['class' => 'previous-button', 'onclick' => "window.history.back();"]) !!}
                 {!! Form::submit('Next', ['class' => 'next-button']) !!}
             </div>
         {!! Form::close() !!}

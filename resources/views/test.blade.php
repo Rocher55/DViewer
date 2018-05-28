@@ -4,6 +4,8 @@
 
 
 
+
+    {!! var_dump(Session::get('analyseID')) !!}
     {!! var_dump(Session::get('protocolID')) !!}
     {!! var_dump(Session::get('centerID')) !!}
     {!! var_dump(Session::get('patientID')) !!}

@@ -21,10 +21,10 @@ class SelectController extends Controller
      */
     public function index()
     {
-
-
         //Recuperation des "nomenclature_id" differents
-        $bio_id = Biochemistry::distinct()->pluck('nomenclature_id') ;
+        $bio_id = Biochemistry::whereIn('Patient_ID', Session::get('patientID'))
+                        ->distinct()
+                        ->pluck('nomenclature_id') ;
 
         //Avec chacun des id on recupere le contenu de la table nomenclature
         $nomenclatures = Nomenclature::whereIn('nomenclature_id', $bio_id )->orderBy("NameN")->get() ;
@@ -32,7 +32,7 @@ class SelectController extends Controller
         //Ajout en sesion au cas ou on souhaite afficher toutes les données de biochemistry
         Session::put('nomIdInBio', $nomenclatures);
 
-        return view('Forms.select', compact('nomenclatures'));
+        return view('Forms.select-bio', compact('nomenclatures'));
     }
 
 

@@ -26,7 +26,7 @@
             </optgroup>
         </select>
 
-            {!! Form::button('Previous', ['class' => 'previous-button', 'onclick' => "location.href='".route('home')."';"]) !!}
+        {!! Form::button('Previous', ['class' => 'previous-button', 'onclick' => "window.history.back();"]) !!}
             {!! Form::submit('Next', ['class' => 'next-button']) !!}
         {!! Form::close() !!}
     </div>
