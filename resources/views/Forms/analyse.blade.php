@@ -4,11 +4,6 @@
 
 
 @section('content')
-    {!! var_dump(Session::get('biochemistryToView')) !!}
-    {!! var_dump(Session::get('patientID')) !!}
-
-
-
     <div class="container-body ">
         {!! Form::open(['url' => 'research/analyse', 'method' => 'post']) !!}
 

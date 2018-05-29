@@ -8,14 +8,18 @@
         {!! Form::open(['url' => 'research/analyse', 'method' => 'post']) !!}
 
 
-
-        <div class="col-md-4 offset-md-2">
-            {!! Form::label('sampleType', 'Sample')  !!}
-            <select data-placeholder="Choose a sample ..." class="chosen-tag" multiple="true" name="sampleType[]">
-                @foreach($result as $item)
-                    <option value="{!! $item->Gene_Symbol !!}">{!! $item->Probe_ID!!}</option>
-                @endforeach
-            </select>
+        <div class="row">
+            <div class="col-md-8 offset-md-4">
+                {!! Form::label('gene', 'Gene')  !!}
+                <select data-placeholder="Choose a sample ..." class="chosen-tag" multiple="true" name="gene[]">
+                    @foreach($result as $item)
+                        <option value="{!! $item->un !!}">{!! $item->deux!!}</option>
+                    @endforeach
+                </select>
+            </div>
+        </div>
+        <div class="row">
+            {!! Form::textarea('genes', '',['cols'=>'50', 'rows'=>'10']) !!}
         </div>
 
 
