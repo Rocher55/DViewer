@@ -38,6 +38,9 @@ class BiochemistryController extends Controller
             //(car sinon generation de la partie "patient" meme sans valeur)
 
             //Pour chaque parametres
+
+
+
             foreach ($params as $item => $value) {
                 //Decouper le nom du champ en fonction du "-"
                 $actualElt = explode("-", $item);
@@ -46,41 +49,39 @@ class BiochemistryController extends Controller
                 //si mon item existe ainsi que sa valeur alors
                 if (isset($item) && isset($value)) {
 
-                    //Si je n'ai pas encore croise cet id alors
-                    if (!in_array($actualElt[0], $seenID)) {
+                    //Si ce n'est pas l'element est different de view alors
+                    if($actualElt[1] != 'view') {
+                        //Si je n'ai pas encore croise cet id alors
+                        if (!in_array($actualElt[0], $seenID)) {
 
-                        //si mon tableau des vues est vide alors
-                        //je cree la requete avec la partie patient
-                        //sinon sans la partie patient
-                        if (count($seenID) == 0) {
-                            $request .= $this->createRequestPart("base", "");
-                            $request .= $this->createRequestPart("nomenclature", $actualElt[0]);
-                            $request .= $this->createRequestPart($actualElt[1], $value);
-                        } else {
-                            $request .= $this->createRequestPart("intersect", "");
-                            $request .= $this->createRequestPart("base", "");
-                            $request .= $this->createRequestPart("nomenclature", $actualElt[0]);
-
-                            if($actualElt[1] === 'view'){
-                                Session::push('biochemistryToView', $value);
-                            }else{
+                            //si mon tableau des vues est vide alors
+                            //je cree la requete avec la partie patient
+                            //sinon sans la partie patient
+                            if (count($seenID) == 0) {
+                                $request .= $this->createRequestPart("base", "");
+                                $request .= $this->createRequestPart("nomenclature", $actualElt[0]);
+                                $request .= $this->createRequestPart($actualElt[1], $value);
+                            } else {
+                                $request .= $this->createRequestPart("intersect", "");
+                                $request .= $this->createRequestPart("base", "");
+                                $request .= $this->createRequestPart("nomenclature", $actualElt[0]);
                                 $request .= $this->createRequestPart($actualElt[1], $value);
                             }
 
+                            //Ajout de l'id dans mon tableau des vues
+                            array_push($seenID, $actualElt[0]);
                         }
-
-                        //Ajout de l'id dans mon tableau des vues
-                        array_push($seenID, $actualElt[0]);
-                    } else {
-                        $request .= $this->createRequestPart($actualElt[1], $value);
+                        $end = true;
+                    }else{ //Sinon ajout dans la sesion des id d biochemistry a voir
+                        Session::push('biochemistryToView', $value);
                     }
-                    $end = true;
                 }
             }
 
             if($end){
                 $request .= $this->createRequestPart("patient", $this->createList(Session::get('patientID')));
             }
+
 
             if($request != ""){
                 $res = DB::SELECT($request);

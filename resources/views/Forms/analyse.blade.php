@@ -5,7 +5,7 @@
 
 @section('content')
     {!! var_dump(Session::get('biochemistryToView')) !!}
-
+    {!! var_dump(Session::get('patientID')) !!}
 
 
 

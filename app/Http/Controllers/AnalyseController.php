@@ -46,8 +46,8 @@ class AnalyseController extends Controller
 
         //Creation de la requete
         $requestAnalyse = "SELECT a.Analyse_ID as Analyse_ID FROM ea_analyse a WHERE a.Patient_ID in ".$this->createList(Session::get('patientID'));
-        $requestPatient = "SELECT distinct a.Patient_ID as Patient_ID FROM ea_analyse a WHERE a.Patient_ID in "
-                            .$this->createList(Session::get('patientID'));
+        $requestPatient = "SELECT distinct a.Patient_ID as Patient_ID FROM ea_analyse a WHERE a.Patient_ID in ".$this->createList(Session::get('patientID'));
+
         if(isset($params)){
             foreach ($params as $item => $value){
 
@@ -137,7 +137,7 @@ class AnalyseController extends Controller
      */
     public function getSingleAnalyseID($column){
 
-        $patientID =Session::get('patientID');
+        $patientID = Session::get('patientID');
         $result = Analyse::whereIn('Patient_ID', $patientID)->distinct()->get([$column]);
 
         return $result;
