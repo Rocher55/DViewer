@@ -26,7 +26,9 @@ class BiochemistryController extends Controller
     }
 
 
-
+    /**
+     * @return $this|\Illuminate\Http\RedirectResponse
+     */
     public function postSelect(){
         $params = Input::except('_token');  //Recuperation de tous les Input sauf le token
         $request = "";                     //String de la requete

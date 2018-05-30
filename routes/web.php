@@ -15,6 +15,7 @@
 Route::get('test','tests@index');
 
 Route::get('/', 'HomeController@index')->name('home');
+Route::post('/ajax', 'AjaxController@ajax_call')->name('ajax');
 
 
 

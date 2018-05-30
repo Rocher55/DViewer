@@ -5,21 +5,16 @@
 
 @section('content')
     <div class="container-body ">
-        {!! Form::open(['url' => 'research/analyse', 'method' => 'post']) !!}
-
-
         <div class="row">
-            <div class="col-md-8 offset-md-4">
-                {!! Form::label('gene', 'Gene')  !!}
-                <select data-placeholder="Choose a sample ..." class="chosen-tag" multiple="true" name="gene[]">
-                    @foreach($result as $item)
-                        <option value="{!! $item->un !!}">{!! $item->deux!!}</option>
-                    @endforeach
-                </select>
+            <div class="col-md-4 text-center">
+                {!! Form::label('recherche', 'Gene')  !!}
+                {!! Form::text('recherche') !!}
             </div>
-        </div>
-        <div class="row">
-            {!! Form::textarea('genes', '',['cols'=>'50', 'rows'=>'10']) !!}
+
+            {!! Form::open(['url' => 'research/analyse', 'method' => 'post']) !!}
+            <div class="col-md-8 text-center">
+                {!! Form::textarea('genes', '',['cols'=>'50', 'rows'=>'10']) !!}
+            </div>
         </div>
 
 
@@ -27,4 +22,9 @@
         {!! Form::submit('Next', ['class' => 'next-button']) !!}
         {!! Form::close() !!}
     </div>
+@endsection
+
+
+@section('script')
+    <script src="{{ asset('js/ajax-gene.js') }}"></script>
 @endsection
