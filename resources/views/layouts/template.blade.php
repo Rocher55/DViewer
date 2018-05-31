@@ -17,6 +17,8 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
     <link rel="stylesheet" href="{{asset('/css/style.css') }}">
     <link rel="stylesheet" href="https://harvesthq.github.io/chosen/chosen.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-autocomplete/1.0.7/jquery.auto-complete.css">
+
 
 
 </head>
@@ -80,10 +82,13 @@
 
 
 <!-- Scripts -->
+<script src="http://code.jquery.com/jquery-1.10.2.js"></script>
+<script src="http://code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
 
-<script src="{{ asset('js/app.js') }}"></script>
+
+
 <script src="{!! asset('js/chosen.js') !!}"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.2.2/jquery.min.js"></script>
+<!--<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.2.2/jquery.min.js"></script>-->
 <script src="https://harvesthq.github.io/chosen/chosen.jquery.js"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 @yield("script")

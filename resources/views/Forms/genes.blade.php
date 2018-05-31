@@ -26,5 +26,21 @@
 
 
 @section('script')
-    <script src="{{ asset('js/ajax-gene.js') }}"></script>
+    <script src="{!! asset('js/ajax-gene.js') !!}"></script>
 @endsection
+
+
+
+
+{{--
+
+<script type="text/javascript">
+    $( '#recherche').autocomplete({
+        source: '{!!URL::route('ajax')!!}',
+        minLength: 2,
+        select: function(event, ui) {
+            $('#recherche').val(ui.item.value);
+        }
+    });
+</script>
+--}}
