@@ -151,16 +151,31 @@ textarea {
     padding-bottom: 10px;
 }
 
-
 .input{
     width: 15%;
 }
 .input-age{
     width: 40%;
 }
+
 .chosen-tag .single-chosen-tag{
     width: 100%;
 }
 .unite-chosen-tag{
     width: 20%;
+}
+
+
+
+
+.select-gene{
+    width: 100%;
+    display:block;
+    max-height: 31px;
+    overflow-y:auto;
+}
+#recherche{
+    width: 100%;
+    margin-bottom: 50px;
+    max-height: 31px;
 }

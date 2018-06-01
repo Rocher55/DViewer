@@ -4,16 +4,15 @@ namespace App\Http\Controllers;
 
 use Illuminate\Support\Facades\Response;
 use Illuminate\Support\Facades\Session;
-use Illuminate\Support\Facades\Input;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
 
 class AjaxController extends Controller
 {
-   public function ajax_call(){
+   public function ajax_call(Request $request){
 
-       $term = strtoupper(Input::get('recherche'));
-       $limit = 100;
+       $term = strtoupper($request->recherche);
+       $limit = 1000;
        $return = array();
 
         $tabAnalyseID = Session::get('analyseID');
@@ -23,16 +22,18 @@ class AjaxController extends Controller
                               AND concat(Gene_Symbol, ' | ', Probe_ID) LIKE '".$term."%'".
                              "LIMIT ". $limit);
 
-
+        $i=0;
        foreach ($results as $item) {
-           if((in_array($item->analyse, $tabAnalyseID)) ) {
-               array_push($return, $item->gene);
+           if(in_array($item->analyse, $tabAnalyseID) and !in_array($item->gene, $return)) {
+              $return[$i] = $item->gene;
+
+              $i++;
            }
        }
+       $return = array_values(array_sort(array_unique($return)));
 
-       $return = array_unique($return);
-
-       return Response::json($return,200);
+       return response()->json($return);
+       //return json_encode($return);
    }
     /*
 

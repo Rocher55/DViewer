@@ -5,15 +5,25 @@
 
 @section('content')
     <div class="container-body ">
+
         <div class="row">
             <div class="col-md-4 text-center">
-                {!! Form::label('recherche', 'Gene')  !!}
-                {!! Form::text('recherche') !!}
+                <div class="row">
+                    <div class="search">
+                        {!! Form::text('recherche','',[ 'id'=>'recherche', 'placeholder'=>'Search a gene ...']) !!}
+                    </div>
+                </div>
+
+                <div class="row">
+                    {!! Form::label('gene', 'Gene')  !!}
+                    <select data-placeholder="Select a gene ..." class="select-gene" name="gene">
+                    </select>
+                </div>
             </div>
 
-            {!! Form::open(['url' => 'research/analyse', 'method' => 'post']) !!}
+            {!! Form::open(['url' => 'research/select-gene', 'method' => 'post']) !!}
             <div class="col-md-8 text-center">
-                {!! Form::textarea('genes', '',['cols'=>'50', 'rows'=>'10']) !!}
+                {!! Form::textarea('genes', '',['cols'=>'50', 'rows'=>'10', 'id'=>'genes']) !!}
             </div>
         </div>
 
