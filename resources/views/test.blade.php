@@ -4,7 +4,8 @@
 
 
 
-    {!! $request !!}
+    {!! var_dump($geneArray) !!}
+
 
 
 {{--

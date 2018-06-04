@@ -20,6 +20,12 @@ class GeneController extends Controller
     public function postSelect(){
         $request = Input::get('genes');
 
-        return view('test', compact('request'));
+        //Suppression des espaces et explosion selon ';'
+        $geneArray = explode(";",str_replace(" ","",$request));
+        $geneArray = array_unique($geneArray);
+
+
+
+        return view('test', compact('geneArray'));
     }
 }

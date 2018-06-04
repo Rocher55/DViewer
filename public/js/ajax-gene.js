@@ -5,7 +5,7 @@ $.ajaxSetup({
 });
 
 $(document).ready(function () {
-    $('#recherche').change(function(){
+    $('#recherche').keyup(function(){
         if($('#recherche').val().length >= 2){
             $.get(
                 '/ajax/',
@@ -29,7 +29,7 @@ $(document).ready(function () {
 
 $('[name="gene"]').dblclick(function(){
     let textarea = $('[name="genes"]');
-    
+
     if($('[name="gene"] option:selected').val()) {
         if (textarea.val().length == 0) {
             textarea.val(textarea.val() + $('[name="gene"] option:selected').val());

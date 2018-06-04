@@ -33,7 +33,6 @@ class AjaxController extends Controller
        $return = array_values(array_sort(array_unique($return)));
 
        return response()->json($return);
-       //return json_encode($return);
    }
     /*
 
