@@ -18,4 +18,10 @@ $(function(){
         width: "40%",
         disable_search: true
     })
+
+    $(".analyse-chosen-tag").chosen({
+
+        width: "95%",
+        disable_search: true
+    })
 });
