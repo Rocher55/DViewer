@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Analyse;
 use Illuminate\Support\Facades\Response;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\DB;
@@ -15,7 +16,7 @@ class AjaxController extends Controller
        $limit = 1000;
        $return = array();
 
-        $tabAnalyseID = Session::get('analyseID');
+       $tabAnalyseID = Session::get('analyseID');
 
        $results = DB::SELECT("SELECT distinct concat(Gene_Symbol, ' | ', Probe_ID) as 'gene', Analyse_ID as 'analyse' FROM `experiments`
                               WHERE value1 != -9999                         

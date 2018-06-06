@@ -26,6 +26,9 @@ class GeneController extends Controller
 
 
 
-        return view('test', compact('geneArray'));
+        Session::put('geneID', array_values($geneArray));
+
+        return redirect()->route('result');
     }
+
 }

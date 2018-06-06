@@ -5,7 +5,7 @@ $.ajaxSetup({
 });
 
 $(document).ready(function () {
-    $('#recherche').keyup(function(){
+    $('#recherche').change(function(){
         if($('#recherche').val().length >= 2){
             $.get(
                 '/ajax/',

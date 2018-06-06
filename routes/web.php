@@ -16,7 +16,7 @@ Route::get('test','tests@index');
 
 Route::get('/', 'HomeController@index')->name('home');
 Route::get('/ajax', 'AjaxController@ajax_call')->name('ajax');
-
+Route::get('research/results','ResultController@index')->name('result');
 
 /*------------------------------------------------------------------------------------------
                                 Pages de criteres

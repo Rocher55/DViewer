@@ -14,17 +14,31 @@ return PhpCsFixer\Config::create()
         [
             'array_syntax' => ['syntax' => 'short'],
             'binary_operator_spaces' => [
-                'align_double_arrow' => true,
-                'align_equals' => true
+                'operators' => [
+                    '=' => 'align',
+                    '=>' => 'align',
+                ],
             ],
             'blank_line_after_namespace' => true,
             'blank_line_before_statement' => [
                 'statements' => [
                     'break',
                     'continue',
+                    'declare',
+                    'do',
+                    'for',
+                    'foreach',
+                    'if',
+                    'include',
+                    'include_once',
+                    'require',
+                    'require_once',
                     'return',
+                    'switch',
                     'throw',
                     'try',
+                    'while',
+                    'yield',
                 ],
             ],
             'braces' => true,
@@ -150,8 +164,6 @@ return PhpCsFixer\Config::create()
         ->files()
         ->in(__DIR__ . '/build')
         ->in(__DIR__ . '/src')
-        ->in(__DIR__ . '/tests/Framework')
-        ->in(__DIR__ . '/tests/Runner')
-        ->in(__DIR__ . '/tests/Util')
-        ->name('*.php')
+        ->in(__DIR__ . '/tests')
+        ->notName('*.phpt')
     );

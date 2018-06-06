@@ -81,7 +81,7 @@ class BiochemistryController extends Controller
             }
 
             if($end){
-                $request .= $this->createRequestPart("patient", $this->createList(Session::get('patientID')));
+                $request .= $this->createRequestPart("patient", createList(Session::get('patientID')));
             }
 
 
@@ -91,7 +91,7 @@ class BiochemistryController extends Controller
                 //Si il y a des resultats -> session
                 //sinon message d'erreur et retour arriere avec les données
                 if(count($res)){
-                    Session::put('patientID', $this->createArray($res, 'Patient_ID'));
+                    Session::put('patientID', createArray($res, 'Patient_ID'));
                 }else{
                     Session::flash('nothing',"Aucune donnée n'existe avec vos critères");
                     return redirect()->route('biochemistry')->withInput();
@@ -171,47 +171,9 @@ class BiochemistryController extends Controller
                                  AND b.Nomenclature_ID = n.Nomenclature_ID 
                                  AND n.Family_ID = f.Family_ID
                                  AND b.Valeur > 0
-                                 AND b.Patient_ID in'. $this->createList(Session::get('patientID')).
-                                'AND b.CID_ID in'. $this->createList(Session::get('cidID')).
+                                 AND b.Patient_ID in'. createList(Session::get('patientID')).
+                                'AND b.CID_ID in'. createList(Session::get('cidID')).
                                 'ORDER BY n.NameN');
         return $concerned;
-    }
-
-
-
-    /**
-     * Permet de generer une liste comprehensible pour
-     * effectuer un "in" dans une requete SQL normale
-     *
-     *
-     * @param $data
-     * @return string
-     */
-    public function createList($data){
-        $return=" ( ";
-        foreach ($data as $item){
-            $return .= $item .", ";
-        }
-        $return = substr($return, 0, -2) ." ) ";
-
-        return $return;
-    }
-
-
-
-    /**
-     * Permet de generer une liste comprehensible pour
-     * effectuer un "in" dans une requete ELOQUENT
-     *
-     *
-     * @param $data
-     * @return string
-     */
-    public function createArray($data, $column){
-        $return=array();
-        foreach ($data as $item){
-            array_push($return,strval($item->$column));
-        }
-        return $return;
     }
 }

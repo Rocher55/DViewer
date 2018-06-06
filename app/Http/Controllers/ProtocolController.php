@@ -47,27 +47,9 @@ class ProtocolController extends Controller
         }else{
             //Recuperation de tous les "id de protocol"
             $protocols = Protocol::get(['Protocol_ID']);
-            Session::put('protocolID', $this->createArray($protocols, 'Protocol_ID'));
+            Session::put('protocolID', createArray($protocols, 'Protocol_ID'));
         }
             return redirect()->route('center');
-    }
-
-
-
-
-    /**
-     * Permet de generer une liste comprehensible pour
-     * effectuer pour ajouter en session
-     *
-     * @param $data
-     * @return string
-     */
-    public function createArray($data, $column){
-        $return=array();
-        foreach ($data as $item){
-            array_push($return, strval($item->$column));
-        }
-        return $return;
     }
 
 }

@@ -27,19 +27,9 @@ use Throwable;
 class PhptTestCase implements Test, SelfDescribing
 {
     /**
-     * @var string
+     * @var string[]
      */
-    private $filename;
-
-    /**
-     * @var AbstractPhpProcess
-     */
-    private $phpUtil;
-
-    /**
-     * @var array
-     */
-    private $settings = [
+    private const SETTINGS = [
         'allow_url_fopen=1',
         'auto_append_file=',
         'auto_prepend_file=',
@@ -61,6 +51,15 @@ class PhptTestCase implements Test, SelfDescribing
         'safe_mode=0',
         'xdebug.default_enable=0'
     ];
+    /**
+     * @var string
+     */
+    private $filename;
+
+    /**
+     * @var AbstractPhpProcess
+     */
+    private $phpUtil;
 
     /**
      * Constructs a test case with the given filename.
@@ -112,7 +111,7 @@ class PhptTestCase implements Test, SelfDescribing
         }
 
         $xfail    = false;
-        $settings = $this->parseIniSection($this->settings);
+        $settings = $this->parseIniSection(self::SETTINGS);
 
         $result->startTest($this);
 
@@ -166,6 +165,7 @@ class PhptTestCase implements Test, SelfDescribing
             $this->assertPhptExpectation($sections, $jobResult['stdout']);
         } catch (AssertionFailedError $e) {
             $failure = $e;
+
             if ($xfail !== false) {
                 $failure = new IncompleteTestError($xfail, 0, $e);
             }
@@ -302,6 +302,7 @@ class PhptTestCase implements Test, SelfDescribing
 
         if (!\strncasecmp('skip', \ltrim($jobResult['stdout']), 4)) {
             $message = '';
+
             if (\preg_match('/^\s*skip\s*(.+)\s*/i', $jobResult['stdout'], $skipMatch)) {
                 $message = \substr($skipMatch[1], 2);
             }
@@ -323,7 +324,7 @@ class PhptTestCase implements Test, SelfDescribing
         if (isset($sections['CLEAN'])) {
             $cleanCode = $this->render($sections['CLEAN']);
 
-            $this->phpUtil->runJob($cleanCode, $this->settings);
+            $this->phpUtil->runJob($cleanCode, self::SETTINGS);
         }
     }
 
@@ -359,6 +360,7 @@ class PhptTestCase implements Test, SelfDescribing
 
                 continue;
             }
+
             if (empty($section)) {
                 throw new Exception('Invalid PHPT file');
             }
@@ -496,16 +498,19 @@ class PhptTestCase implements Test, SelfDescribing
         );
 
         $composerAutoload = '\'\'';
+
         if (\defined('PHPUNIT_COMPOSER_INSTALL') && !\defined('PHPUNIT_TESTSUITE')) {
             $composerAutoload = \var_export(PHPUNIT_COMPOSER_INSTALL, true);
         }
 
         $phar = '\'\'';
+
         if (\defined('__PHPUNIT_PHAR__')) {
             $phar = \var_export(__PHPUNIT_PHAR__, true);
         }
 
         $globals = '';
+
         if (!empty($GLOBALS['__PHPUNIT_BOOTSTRAP'])) {
             $globals = '$GLOBALS[\'__PHPUNIT_BOOTSTRAP\'] = ' . \var_export($GLOBALS['__PHPUNIT_BOOTSTRAP'], true) . ";\n";
         }

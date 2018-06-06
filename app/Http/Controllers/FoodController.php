@@ -11,8 +11,6 @@ use App\Food;
 class FoodController extends Controller
 {
     public  function  index(){
-
-
         return view('Forms.food');
     }
 
@@ -68,7 +66,7 @@ class FoodController extends Controller
             }
 
             if($end){
-                $request .= $this->createRequestPart("patient", $this->createList(Session::get('patientID')));
+                $request .= $this->createRequestPart("patient", createList(Session::get('patientID')));
             }
 
             if($request != ""){
@@ -77,7 +75,7 @@ class FoodController extends Controller
                 //Si il y a des resultats -> session
                 //sinon message d'erreur et retour arriere avec les données
                 if(count($res)){
-                    Session::put('patientID', $this->createArray($res, 'Patient_ID'));
+                    Session::put('patientID', createArray($res, 'Patient_ID'));
                 }else{
                     Session::flash('nothing',"Aucune donnée n'existe avec vos critères");
                     return redirect()->route('food')->withInput();
@@ -123,7 +121,7 @@ class FoodController extends Controller
                 $return = " INTERSECT ";
                 break;
             case "patient":
-                $return = "  AND f.Patient_ID in ( ".$data;
+                $return = "  AND f.Patient_ID in  ".$data;
                 break;
         }
 
@@ -131,24 +129,6 @@ class FoodController extends Controller
     }
 
 
-
-    /**
-     * Permet de generer une liste comprehensible pour
-     * effectuer un "in" dans une requete
-     *
-     *
-     * @param $data
-     * @return string
-     */
-    public function createList($data){
-        $return="";
-        foreach ($data as $item){
-            $return .= $item .", ";
-        }
-        $return = substr($return, 0, -2) .") ";
-
-        return $return;
-    }
 
 
 
@@ -181,24 +161,5 @@ class FoodController extends Controller
         //retour des clefs
         return $uniqueID;
     }
-
-
-
-    /**
-     * Permet de generer une liste comprehensible pour
-     * effectuer pour ajouter en session
-     *
-     * @param $data
-     * @return string
-     */
-    public function createArray($data, $column){
-        $return=array();
-        foreach ($data as $item){
-            array_push($return, strval($item->$column));
-        }
-        return $return;
-    }
-
-
 
 }

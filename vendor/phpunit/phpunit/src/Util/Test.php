@@ -133,7 +133,7 @@ final class Test
             $methodName
         );
 
-        if (isset($annotations['class']['coversNothing']) || isset($annotations['method']['coversNothing'])) {
+        if (self::shouldCoversAnnotationBeUsed($annotations) === false) {
             return false;
         }
 
@@ -282,6 +282,7 @@ final class Test
 
         if (!empty($required['OS'])) {
             $requiredOsPattern = \sprintf('/%s/i', \addcslashes($required['OS'], '/'));
+
             if (!\preg_match($requiredOsPattern, PHP_OS)) {
                 $missing[] = \sprintf('Operating system matching %s is required.', $requiredOsPattern);
             }
@@ -900,22 +901,22 @@ final class Test
             $methodName
         );
 
-        if (isset($annotations['class'][$settingName])) {
-            if ($annotations['class'][$settingName][0] === 'enabled') {
-                return true;
-            }
-
-            if ($annotations['class'][$settingName][0] === 'disabled') {
-                return false;
-            }
-        }
-
         if (isset($annotations['method'][$settingName])) {
             if ($annotations['method'][$settingName][0] === 'enabled') {
                 return true;
             }
 
             if ($annotations['method'][$settingName][0] === 'disabled') {
+                return false;
+            }
+        }
+
+        if (isset($annotations['class'][$settingName])) {
+            if ($annotations['class'][$settingName][0] === 'enabled') {
+                return true;
+            }
+
+            if ($annotations['class'][$settingName][0] === 'disabled') {
                 return false;
             }
         }
@@ -1092,5 +1093,22 @@ final class Test
             '$1',
             $version
         );
+    }
+
+    private static function shouldCoversAnnotationBeUsed(array $annotations): bool
+    {
+        if (isset($annotations['method']['coversNothing'])) {
+            return false;
+        }
+
+        if (isset($annotations['method']['covers'])) {
+            return true;
+        }
+
+        if (isset($annotations['class']['coversNothing'])) {
+            return false;
+        }
+
+        return true;
     }
 }

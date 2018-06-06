@@ -23,7 +23,7 @@ class PatientController extends Controller
             ->whereIn('Center_ID', Session::get('centerID'))
             ->get(['Patient_ID']);
 
-        Session::put('patientID', $this->createArray($patient, 'Patient_ID'));
+        Session::put('patientID', createArray($patient, 'Patient_ID'));
 
 
 
@@ -62,7 +62,7 @@ class PatientController extends Controller
         if(isset($request) && $request != ""){
 
             //Creation de la liste des Patient_ID de l'etape precedente
-            $patientID =  $this->createListOfPatient(Session::get('patientID'));
+            $patientID =  createList(Session::get('patientID'));
 
             //Execution de la requete avec les parametres
             $newPatientID = DB::Select('SELECT Patient_ID as Patient_ID
@@ -72,7 +72,7 @@ class PatientController extends Controller
 
             if(count($newPatientID)){
                 //Ajout des resultats dans la sesion precedente
-                Session::put('patientID', $this->createArray($newPatientID, 'Patient_ID'));
+                Session::put('patientID', createArray($newPatientID, 'Patient_ID'));
             }else{
                 Session::flash('nothing',"Aucune donnée n'existe avec vos critères");
                 return redirect()->route('patient')->withInput();
@@ -126,40 +126,9 @@ class PatientController extends Controller
 
 
 
-    /**
-     * Permet de generer une liste comprehensible pour
-     * effectuer un "in" dans une requete
-     *
-     *
-     * @param $data
-     * @return string
-     */
-    public function createListOfPatient($data){
-        $return=" (";
-        foreach ($data as $item){
-            $return .= $item .", ";
-        }
-        $return = substr($return, 0, -2) .") ";
-
-       return $return;
-    }
 
 
 
-    /**
-     * Permet de generer une liste comprehensible pour
-     * effectuer pour ajouter en session
-     *
-     * @param $data
-     * @return string
-     */
-    public function createArray($data, $column){
-        $return=array();
-        foreach ($data as $item){
-            array_push($return, strval($item->$column));
-        }
-        return $return;
-    }
 
 }
 

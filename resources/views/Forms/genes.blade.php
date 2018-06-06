@@ -4,9 +4,7 @@
 
 
 @section('content')
-
     <div class="container-body ">
-
         <div class="row">
             <div class="col-md-4 text-center">
                 <div class="row">

@@ -29,7 +29,7 @@ class CidController extends Controller
         //Recuperation des infos sur les CID_ID
         $cids = Cid::whereIn('CID_ID', $cid_id )->get(['CID_ID', 'CID_Name']);
 
-        Session::put('cidID',$this->createArray($cid_id, 'CID_ID'));
+        Session::put('cidID',createArray($cid_id, 'CID_ID'));
 
         return view('Forms.cid', compact('cids'));
     }
@@ -49,11 +49,11 @@ class CidController extends Controller
 
         //Si il existe des parametres alors
         if(isset($params)) {
-            $paramReq = "AND CID_ID IN ".$this->createList($params);
+            $paramReq = "AND CID_ID IN ".createList($params);
         }
 
         //Creation de la liste des Patient_ID de l'etape precedente
-        $patientID =  $this->createList(Session::get('patientID'));
+        $patientID =  createList(Session::get('patientID'));
 
         //Si ma chaine de parametres est valide alors
         if(isset($paramReq) && $paramReq != ""){
@@ -64,51 +64,16 @@ class CidController extends Controller
             $results_c = $this->getCID($patientID,$paramReq);
 
             //Ajout des resultats dans les sesions
-            Session::put('patientID', $this->createArray($results_p, 'Patient_ID'));
-            Session::put('cidID', $this->createArray($results_c, 'CID_ID'));
+            Session::put('patientID', createArray($results_p, 'Patient_ID'));
+            Session::put('cidID', createArray($results_c, 'CID_ID'));
         } else {
             $results_c = $this->getCID($patientID,$paramReq="");
-            Session::put('cidID', $this->createArray($results_c, 'CID_ID'));
+            Session::put('cidID', createArray($results_c, 'CID_ID'));
         }
 
         return redirect()->route('food');
     }
 
-
-
-    /**
-     * Permet de generer une liste comprehensible pour
-     * effectuer un "in" dans une requete
-     *
-     * @param $data
-     * @return string
-     */
-    public function createList($data){
-        $return=" (";
-        foreach ($data as $item){
-            $return .= $item .", ";
-        }
-        $return = substr($return, 0, -2) .") ";
-
-        return $return;
-    }
-
-
-
-    /**
-     * Permet de generer une liste comprehensible pour
-     * effectuer pour ajouter en session
-     *
-     * @param $data
-     * @return string
-     */
-    public function createArray($data, $column){
-        $return=array();
-        foreach ($data as $item){
-            array_push($return, strval($item->$column));
-        }
-        return $return;
-    }
 
 
 
