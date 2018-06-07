@@ -62,11 +62,13 @@ class BiochemistryController extends Controller
                             if (count($seenID) == 0) {
                                 $request .= $this->createRequestPart("base", "");
                                 $request .= $this->createRequestPart("nomenclature", $actualElt[0]);
+                                $request .= $this->createRequestPart('unite', $actualElt[2]);
                                 $request .= $this->createRequestPart($actualElt[1], $value);
                             } else {
                                 $request .= $this->createRequestPart("intersect", "");
                                 $request .= $this->createRequestPart("base", "");
                                 $request .= $this->createRequestPart("nomenclature", $actualElt[0]);
+                                $request .= $this->createRequestPart('unite', $actualElt[2]);
                                 $request .= $this->createRequestPart($actualElt[1], $value);
                             }
 
@@ -75,7 +77,7 @@ class BiochemistryController extends Controller
                         }
                         $end = true;
                     }else{ //Sinon ajout dans la sesion des id d biochemistry a voir
-                        Session::push('biochemistryToView', $value);
+                        Session::push('biochemistryToView', $actualElt[0].'-'.$actualElt[2]);
                     }
                 }
             }
@@ -124,6 +126,9 @@ class BiochemistryController extends Controller
             case "nomenclature":
                 $return = " AND n.Nomenclature_ID = ".$data;
                 break;
+            case "unite":
+                $return = " AND u.Unite_Mesure_ID = ".$data;
+                break;
             case "from":
                 $return = " AND b.valeur >= ".$data;
                 break;
@@ -165,7 +170,7 @@ class BiochemistryController extends Controller
      * @return mixed
      */
     public function getConcernedBIO(){
-        $concerned = DB::SELECT('SELECT DISTINCT b.Nomenclature_ID, n.NameN, u.NameUM, f.NameF, f.Family_ID
+        $concerned = DB::SELECT('SELECT DISTINCT b.Nomenclature_ID, n.NameN, u.Unite_Mesure_ID, u.NameUM, f.NameF, f.Family_ID
                                  FROM biochemistry b, nomenclatures n, unite_mesure u, families f
                                  WHERE b.Unite_Mesure_ID = u.Unite_Mesure_ID
                                  AND b.Nomenclature_ID = n.Nomenclature_ID 

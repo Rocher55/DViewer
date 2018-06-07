@@ -32,15 +32,15 @@
                         <div class="col-md-6 text-right">
 
                             @if($itemC->NameUM === 'Pas d unite')
-                                {!! Form::label($itemC->Nomenclature_ID.'-from', $itemC->NameN .' From')  !!}
+                                {!! Form::label($itemC->Nomenclature_ID.'-from-'.$itemC->Unite_Mesure_ID, $itemC->NameN .' From')  !!}
                             @else
-                                {!! Form::label($itemC->Nomenclature_ID.'-from', $itemC->NameN .' ('. $itemC->NameUM.') From')  !!}
+                                {!! Form::label($itemC->Nomenclature_ID.'-from-'.$itemC->Unite_Mesure_ID, $itemC->NameN .' ('. $itemC->NameUM.') From')  !!}
                             @endif
-                            {!! Form::Number($itemC->Nomenclature_ID.'-from',null,['class' => 'input', 'step' => 'any', 'min' => '0']) !!}
+                            {!! Form::Number($itemC->Nomenclature_ID.'-from-'.$itemC->Unite_Mesure_ID,null,['class' => 'input', 'step' => 'any', 'min' => '0']) !!}
 
-                            {!! Form::label($itemC->Nomenclature_ID.'-to', 'To')  !!}
-                            {!! Form::Number($itemC->Nomenclature_ID.'-to',null,['class' => 'input', 'step' => 'any', 'min' => '0']) !!}
-                            {!! Form::checkbox($itemC->Nomenclature_ID.'-view',$itemC->Nomenclature_ID, false); !!}
+                            {!! Form::label($itemC->Nomenclature_ID.'-to-'.$itemC->Unite_Mesure_ID, 'To')  !!}
+                            {!! Form::Number($itemC->Nomenclature_ID.'-to-'.$itemC->Unite_Mesure_ID,null,['class' => 'input', 'step' => 'any', 'min' => '0']) !!}
+                            {!! Form::checkbox($itemC->Nomenclature_ID.'-view-'.$itemC->Unite_Mesure_ID,$itemC->Nomenclature_ID, false); !!}
                         </div>
                         @endif
                     @endforeach
