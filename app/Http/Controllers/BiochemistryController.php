@@ -101,6 +101,18 @@ class BiochemistryController extends Controller
             }
         }
 
+        if(!Session::has('biochemistryToView')){
+            $allBio = DB::SELECT("SELECT distinct n.Nomenclature_ID, u.Unite_Mesure_ID
+                                        FROM nomenclatures n, unite_mesure u, biochemistry b
+                                        WHERE b.Nomenclature_ID = n.Nomenclature_ID
+                                        AND b.Unite_Mesure_ID = u.Unite_Mesure_ID
+                                        order by 1");
+
+            foreach ($allBio as $item){
+                Session::push('biochemistryToView', $item->Nomenclature_ID.'-'.$item->Unite_Mesure_ID);
+            }
+        }
+
         return redirect()->route('analyse');
     }
 
