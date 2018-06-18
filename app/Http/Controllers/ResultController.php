@@ -13,10 +13,24 @@ class ResultController extends Controller
 {
     public function index(){
         $bioCid = $this->createBioCidArray();
-
         $request = $this->createRequest($bioCid);
+        $array = array();
 
-        return view('test', compact('bioCid', 'request'));
+
+        $results = DB::SELECT($request);
+
+        foreach($results as $item) {
+            $array[$item->SUBJID]['Sex']=$item->Sex;
+            $array[$item->SUBJID]['Center']=$item->Center;
+            $array[$item->SUBJID]['Protocol']=$item->Protocol;
+            $array[$item->SUBJID]['Class']=$item->Class;
+            $array[$item->SUBJID][$item->item]=$item->valeur;
+
+        }
+
+        $keys = array_keys($array)  ;
+
+        return view('test', compact('array', 'request', 'bioCid', 'keys'));
     }
 
 
@@ -26,15 +40,13 @@ class ResultController extends Controller
 
 
     public function createRequest($bioCid){
-        $request = " SELECT distinct	p.Patient_ID, p.SUBJID, p.Sex,
+        $request = " SELECT  p.SUBJID, p.Sex as Sex,
                             CONCAT(c.Center_Acronym, ' - ', c.Center_City, ' - ', c.Center_Country) AS Center,
-                            prot.Protocol_Name, p.Class, ";
+                             prot.Protocol_Name as Protocol, p.Class as Class, ";
 
+        $request.= " CONCAT(n.NameN,' (',u.NameUM ,') - ', cid.CID_NAME) as item, b.valeur as valeur" ;
 
-        foreach ($bioCid as $item){
-            $request.= " GROUP_CONCAT(if (CONCAT(n.NameN,' (',u.NameUM ,') - ', cid.CID_NAME) = '". $item ."', b.valeur,NULL )) as '".$item."',";
-        }
-        $request = substr($request, 0, -1)." FROM centers c, protocols prot, center_protocol c_p, patients p, 
+        $request .= " FROM centers c, protocols prot, center_protocol c_p, patients p, 
                                                               cid_patient cp, cids cid, biochemistry b, nomenclatures n, unite_mesure u
                                                         WHERE c_p.Center_ID = c.Center_ID
                                                         AND c_p.Protocol_ID = prot.Protocol_ID
@@ -49,7 +61,7 @@ class ResultController extends Controller
 
         $request .=" AND CONCAT(n.NameN,' (',u.NameUM ,') - ', cid.CID_NAME) in".$this->createList($bioCid).
                     " AND p.Patient_ID in".createList(Session::get('patientID'));
-        $request.="group by p.SUBJID ORDER BY 1 , 5;";
+        //$request.=" ORDER BY 6 ;";
 
         return $request;
     }
