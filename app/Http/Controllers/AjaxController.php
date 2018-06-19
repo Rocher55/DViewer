@@ -18,9 +18,9 @@ class AjaxController extends Controller
 
        $tabAnalyseID = Session::get('analyseID');
 
-       $results = DB::SELECT("SELECT distinct concat(Gene_Symbol, ' | ', Probe_ID) as 'gene', Analyse_ID as 'analyse' FROM `experiments`
+       $results = DB::SELECT("SELECT distinct concat(Gene_Symbol) as 'gene', Analyse_ID as 'analyse' FROM `experiments`
                               WHERE value1 != -9999                         
-                              AND concat(Gene_Symbol, ' | ', Probe_ID) LIKE '".$term."%'".
+                              AND concat(Gene_Symbol) LIKE '".$term."%'".
                              "LIMIT ". $limit);
 
         $i=0;

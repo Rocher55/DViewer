@@ -4,7 +4,7 @@
 namespace App\Http\Controllers;
 
 
-use App\Nomenclature;
+use Illuminate\Pagination\LengthAwarePaginator;
 use App\Cid;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Session;
@@ -20,6 +20,7 @@ class ResultController extends Controller
         $results = DB::SELECT($request);
 
         foreach($results as $item) {
+            $array[$item->SUBJID]['SUBJID']=$item->SUBJID;
             $array[$item->SUBJID]['Sex']=$item->Sex;
             $array[$item->SUBJID]['Center']=$item->Center;
             $array[$item->SUBJID]['Protocol']=$item->Protocol;
@@ -28,9 +29,15 @@ class ResultController extends Controller
 
         }
 
+        //$this->convert_to_csv($array, 'data_as_csv.csv', ';', $bioCid);
         $keys = array_keys($array)  ;
 
-        return view('test', compact('array', 'request', 'bioCid', 'keys'));
+        $currentPage = LengthAwarePaginator::resolveCurrentPage();
+        $perPage = 8;
+        $path = LengthAwarePaginator::resolveCurrentPath();
+        $array = new LengthAwarePaginator(array_slice($array, $perPage * ($currentPage - 1), $perPage), count($array), $perPage, $currentPage, ['path' => $path]);
+        $keys = new LengthAwarePaginator(array_slice($keys, $perPage * ($currentPage - 1), $perPage), count($keys), $perPage, $currentPage, ['path' => $path]);
+        return view('test', compact('array', 'bioCid', 'keys'));
     }
 
 
@@ -133,5 +140,31 @@ class ResultController extends Controller
 
         return $return;
     }
+
+
+
+    function convert_to_csv($input_array, $output_file_name, $delimiter, $bioHeader)
+    {
+        $temp_memory = fopen('php://memory', 'w');
+        $fix = ['SUBJID','Sex','Center','Protocol','Class'];
+
+        $merge = array_merge($fix, $bioHeader);
+        fputcsv($temp_memory, $merge, $delimiter);
+
+
+        // loop through the array
+        foreach ($input_array as $line) {
+            // use the default csv handler
+            fputcsv($temp_memory, $line, $delimiter);
+        }
+
+        fseek($temp_memory, 0);
+        // modify the header to be CSV format
+        header('Content-Type: application/csv');
+        header('Content-Disposition: attachement; filename="' . $output_file_name . '";');
+        // output the file to be downloaded
+        fpassthru($temp_memory);
+    }
+
 
 }

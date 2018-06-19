@@ -181,4 +181,10 @@ textarea {
 }
 
 
+table{
+    height: 250px;
+}
 
+th{
+   width: 100px;
+}

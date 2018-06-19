@@ -1,12 +1,12 @@
 @extends('layouts.template')
 
 @section('content')
-
+{{var_dump(Session::get("analyseID"))}}
 <div class="container table-responsive">
     <table class="table table-bordered" style="width: 100px;">
         <thead>
             <tr>
-                <th>SUBJID</th>
+                <th width="70%">SUBJID</th>
                 <th>Sex</th>
                 <th>Center</th>
                 <th>Protocol</th>
@@ -17,7 +17,6 @@
             </tr>
         </thead>
         <tbody>
-
 
                 @foreach($keys as $key)
                     <tr>
@@ -40,11 +39,14 @@
                 @endforeach
 
 
-
         </tbody>
     </table>
 
 </div>
+<div class="container">
+    {{$array->links()}}
+</div>
+
 
 
 

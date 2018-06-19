@@ -106,7 +106,10 @@ class BiochemistryController extends Controller
                                         FROM nomenclatures n, unite_mesure u, biochemistry b
                                         WHERE b.Nomenclature_ID = n.Nomenclature_ID
                                         AND b.Unite_Mesure_ID = u.Unite_Mesure_ID
-                                        order by 1");
+                                        AND b.Patient_ID in". createList(Session::get('patientID')).
+                                        'AND b.CID_ID in'. createList(Session::get('cidID')).
+                                        'AND b.valeur >0
+                                        order by 1');
 
             foreach ($allBio as $item){
                 Session::push('biochemistryToView', $item->Nomenclature_ID.'-'.$item->Unite_Mesure_ID);
