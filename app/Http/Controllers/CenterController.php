@@ -10,8 +10,7 @@ use Illuminate\Support\Facades\Input;
 
 class CenterController extends Controller
 {
-    public function index()
-    {
+    public function index(){
         //Recupere les centres tries par pays, ville & acronym croissant
         $centersId = Center_protocol::whereIn('Protocol_ID', Session::get('protocolID'))->get(['Center_ID']);
         $centers = Center::whereIn('Center_ID', $centersId)->orderBy('Center_Country', 'ASC')->orderBy('Center_City', 'ASC')->orderBy('Center_Acronym', 'ASC')->get();
@@ -36,7 +35,6 @@ class CenterController extends Controller
         //sinon
 
         if (isset($data)) {
-
             $cid = Center_protocol::whereIn('Protocol_ID', Session::get('protocolID'))
                 ->whereIn('Center_ID', $data)
                 ->distinct()

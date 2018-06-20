@@ -29,15 +29,18 @@ class ResultController extends Controller
 
         }
 
-        //$this->convert_to_csv($array, 'data_as_csv.csv', ';', $bioCid);
+        $ar1=$array;
+
         $keys = array_keys($array)  ;
+        //$this->convert_to_csv($array, 'data_as_csv.csv', ';', $bioCid,$keys);
+
 
         $currentPage = LengthAwarePaginator::resolveCurrentPage();
         $perPage = 8;
         $path = LengthAwarePaginator::resolveCurrentPath();
         $array = new LengthAwarePaginator(array_slice($array, $perPage * ($currentPage - 1), $perPage), count($array), $perPage, $currentPage, ['path' => $path]);
         $keys = new LengthAwarePaginator(array_slice($keys, $perPage * ($currentPage - 1), $perPage), count($keys), $perPage, $currentPage, ['path' => $path]);
-        return view('test', compact('array', 'bioCid', 'keys'));
+        return view('test', compact('array', 'bioCid', 'keys', 'ar1'));
     }
 
 
@@ -51,7 +54,7 @@ class ResultController extends Controller
                             CONCAT(c.Center_Acronym, ' - ', c.Center_City, ' - ', c.Center_Country) AS Center,
                              prot.Protocol_Name as Protocol, p.Class as Class, ";
 
-        $request.= " CONCAT(n.NameN,' (',u.NameUM ,') - ', cid.CID_NAME) as item, b.valeur as valeur" ;
+        $request.= " CONCAT(n.NameN,' (',u.NameUM ,') - ', cid.CID_NAME) as item, b.valeur as valeur " ;
 
         $request .= " FROM centers c, protocols prot, center_protocol c_p, patients p, 
                                                               cid_patient cp, cids cid, biochemistry b, nomenclatures n, unite_mesure u
@@ -66,8 +69,10 @@ class ResultController extends Controller
                                                         AND b.Nomenclature_ID = n.Nomenclature_ID
                                                          AND b.Unite_Mesure_ID = u.Unite_Mesure_ID ";
 
-        $request .=" AND CONCAT(n.NameN,' (',u.NameUM ,') - ', cid.CID_NAME) in".$this->createList($bioCid).
-                    " AND p.Patient_ID in".createList(Session::get('patientID'));
+        $request .=" AND CONCAT(n.NameN,' (',u.NameUM ,') - ', cid.CID_NAME) in ".$this->createList($bioCid).
+                    " AND p.Patient_ID in ".createList(Session::get('patientID'));
+
+        //Commente car sinon +30 secondes d'execution
         //$request.=" ORDER BY 6 ;";
 
         return $request;
@@ -142,23 +147,35 @@ class ResultController extends Controller
     }
 
 
-
-    function convert_to_csv($input_array, $output_file_name, $delimiter, $bioHeader)
-    {
+    /**
+     * @param $input_array          Tableau de valeurs
+     * @param $output_file_name     Nom de sortie
+     * @param $delimiter            Delimiteur ";"
+     * @param $bioHeader            Liste des BioCid pour l'entete
+     * @param $keys                 Liste de SUBJID
+     */
+    function convert_to_csv($input_array, $output_file_name, $delimiter, $bioHeader, $keys){
         $temp_memory = fopen('php://memory', 'w');
         $fix = ['SUBJID','Sex','Center','Protocol','Class'];
 
+        //Mise en place de la ligne des noms de colonnes
         $merge = array_merge($fix, $bioHeader);
         fputcsv($temp_memory, $merge, $delimiter);
 
-
-        // loop through the array
-        foreach ($input_array as $line) {
-            // use the default csv handler
-            fputcsv($temp_memory, $line, $delimiter);
+        foreach ($keys as $key) {
+            $array =[];
+            foreach ($merge as $item){
+                if(isset($input_array[$key][$item])) {
+                    array_push($array, $input_array[$key][$item]);
+                }else{
+                    array_push($array,null);
+                }
+            }
+            fputcsv($temp_memory, $array, $delimiter);
         }
 
         fseek($temp_memory, 0);
+
         // modify the header to be CSV format
         header('Content-Type: application/csv');
         header('Content-Disposition: attachement; filename="' . $output_file_name . '";');

@@ -1,18 +1,23 @@
 @extends('layouts.template')
 
 @section('content')
-{{var_dump(Session::get("analyseID"))}}
-<div class="container table-responsive">
+
+    {{var_dump(count(Session::get('patientID')))}}
+    {{var_dump(count($ar1))}}
+
+    <div class="container table-responsive">
+
+
     <table class="table table-bordered" style="width: 100px;">
         <thead>
             <tr>
-                <th width="70%">SUBJID</th>
-                <th>Sex</th>
-                <th>Center</th>
-                <th>Protocol</th>
-                <th>Class</th>
+                <th scope="col">SUBJID</th>
+                <th scope="col">Sex</th>
+                <th scope="col">Center</th>
+                <th scope="col">Protocol</th>
+                <th scope="col">Class</th>
                 @foreach($bioCid as $item)
-                    <th>{{$item}}</th>
+                    <th scope="col">{{$item}}</th>
                 @endforeach
             </tr>
         </thead>
@@ -20,7 +25,7 @@
 
                 @foreach($keys as $key)
                     <tr>
-                    <td>{{$key}}</td>
+                    <th scope="row">{{$key}}</th>
                     <td>{{$array[$key]['Sex']}}</td>
                     <td>{{$array[$key]['Center']}}</td>
                     <td>{{$array[$key]['Protocol']}}</td>
@@ -45,6 +50,7 @@
 </div>
 <div class="container">
     {{$array->links()}}
+
 </div>
 
 
