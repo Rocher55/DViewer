@@ -2,12 +2,9 @@
 
 @section('content')
 
-    {{var_dump(count(Session::get('patientID')))}}
-    {{var_dump(count($ar1))}}
+
 
     <div class="container table-responsive">
-
-
     <table class="table table-bordered" style="width: 100px;">
         <thead>
             <tr>
@@ -25,7 +22,7 @@
 
                 @foreach($keys as $key)
                     <tr>
-                    <th scope="row">{{$key}}</th>
+                    <th scope="row">{{$array[$key]['SUBJID']}}</th>
                     <td>{{$array[$key]['Sex']}}</td>
                     <td>{{$array[$key]['Center']}}</td>
                     <td>{{$array[$key]['Protocol']}}</td>
@@ -33,9 +30,9 @@
 
                     @foreach($bioCid as $item)
                         <td>@if(isset($array[$key][$item]))
-                                {{$array[$key][$item]}}
+                                {{ $array[$key][$item]}}
                             @else
-                                N/A
+
                             @endif
 
                         </td>
@@ -49,14 +46,12 @@
 
 </div>
 <div class="container">
-    {{$array->links()}}
+    {{$keys->links()}}
 
 </div>
 
 
 
-
-    
     {{--
     {!! var_dump(Session::get('geneID')) !!}
     {!! var_dump(Session::get('cidID')) !!}

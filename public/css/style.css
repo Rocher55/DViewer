@@ -184,4 +184,20 @@ textarea {
 table{
     height: 250px;
 }
+ tr>th{
+     font-size: 15px;
+     max-width: none;
+     max-height: 20px;
+     overflow: hidden;
+     text-overflow: ellipsis;
+     white-space: nowrap;
+}
 
+tr>td{
+    font-size: 10px;
+    max-width: none;
+    max-height: 20px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}

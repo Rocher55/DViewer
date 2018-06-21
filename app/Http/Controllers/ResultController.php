@@ -20,27 +20,24 @@ class ResultController extends Controller
         $results = DB::SELECT($request);
 
         foreach($results as $item) {
-            $array[$item->SUBJID]['SUBJID']=$item->SUBJID;
-            $array[$item->SUBJID]['Sex']=$item->Sex;
-            $array[$item->SUBJID]['Center']=$item->Center;
-            $array[$item->SUBJID]['Protocol']=$item->Protocol;
-            $array[$item->SUBJID]['Class']=$item->Class;
-            $array[$item->SUBJID][$item->item]=$item->valeur;
-
+            $array[strval($item->Patient_ID)]['SUBJID'] =$item->SUBJID;
+            $array[strval($item->Patient_ID)]['Sex']=$item->Sex;
+            $array[strval($item->Patient_ID)]['Center']=$item->Center;
+            $array[strval($item->Patient_ID)]['Protocol']=$item->Protocol;
+            $array[strval($item->Patient_ID)]['Class']=$item->Class;
+            $array[strval($item->Patient_ID)][$item->item]=$item->valeur;
         }
-
-        $ar1=$array;
 
         $keys = array_keys($array)  ;
         //$this->convert_to_csv($array, 'data_as_csv.csv', ';', $bioCid,$keys);
 
 
         $currentPage = LengthAwarePaginator::resolveCurrentPage();
-        $perPage = 8;
+        $perPage = 16;
         $path = LengthAwarePaginator::resolveCurrentPath();
-        $array = new LengthAwarePaginator(array_slice($array, $perPage * ($currentPage - 1), $perPage), count($array), $perPage, $currentPage, ['path' => $path]);
         $keys = new LengthAwarePaginator(array_slice($keys, $perPage * ($currentPage - 1), $perPage), count($keys), $perPage, $currentPage, ['path' => $path]);
-        return view('test', compact('array', 'bioCid', 'keys', 'ar1'));
+
+        return view('test', compact('array', 'bioCid', 'keys', 'request'));
     }
 
 
@@ -50,11 +47,10 @@ class ResultController extends Controller
 
 
     public function createRequest($bioCid){
-        $request = " SELECT  p.SUBJID, p.Sex as Sex,
+        $request = " SELECT p.patient_id as Patient_ID, p.SUBJID, p.Sex as Sex,
                             CONCAT(c.Center_Acronym, ' - ', c.Center_City, ' - ', c.Center_Country) AS Center,
-                             prot.Protocol_Name as Protocol, p.Class as Class, ";
-
-        $request.= " CONCAT(n.NameN,' (',u.NameUM ,') - ', cid.CID_NAME) as item, b.valeur as valeur " ;
+                            prot.Protocol_Name as Protocol, p.Class as Class, 
+                            CONCAT(n.NameN,' (',u.NameUM ,') - ', cid.CID_NAME) as item, b.valeur as valeur " ;
 
         $request .= " FROM centers c, protocols prot, center_protocol c_p, patients p, 
                                                               cid_patient cp, cids cid, biochemistry b, nomenclatures n, unite_mesure u
@@ -67,13 +63,16 @@ class ResultController extends Controller
                                                         AND b.CID_ID = cp.CID_ID
                                                         AND b.Patient_ID = cp.Patient_ID
                                                         AND b.Nomenclature_ID = n.Nomenclature_ID
-                                                         AND b.Unite_Mesure_ID = u.Unite_Mesure_ID ";
+                                                        AND b.Unite_Mesure_ID = u.Unite_Mesure_ID
+                                                        and B.VALEUR > 0";
+
+        //$request .=" AND p.SUBJID like '___' ";
 
         $request .=" AND CONCAT(n.NameN,' (',u.NameUM ,') - ', cid.CID_NAME) in ".$this->createList($bioCid).
                     " AND p.Patient_ID in ".createList(Session::get('patientID'));
 
-        //Commente car sinon +30 secondes d'execution
-        //$request.=" ORDER BY 6 ;";
+
+       $request.=" ORDER BY 2,4,5 ;";
 
         return $request;
     }
@@ -97,7 +96,7 @@ class ResultController extends Controller
         foreach (Session::get('biochemistryToView') as $item){
             $actualElt = explode("-", $item);
             if ($i == 0) {
-                $request .= '( SELECT  n.NameN as NameN,  u.NameUM as NameUM
+                $request .= '( SELECT distinct n.NameN as NameN,  u.NameUM as NameUM
                                             FROM biochemistry b, nomenclatures n, unite_mesure u
                                             WHERE b.Nomenclature_ID = n.Nomenclature_ID
                                             AND b.Unite_Mesure_ID = u.Unite_Mesure_ID
@@ -105,7 +104,7 @@ class ResultController extends Controller
                                             .' AND u.Unite_Mesure_ID = '. $actualElt[1].' ) ';
                 $i++;
             }else{
-                $request .= ' UNION ( SELECT  n.NameN as NameN,  u.NameUM as NameUM
+                $request .= ' UNION ( SELECT distinct n.NameN as NameN,  u.NameUM as NameUM
                                             FROM biochemistry b, nomenclatures n, unite_mesure u
                                             WHERE b.Nomenclature_ID = n.Nomenclature_ID
                                             AND b.Unite_Mesure_ID = u.Unite_Mesure_ID
@@ -166,7 +165,7 @@ class ResultController extends Controller
             $array =[];
             foreach ($merge as $item){
                 if(isset($input_array[$key][$item])) {
-                    array_push($array, $input_array[$key][$item]);
+                        array_push($array, $input_array[$key][$item]);
                 }else{
                     array_push($array,null);
                 }
@@ -177,7 +176,7 @@ class ResultController extends Controller
         fseek($temp_memory, 0);
 
         // modify the header to be CSV format
-        header('Content-Type: application/csv');
+        header("Content-Type: application/csv;charset=UTF-8");
         header('Content-Disposition: attachement; filename="' . $output_file_name . '";');
         // output the file to be downloaded
         fpassthru($temp_memory);
