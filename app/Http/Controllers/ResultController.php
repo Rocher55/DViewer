@@ -117,9 +117,10 @@ class ResultController extends Controller
         $array = [];
         foreach ($nomenclatures as $item){
             foreach ($cids as $meti){
-                array_push($array, $item->NameN.' ('.$item->NameUM .') - '.$meti->CID_Name);
+                    array_push($array, $item->NameN.' ('.$item->NameUM .') - '.$meti->CID_Name);
             }
         }
+
         return $array;
     }
 
