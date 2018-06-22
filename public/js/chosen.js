@@ -20,7 +20,7 @@ $(function(){
     })
 
     $(".analyse-chosen-tag").chosen({
-
+        max_selected_options : 1,
         width: "95%",
         disable_search: true
     })

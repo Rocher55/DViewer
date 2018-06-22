@@ -12,12 +12,18 @@ use Illuminate\Support\Facades\Session;
 class ResultController extends Controller
 {
     public function index(){
+        //bioCid
         $bioCid = $this->createBioCidArray();
-        $request = $this->createRequest($bioCid);
+        $requestBio = $this->createRequestBio($bioCid);
+
+        //geneCid
+        /*
+        if(Session::has('geneID')){
+            $geneCid = $this->getGeneCidArray();
+        }*/
         $array = array();
 
-
-        $results = DB::SELECT($request);
+        $results = DB::SELECT($requestBio);
 
         foreach($results as $item) {
             $array[strval($item->Patient_ID)]['SUBJID'] =$item->SUBJID;
@@ -37,7 +43,7 @@ class ResultController extends Controller
         $path = LengthAwarePaginator::resolveCurrentPath();
         $keys = new LengthAwarePaginator(array_slice($keys, $perPage * ($currentPage - 1), $perPage), count($keys), $perPage, $currentPage, ['path' => $path]);
 
-        return view('test', compact('array', 'bioCid', 'keys', 'request'));
+       return view('test', compact('array', 'bioCid', 'keys', 'geneCid'));
     }
 
 
@@ -46,7 +52,7 @@ class ResultController extends Controller
 
 
 
-    public function createRequest($bioCid){
+    public function createRequestBio($bioCid){
         $request = " SELECT p.patient_id as Patient_ID, p.SUBJID, p.Sex as Sex,
                             CONCAT(c.Center_Acronym, ' - ', c.Center_City, ' - ', c.Center_Country) AS Center,
                             prot.Protocol_Name as Protocol, p.Class as Class, 
@@ -66,13 +72,10 @@ class ResultController extends Controller
                                                         AND b.Unite_Mesure_ID = u.Unite_Mesure_ID
                                                         and B.VALEUR > 0";
 
-        //$request .=" AND p.SUBJID like '___' ";
-
         $request .=" AND CONCAT(n.NameN,' (',u.NameUM ,') - ', cid.CID_NAME) in ".$this->createList($bioCid).
                     " AND p.Patient_ID in ".createList(Session::get('patientID'));
 
-
-       $request.=" ORDER BY 2,4,5 ;";
+       //$request.=" ORDER BY 2,4,5 ;";
 
         return $request;
     }
@@ -92,6 +95,7 @@ class ResultController extends Controller
         $cids = Cid::whereIn('CID_ID', Session::get('cidID'))->orderBy('CID_ID', 'ASC')->get(['CID_Name']);
         $i =0;
         $request ="";
+        $patients = createList(Session::get('patientID'));
 
         foreach (Session::get('biochemistryToView') as $item){
             $actualElt = explode("-", $item);
@@ -101,7 +105,7 @@ class ResultController extends Controller
                                             WHERE b.Nomenclature_ID = n.Nomenclature_ID
                                             AND b.Unite_Mesure_ID = u.Unite_Mesure_ID
                                             AND n.Nomenclature_ID = '. $actualElt[0]
-                                            .' AND u.Unite_Mesure_ID = '. $actualElt[1].' ) ';
+                                            .' AND u.Unite_Mesure_ID = '. $actualElt[1].') ';
                 $i++;
             }else{
                 $request .= ' UNION ( SELECT distinct n.NameN as NameN,  u.NameUM as NameUM
@@ -109,11 +113,10 @@ class ResultController extends Controller
                                             WHERE b.Nomenclature_ID = n.Nomenclature_ID
                                             AND b.Unite_Mesure_ID = u.Unite_Mesure_ID
                                             AND n.Nomenclature_ID = '. $actualElt[0]
-                                            .' AND u.Unite_Mesure_ID = '. $actualElt[1].' ) ';
+                                            .' AND u.Unite_Mesure_ID = '. $actualElt[1].') ';
             }
         }
         $nomenclatures = DB::SELECT($request .' ORDER BY 1');
-
         $array = [];
         foreach ($nomenclatures as $item){
             foreach ($cids as $meti){
@@ -121,8 +124,108 @@ class ResultController extends Controller
             }
         }
 
-        return $array;
+        //Je ne garde que ceux qui ont bien des valeurs dans biochemistry
+        $results = DB::SELECT("SELECT distinct CONCAT(n.NameN,' (',u.NameUM ,') - ', cid.CID_NAME) AS bioCid
+                                    FROM biochemistry b, nomenclatures n, unite_mesure u, cids cid, cid_patient cp
+                                    WHERE cp.CID_ID = cid.CID_ID
+                                    AND b.CID_ID = cp.CID_ID
+                                    AND b.Nomenclature_ID = n.Nomenclature_ID
+                                    AND b.Unite_Mesure_ID = u.Unite_Mesure_ID 
+                                    AND b.valeur > 0
+                                    AND CONCAT(n.NameN,' (',u.NameUM ,') - ', cid.CID_NAME) in ".$this->createList($array)
+                                 ." AND b.Patient_ID in ".$patients."
+                                 ORDER BY n.NameN ASC, u.NameUM ASC, cid.CID_ID ASC ");
+        $return = [];
+        foreach ($results as $result){
+            if(isset($result->bioCid)){
+                array_push($return, $result->bioCid);
+            }
+        }
+
+        return $return;
     }
+
+
+
+    public function getGeneCidArray(){
+        $cids = Cid::whereIn('CID_ID', Session::get('cidID'))->orderBy('CID_ID', 'ASC')->get(['CID_Name']);
+        $i =0;
+        $request ="";
+
+         if(Session::has('geneID')){
+             foreach(Session::get('geneID') as $item){
+                 if($i == 0){
+                     $request.= " ( SELECT DISTINCT CONCAT(e.Gene_Symbol, ' (',e.Probe_ID,') ') as gene
+                                    FROM experiments e
+                                    WHERE e.Gene_Symbol = '". $item."' 
+                                     AND e.Analyse_ID in ".createList(Session::get('analyseID')).") ";
+
+                     $i++;
+                 }else{
+                     $request.= " UNION ( SELECT DISTINCT CONCAT(e.Gene_Symbol, ' (',e.Probe_ID,') ') as gene
+                                    FROM experiments e
+                                    WHERE e.Gene_Symbol = '". $item."'
+                                    AND e.Analyse_ID in ".createList(Session::get('analyseID')).") ";
+                 }
+             }
+
+             $genes = DB::SELECT($request . " ORDER BY 1");
+             $array = [];
+             foreach ($genes as $gene){
+                 foreach ($cids as $meti){
+                     array_push($array, $gene->gene.'- '.$meti->CID_Name);
+                 }
+             }
+
+
+             //Je ne garde que les genes qui ont bien des valeurs dans experiments
+             $results = DB::SELECT(" SELECT DISTINCT CONCAT(e.Gene_Symbol, ' (',e.Probe_ID,') - ',cid.CID_Name) as geneCid
+                                            FROM experiments e, ea_analyse a, cids cid, cid_patient cp
+                                            WHERE a.Analyse_ID = e.Analyse_ID
+                                            AND a.CID_ID = cp.CID_ID
+                                            AND cp.CID_ID = cid.CID_ID
+                                            AND e.value1 > 0
+                                            AND CONCAT(e.Gene_Symbol, ' (',e.Probe_ID,') - ',cid.CID_Name) in ".$this->createList($array).
+                                          " ORDER BY e.Gene_Symbol, e.Probe_ID, a.CID_ID");
+
+             $return = [];
+             foreach ($results as $result){
+                 if(isset($result->geneCid)){
+                     array_push($return, $result->geneCid);
+                 }
+             }
+
+             return $return;
+         }
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -145,6 +248,9 @@ class ResultController extends Controller
 
         return $return;
     }
+
+
+
 
 
     /**

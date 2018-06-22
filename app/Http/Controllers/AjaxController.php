@@ -16,20 +16,15 @@ class AjaxController extends Controller
        $limit = 1000;
        $return = array();
 
-       $tabAnalyseID = Session::get('analyseID');
 
-       $results = DB::SELECT("SELECT distinct concat(Gene_Symbol) as 'gene', Analyse_ID as 'analyse' FROM `experiments`
+       $results = DB::SELECT("SELECT distinct UPPER(Gene_Symbol) as 'gene', Analyse_ID as 'analyse' FROM `experiments`
                               WHERE value1 != -9999                         
-                              AND concat(Gene_Symbol) LIKE '".$term."%'".
+                              AND UPPER (Gene_Symbol) LIKE '".$term."%'".
+                            " AND analyse_ID in ".createList(Session::get('analyseID')).
                              "LIMIT ". $limit);
 
-        $i=0;
        foreach ($results as $item) {
-           if(in_array($item->analyse, $tabAnalyseID) and !in_array($item->gene, $return)) {
-              $return[$i] = $item->gene;
-
-              $i++;
-           }
+           array_push($return, $item->gene);
        }
        $return = array_values(array_sort(array_unique($return)));
 

@@ -3,6 +3,9 @@
 @section('content')
 
 
+    {{var_dump(Session::get('geneID'))}}
+
+
 
     <div class="container table-responsive">
     <table class="table table-bordered" style="width: 100px;">
