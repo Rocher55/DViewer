@@ -77,7 +77,7 @@ class AnalyseController extends Controller
 
         }else{
             $analyseID = DB::SELECT($requestAnalyse);
-            Session::put('analyseID',createArray(Analyse::get(), 'Analyse_ID'));
+            Session::put('analyseID',createArray(Analyse::whereIn('Patient_ID', Session::get('patientID'))->get(), 'Analyse_ID'));
         }
 
 

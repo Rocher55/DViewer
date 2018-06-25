@@ -11,21 +11,34 @@ use Illuminate\Support\Facades\Session;
 
 class ResultController extends Controller
 {
+
     public function index(){
+        $array = array();
         //bioCid
         $bioCid = $this->createBioCidArray();
         $requestBio = $this->createRequestBio($bioCid);
 
         //geneCid
-        /*
+        $geneCid = array();
         if(Session::has('geneID')){
             $geneCid = $this->getGeneCidArray();
-        }*/
-        $array = array();
+            $requestGene = $this->createRequestGene($geneCid);
 
-        $results = DB::SELECT($requestBio);
+            $resultsGene = DB::SELECT($requestGene);
+            foreach ($resultsGene as $item){
+                if(isset($array[strval($item->Patient_ID)][$item->item])){
+                    $array[strval($item->Patient_ID)][$item->item].= '   '  . $item->valeur;
+                }else{
+                    $array[strval($item->Patient_ID)][$item->item]=$item->valeur;
+                }
 
-        foreach($results as $item) {
+            }
+        }
+
+
+
+        $resultsBio = DB::SELECT($requestBio);
+        foreach($resultsBio as $item) {
             $array[strval($item->Patient_ID)]['SUBJID'] =$item->SUBJID;
             $array[strval($item->Patient_ID)]['Sex']=$item->Sex;
             $array[strval($item->Patient_ID)]['Center']=$item->Center;
@@ -34,8 +47,11 @@ class ResultController extends Controller
             $array[strval($item->Patient_ID)][$item->item]=$item->valeur;
         }
 
+
+
         $keys = array_keys($array)  ;
-        //$this->convert_to_csv($array, 'data_as_csv.csv', ';', $bioCid,$keys);
+        $cols = array_merge($bioCid, $geneCid);
+        //$this->convert_to_csv($array, 'data_as_csv.csv', ';', $cols,$keys);
 
 
         $currentPage = LengthAwarePaginator::resolveCurrentPage();
@@ -43,7 +59,9 @@ class ResultController extends Controller
         $path = LengthAwarePaginator::resolveCurrentPath();
         $keys = new LengthAwarePaginator(array_slice($keys, $perPage * ($currentPage - 1), $perPage), count($keys), $perPage, $currentPage, ['path' => $path]);
 
-       return view('test', compact('array', 'bioCid', 'keys', 'geneCid'));
+
+
+       return view('test', compact('array', 'cols', 'keys'));
     }
 
 
@@ -80,6 +98,28 @@ class ResultController extends Controller
         return $request;
     }
 
+
+
+    public function createRequestGene($geneCid){
+        $request = " SELECT p.Patient_ID, CONCAT(e.Gene_Symbol, ' (',e.Probe_ID, ') (', 
+                                                                  a.SampleType_ID, '-', a.Technique_ID,'-',
+                                                                  a.Molecule_ID, ') - ', cid.CID_Name) as item, 
+                            e.value1 as valeur
+                     FROM experiments e, ea_analyse a, cids cid, cid_patient cp, patients p
+                     WHERE cp.Patient_ID = p.Patient_ID
+                     AND cp.CID_ID = cid.CID_ID
+                     AND a.CID_ID = cp.CID_ID
+                     AND a.Patient_ID = cp.Patient_ID
+                     AND e.Analyse_ID = a.Analyse_ID
+                     AND e.value1 > 0 ";
+
+        $request.=" AND CONCAT(e.Gene_Symbol, ' (',e.Probe_ID, ') (', 
+                                                                  a.SampleType_ID, '-', a.Technique_ID,'-',
+                                                                  a.Molecule_ID, ') - ', cid.CID_Name) in ".$this->createList($geneCid).
+            " AND p.Patient_ID in ".createList(Session::get('patientID'));
+
+        return $request;
+    }
 
 
 
@@ -146,13 +186,18 @@ class ResultController extends Controller
     }
 
 
-
+    /**
+     * Genere un tableau avec gene_symbol(probe_id) - cid_name
+     *
+     * @return array
+     */
     public function getGeneCidArray(){
         $cids = Cid::whereIn('CID_ID', Session::get('cidID'))->orderBy('CID_ID', 'ASC')->get(['CID_Name']);
         $i =0;
         $request ="";
 
          if(Session::has('geneID')){
+
              foreach(Session::get('geneID') as $item){
                  if($i == 0){
                      $request.= " ( SELECT DISTINCT CONCAT(e.Gene_Symbol, ' (',e.Probe_ID,') ') as gene
@@ -179,14 +224,17 @@ class ResultController extends Controller
 
 
              //Je ne garde que les genes qui ont bien des valeurs dans experiments
-             $results = DB::SELECT(" SELECT DISTINCT CONCAT(e.Gene_Symbol, ' (',e.Probe_ID,') - ',cid.CID_Name) as geneCid
+             $results = DB::SELECT(" SELECT DISTINCT CONCAT(e.Gene_Symbol, ' (',e.Probe_ID, ') (', 
+                                                                  a.SampleType_ID, '-', a.Technique_ID,'-',
+                                                                  a.Molecule_ID, ') - ', cid.CID_Name) as geneCid
                                             FROM experiments e, ea_analyse a, cids cid, cid_patient cp
                                             WHERE a.Analyse_ID = e.Analyse_ID
                                             AND a.CID_ID = cp.CID_ID
                                             AND cp.CID_ID = cid.CID_ID
                                             AND e.value1 > 0
-                                            AND CONCAT(e.Gene_Symbol, ' (',e.Probe_ID,') - ',cid.CID_Name) in ".$this->createList($array).
-                                          " ORDER BY e.Gene_Symbol, e.Probe_ID, a.CID_ID");
+                                            AND CONCAT(e.Gene_Symbol, ' (',e.Probe_ID,') - ',cid.CID_Name) in ".$this->createList($array)."
+                                            AND e.Analyse_ID in ".createList(Session::get('analyseID'))."
+                                            ORDER BY e.Gene_Symbol, e.Probe_ID, cid.CID_ID ");
 
              $return = [];
              foreach ($results as $result){

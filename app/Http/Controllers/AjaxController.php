@@ -17,11 +17,11 @@ class AjaxController extends Controller
        $return = array();
 
 
-       $results = DB::SELECT("SELECT distinct UPPER(Gene_Symbol) as 'gene', Analyse_ID as 'analyse' FROM `experiments`
-                              WHERE value1 != -9999                         
+       $results = DB::SELECT("SELECT DISTINCT UPPER(Gene_Symbol) as 'gene', Analyse_ID as 'analyse' FROM `experiments`
+                              WHERE value1 >0                       
                               AND UPPER (Gene_Symbol) LIKE '".$term."%'".
                             " AND analyse_ID in ".createList(Session::get('analyseID')).
-                             "LIMIT ". $limit);
+                             " LIMIT ". $limit);
 
        foreach ($results as $item) {
            array_push($return, $item->gene);

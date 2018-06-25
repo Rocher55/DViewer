@@ -2,11 +2,6 @@
 
 @section('content')
 
-
-    {{var_dump(Session::get('geneID'))}}
-
-
-
     <div class="container table-responsive">
     <table class="table table-bordered" style="width: 100px;">
         <thead>
@@ -16,7 +11,7 @@
                 <th scope="col">Center</th>
                 <th scope="col">Protocol</th>
                 <th scope="col">Class</th>
-                @foreach($bioCid as $item)
+                @foreach($cols as $item)
                     <th scope="col">{{$item}}</th>
                 @endforeach
             </tr>
@@ -31,7 +26,7 @@
                     <td>{{$array[$key]['Protocol']}}</td>
                     <td>{{$array[$key]['Class']}}</td>
 
-                    @foreach($bioCid as $item)
+                    @foreach($cols as $item)
                         <td>@if(isset($array[$key][$item]))
                                 {{ $array[$key][$item]}}
                             @else
