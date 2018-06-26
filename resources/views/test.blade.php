@@ -2,6 +2,8 @@
 
 @section('content')
 
+
+
     <div class="container table-responsive">
     <table class="table table-bordered" style="width: 100px;">
         <thead>
