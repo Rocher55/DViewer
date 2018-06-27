@@ -201,3 +201,10 @@ tr>td{
     text-overflow: ellipsis;
     white-space: nowrap;
 }
+
+.boutons{
+    padding-left: 90%;
+    margin-right: auto;
+    margin-left: auto;
+    padding-bottom: 40px;
+}

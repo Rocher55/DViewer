@@ -62,3 +62,10 @@ Route::post('research/select-bio', 'SelectController@postSelect')->name('postSel
 //Gene
 Route::get('research/select-gene', 'GeneController@index')->name('select-gene');
 Route::post('research/select-gene', 'GeneController@postSelect')->name('postSelect-gene');
+
+
+
+/*-------------------------------------------------------------------------------------------
+                                        Exportation
+-------------------------------------------------------------------------------------------*/
+Route::get('research/export','ResultController@export')->name('export');

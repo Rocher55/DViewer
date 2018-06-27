@@ -9,14 +9,15 @@ use App\Cid;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Session;
 
-class ResultController extends Controller
-{
+class ResultController extends Controller{
 
     /**
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
     public function index(){
+        //Tableau contenant les valeurs
         $array = array();
+
         //bioCid
         $bioCid = $this->createBioCidArray();
         $requestBio = $this->createRequestBio($bioCid);
@@ -25,36 +26,61 @@ class ResultController extends Controller
         //geneCid
         $geneCid = array();
         $newCols = array();
-        if(Session::has('geneID')){
-            $geneCid = $this->getGeneCidArray();
-            $requestGene = $this->createRequestGene($geneCid);
 
+        //S'il ya des genes que je souhaite voir
+        if(Session::has('geneID')){
+
+            //Recuperation des genes au format
+            //PCYT1A (A_24_P106057) (3-7-2) - CID2 - 1
+            //Gene_Symbol (Probe_ID) (SampleType_ID-Technique_ID-Molecule_ID) - CID_Name - indice
+            $geneCid = $this->getGeneCidArray();
+
+            //Creation et execution de la requete
+            $requestGene = $this->createRequestGene($geneCid);
             $resultsGene = DB::SELECT($requestGene);
 
+            //Pour chaque resultat
             foreach ($resultsGene as $item){
+                //Si une valeur exite a cet endroit alors
                 if(isset($array[strval($item->Patient_ID)][$item->item])){
-                    $i=2;
+                    $i=2;   //indice = 2
+
+                    //Je cree le nom que portera la colonne
                     $newCol = substr_replace($item->item,$i,-1,1);
 
+                    //Et temps que j'ai un resultat pour la nouvelle colonne
+                    //Incrementer i et changer le nom de la colonne en fonction
                     while (isset($array[strval($item->Patient_ID)][$newCol])){
                         $i++;
                         $newCol = substr_replace($item->item,$i,-1,1);
                     }
 
+                    //J'ajoute dans mon tableau des nouvelles colonnes la colonne
+                    //ainsi que la valeur pour le patient dans la nouvelle colonne
                     $newCols[]= $newCol;
                     $array[strval($item->Patient_ID)][$newCol] = $item->valeur;
                 }else{
+                    //Sinon j'ajoute simplement la valeur dans la tableau
                     $array[strval($item->Patient_ID)][$item->item]=$item->valeur;
                 }
+
+                //Je garde le nom des colonnes en un exemplaire
                 $newCols = array_unique($newCols);
             }
+
+            //Si mon tableau de nouvelles colonnes existe alors je reorganise
+            //mon tableau d'entete : geneCid
             if(isset($newCols)){
                 $geneCid = $this->reorganizeArray($geneCid, $newCols);
             }
         }
 
-
+        //Execution de la requete
         $resultsBio = DB::SELECT($requestBio);
+
+        //Pour chaque resultat le mettre dans
+        //le tableau à l'indice 1 : Patient_ID
+        //et 2 : item
         foreach($resultsBio as $item) {
             $array[strval($item->Patient_ID)]['SUBJID'] =$item->SUBJID;
             $array[strval($item->Patient_ID)]['Sex']=$item->Sex;
@@ -65,17 +91,58 @@ class ResultController extends Controller
         }
 
 
-        $keys = array_keys($array)  ;
-        $cols = array_merge($bioCid, $geneCid);
-        //$this->convert_to_csv($array, 'data_as_csv.csv', ';', $cols,$keys);
 
+        $keys = array_keys($array);              //Recuperation des cles (Patient_ID)
+        $cols = array_merge($bioCid, $geneCid);  //Fusion des nom de colonnes entre Biochemistry et Genes
+        $this->sendToSession($array,$keys,$cols);//Ajout du tableau de valeur, des clefs et colonnes en Session
+
+
+        //Pagination
         $currentPage = LengthAwarePaginator::resolveCurrentPage();
         $perPage = 16;
         $path = LengthAwarePaginator::resolveCurrentPath();
         $keys = new LengthAwarePaginator(array_slice($keys, $perPage * ($currentPage - 1), $perPage), count($keys), $perPage, $currentPage, ['path' => $path]);
 
-       return view('test', compact('array', 'cols', 'keys', 'newCols', 'geneCid'));
+       return view('results', compact('array', 'cols', 'keys', 'time'));
     }
+
+
+
+
+
+
+    /**
+     * Ajout en session
+     *
+     * @param $values
+     * @param $keys
+     * @param $columns
+     */
+    public function sendToSession($values, $keys, $columns){
+        Session::put('results-array', $values);
+        Session::put('results-keys', $keys);
+        Session::put('results-columns', $columns);
+    }
+
+
+
+
+
+
+
+    /**
+     * Exportation des données en session
+     *dans un fichier .csv
+     *
+     *La fonctionest appelee par le chemin "research/export"
+     */
+    public function export(){
+        $array = Session::get('results-array');
+        $cols = Session::get('results-columns');
+        $keys = Session::get('results-keys');
+        $this->convert_to_csv($array, 'data_as_csv.csv', ';', $cols,$keys);
+    }
+
 
 
     /**Permet de reorganiser un tableau
@@ -86,26 +153,37 @@ class ResultController extends Controller
      * @param $arrayToAdd
      */
     public function reorganizeArray( $originalArray, $arrayToAdd){
+        //J'affecte dans le tableau qui sera modifie l'original
         $editedArray = $originalArray;
 
+        //Pour chaque valeur qui se trouve dans le tableau des colonnes a ajouter
         foreach ($arrayToAdd as $item){
-            $actualI = intval(substr($item,-1,1));
-            $nameToSearch = substr_replace($item,$actualI-1,-1,1);
 
-            $key = array_search($nameToSearch, $editedArray);
+            $actualI = intval(substr($item,-1,1));      //je recupere l'indice de la valeur a ajouter
+            $nameToSearch = substr_replace($item,$actualI-1,-1,1);  //Je defini le nom dont je vais chercher l'indice
+                                                                                            //dans le tableau edite
 
+            $key = array_search($nameToSearch, $editedArray); //je recupere la clef qui correspond
+
+            //Si ma clef < que la taille du tableau edite -1 alors
             if($key < sizeof($editedArray)-1){
+                //Pour i allant de la taille du tableau à clef+2
                 for($i = sizeof($editedArray) ; $i >= $key+2 ; $i--){
-                    $editedArray[$i]=$editedArray[$i-1];
+                    $editedArray[$i]=$editedArray[$i-1];    //Je decale de 1 pas vers la droite mes valeurs
                 }
             }
-            $editedArray[$key+1]= $item ;
+            $editedArray[$key+1]= $item ; //J'ajoute mon nouvel id de colonne à clef+1
         }
-        return $editedArray;
+        return $editedArray;    //Retour du tableau modifié
     }
 
 
-
+    /**
+     * Creation de la requete sur biochemistry
+     *
+     * @param $bioCid
+     * @return string
+     */
     public function createRequestBio($bioCid){
         $request = " SELECT p.patient_id as Patient_ID, p.SUBJID, p.Sex as Sex,
                             CONCAT(c.Center_Acronym, ' - ', c.Center_City, ' - ', c.Center_Country) AS Center,
@@ -129,12 +207,17 @@ class ResultController extends Controller
         $request .=" AND CONCAT(n.NameN,' (',u.NameUM ,') - ', cid.CID_NAME) in ".$this->createList($bioCid).
                     " AND p.Patient_ID in ".createList(Session::get('patientID'));
 
-       //$request.=" ORDER BY 2,4,5 ;";
-
         return $request;
     }
 
 
+
+    /**
+     * Creation de la requete sur les genes
+     *
+     * @param $geneCid
+     * @return string
+     */
     public function createRequestGene($geneCid){
         $request = " SELECT p.Patient_ID, CONCAT(e.Gene_Symbol, ' (',e.Probe_ID, ') (', 
                                                                   a.SampleType_ID, '-', a.Technique_ID,'-',
@@ -147,7 +230,6 @@ class ResultController extends Controller
                      AND a.Patient_ID = cp.Patient_ID
                      AND e.Analyse_ID = a.Analyse_ID
                      AND e.value1 > 0 ";
-
         $request.=" AND CONCAT(e.Gene_Symbol, ' (',e.Probe_ID, ') (', 
                                                                   a.SampleType_ID, '-', a.Technique_ID,'-',
                                                                   a.Molecule_ID, ') - ', cid.CID_Name,' - 1') in ".$this->createList($geneCid).
@@ -161,6 +243,7 @@ class ResultController extends Controller
     /**
      * Genere un tableau contenant des valeurs au format :
      *              Nomenclature->NameN - Cid->CID_Name
+     * pour les entetes
      * @param $cids
      * @param $nomenclatures
      * @return array
@@ -219,8 +302,11 @@ class ResultController extends Controller
         return $return;
     }
 
+
+
     /**
      * Genere un tableau avec gene_symbol(probe_id) - cid_name
+     * pour les entetes
      *
      * @return array
      */
@@ -236,14 +322,16 @@ class ResultController extends Controller
                      $request.= " ( SELECT DISTINCT CONCAT(e.Gene_Symbol, ' (',e.Probe_ID,') ') as gene
                                     FROM experiments e
                                     WHERE e.Gene_Symbol = '". $item."' 
-                                     AND e.Analyse_ID in ".createList(Session::get('analyseID')).") ";
+                                     AND e.Analyse_ID in ".createList(Session::get('analyseID'))."
+                                     AND e.value1 > 0) ";
 
                      $i++;
                  }else{
                      $request.= " UNION ( SELECT DISTINCT CONCAT(e.Gene_Symbol, ' (',e.Probe_ID,') ') as gene
                                     FROM experiments e
                                     WHERE e.Gene_Symbol = '". $item."'
-                                    AND e.Analyse_ID in ".createList(Session::get('analyseID')).") ";
+                                    AND e.Analyse_ID in ".createList(Session::get('analyseID'))."
+                                    AND e.value1 > 0) ";
                  }
              }
 
@@ -257,7 +345,7 @@ class ResultController extends Controller
 
 
              //Je ne garde que les genes qui ont bien des valeurs dans experiments
-             $results = DB::SELECT(" SELECT DISTINCT CONCAT(e.Gene_Symbol, ' (',e.Probe_ID, ') (', 
+             $results = DB::SELECT(" SELECT distinct CONCAT(e.Gene_Symbol, ' (',e.Probe_ID, ') (', 
                                                                   a.SampleType_ID, '-', a.Technique_ID,'-',
                                                                   a.Molecule_ID, ') - ', cid.CID_Name,' - 1') as geneCid
                                             FROM experiments e, ea_analyse a, cids cid, cid_patient cp
@@ -266,9 +354,8 @@ class ResultController extends Controller
                                             AND cp.CID_ID = cid.CID_ID
                                             AND e.value1 > 0
                                             AND CONCAT(e.Gene_Symbol, ' (',e.Probe_ID,') - ',cid.CID_Name) in ".$this->createList($array)."
-                                            AND e.Analyse_ID in ".createList(Session::get('analyseID'))."
-                                            ORDER BY e.Gene_Symbol, e.Probe_ID, cid.CID_ID ");
-
+                                            ORDER BY e.Gene_Symbol, e.Probe_ID, a.SampleType_ID, a.Technique_ID, a.Molecule_ID, cid.CID_ID 
+                                            ");
              $return = [];
              foreach ($results as $result){
                  if(isset($result->geneCid)){
@@ -314,7 +401,7 @@ class ResultController extends Controller
 
 
     /**
-     * Permet de generer une liste comprehensible pour
+     * Permet de generer une liste de string comprehensible pour
      * effectuer un "in" dans une requete SQL normale
      *
      * @param $data
@@ -353,7 +440,7 @@ class ResultController extends Controller
             $array =[];
             foreach ($merge as $item){
                 if(isset($input_array[$key][$item])) {
-                        array_push($array, $input_array[$key][$item]);
+                    array_push($array, $input_array[$key][$item]);
                 }else{
                     array_push($array,null);
                 }
@@ -363,10 +450,10 @@ class ResultController extends Controller
 
         fseek($temp_memory, 0);
 
-        // modify the header to be CSV format
+        // Modifie le header auformat csv
         header("Content-Type: application/csv;charset=UTF-8");
         header('Content-Disposition: attachement; filename="' . $output_file_name . '";');
-        // output the file to be downloaded
+        // sort le fichier pour etre telecharge
         fpassthru($temp_memory);
     }
 
