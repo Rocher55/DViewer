@@ -74,13 +74,15 @@ class ResultController extends Controller{
                 $geneCid = $this->reorganizeArray($geneCid, $newCols);
             }
         }
-
+        $time = microtime(true);
         //Execution de la requete
         $resultsBio = DB::SELECT($requestBio);
-
+        $time = microtime(true)-$time;
         //Pour chaque resultat le mettre dans
         //le tableau à l'indice 1 : Patient_ID
         //et 2 : item
+
+
         foreach($resultsBio as $item) {
             $array[strval($item->Patient_ID)]['SUBJID'] =$item->SUBJID;
             $array[strval($item->Patient_ID)]['Sex']=$item->Sex;
@@ -134,7 +136,7 @@ class ResultController extends Controller{
      * Exportation des données en session
      *dans un fichier .csv
      *
-     *La fonctionest appelee par le chemin "research/export"
+     *La fonction est appelee par le chemin "research/export"
      */
     public function export(){
         $array = Session::get('results-array');
@@ -261,6 +263,7 @@ class ResultController extends Controller{
                                             FROM biochemistry b, nomenclatures n, unite_mesure u
                                             WHERE b.Nomenclature_ID = n.Nomenclature_ID
                                             AND b.Unite_Mesure_ID = u.Unite_Mesure_ID
+                                            AND b.Valeur > 0
                                             AND n.Nomenclature_ID = '. $actualElt[0]
                                             .' AND u.Unite_Mesure_ID = '. $actualElt[1].') ';
                 $i++;
@@ -269,6 +272,7 @@ class ResultController extends Controller{
                                             FROM biochemistry b, nomenclatures n, unite_mesure u
                                             WHERE b.Nomenclature_ID = n.Nomenclature_ID
                                             AND b.Unite_Mesure_ID = u.Unite_Mesure_ID
+                                            AND b.Valeur > 0
                                             AND n.Nomenclature_ID = '. $actualElt[0]
                                             .' AND u.Unite_Mesure_ID = '. $actualElt[1].') ';
             }
@@ -280,6 +284,7 @@ class ResultController extends Controller{
                     array_push($array, $item->NameN.' ('.$item->NameUM .') - '.$meti->CID_Name);
             }
         }
+
 
         //Je ne garde que ceux qui ont bien des valeurs dans biochemistry
         $results = DB::SELECT("SELECT distinct CONCAT(n.NameN,' (',u.NameUM ,') - ', cid.CID_NAME) AS bioCid
