@@ -11,13 +11,12 @@ use Illuminate\Http\Request;
 class AjaxController extends Controller
 {
    public function ajax_call(Request $request){
-
        $term = strtoupper($request->recherche);
        $limit = 1000;
        $return = array();
 
 
-       $results = DB::SELECT("SELECT DISTINCT UPPER(Gene_Symbol) as 'gene', Analyse_ID as 'analyse' FROM `experiments`
+       $results = DB::SELECT("SELECT DISTINCT UPPER(Gene_Symbol) as 'gene' FROM `experiments`
                               WHERE value1 >0                       
                               AND UPPER (Gene_Symbol) LIKE '".$term."%'".
                             " AND analyse_ID in ".createList(Session::get('analyseID')).

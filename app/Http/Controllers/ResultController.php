@@ -19,7 +19,10 @@ class ResultController extends Controller{
         $array = array();
 
         //bioCid
+$time = microtime(true);
         $bioCid = $this->createBioCidArray();
+$time = microtime(true)-$time;
+var_dump(' CreateBioCid '.$time);
         $requestBio = $this->createRequestBio($bioCid);
 
 
@@ -33,11 +36,17 @@ class ResultController extends Controller{
             //Recuperation des genes au format
             //PCYT1A (A_24_P106057) (3-7-2) - CID2 - 1
             //Gene_Symbol (Probe_ID) (SampleType_ID-Technique_ID-Molecule_ID) - CID_Name - indice
+$time = microtime(true);
             $geneCid = $this->getGeneCidArray();
+$time = microtime(true)-$time;
+var_dump(' CreateGeneCid '.$time);
 
             //Creation et execution de la requete
             $requestGene = $this->createRequestGene($geneCid);
+$time = microtime(true);
             $resultsGene = DB::SELECT($requestGene);
+$time = microtime(true)-$time;
+var_dump(' GeneExec '.$time);
 
             //Pour chaque resultat
             foreach ($resultsGene as $item){
@@ -74,10 +83,11 @@ class ResultController extends Controller{
                 $geneCid = $this->reorganizeArray($geneCid, $newCols);
             }
         }
-        $time = microtime(true);
+$time = microtime(true);
         //Execution de la requete
         $resultsBio = DB::SELECT($requestBio);
-        $time = microtime(true)-$time;
+$time = microtime(true)-$time;
+var_dump(' ExecBio '.$time);
         //Pour chaque resultat le mettre dans
         //le tableau à l'indice 1 : Patient_ID
         //et 2 : item
@@ -105,7 +115,7 @@ class ResultController extends Controller{
         $path = LengthAwarePaginator::resolveCurrentPath();
         $keys = new LengthAwarePaginator(array_slice($keys, $perPage * ($currentPage - 1), $perPage), count($keys), $perPage, $currentPage, ['path' => $path]);
 
-       return view('results', compact('array', 'cols', 'keys', 'time'));
+       return view('results', compact('array', 'cols', 'keys'));
     }
 
 
@@ -244,47 +254,24 @@ class ResultController extends Controller{
 
     /**
      * Genere un tableau contenant des valeurs au format :
-     *              Nomenclature->NameN - Cid->CID_Name
+     *              Nomenclature->NameN (UniteMesure->NameUM) - Cid->CID_Name
      * pour les entetes
      * @param $cids
      * @param $nomenclatures
      * @return array
      */
     public function createBioCidArray(){
-        $cids = Cid::whereIn('CID_ID', Session::get('cidID'))->orderBy('CID_ID', 'ASC')->get(['CID_Name']);
-        $i =0;
-        $request ="";
         $patients = createList(Session::get('patientID'));
 
-        foreach (Session::get('biochemistryToView') as $item){
-            $actualElt = explode("-", $item);
-            if ($i == 0) {
-                $request .= '( SELECT distinct n.NameN as NameN,  u.NameUM as NameUM
-                                            FROM biochemistry b, nomenclatures n, unite_mesure u
-                                            WHERE b.Nomenclature_ID = n.Nomenclature_ID
-                                            AND b.Unite_Mesure_ID = u.Unite_Mesure_ID
-                                            AND b.Valeur > 0
-                                            AND n.Nomenclature_ID = '. $actualElt[0]
-                                            .' AND u.Unite_Mesure_ID = '. $actualElt[1].') ';
-                $i++;
-            }else{
-                $request .= ' UNION ( SELECT distinct n.NameN as NameN,  u.NameUM as NameUM
-                                            FROM biochemistry b, nomenclatures n, unite_mesure u
-                                            WHERE b.Nomenclature_ID = n.Nomenclature_ID
-                                            AND b.Unite_Mesure_ID = u.Unite_Mesure_ID
-                                            AND b.Valeur > 0
-                                            AND n.Nomenclature_ID = '. $actualElt[0]
-                                            .' AND u.Unite_Mesure_ID = '. $actualElt[1].') ';
-            }
-        }
-        $nomenclatures = DB::SELECT($request .' ORDER BY 1');
+        $nomenclatures = DB::SELECT("SELECT b.biochemistry_ID as id
+                  FROM biochemistry b
+                  WHERE b.Valeur > 0
+                  AND CONCAT(b.Nomenclature_ID,'-', b.Unite_Mesure_ID) in ".$this->createList(Session::get('biochemistryToView'))."
+                  AND b.Patient_ID in ".$patients ." ORDER BY 1");
         $array = [];
         foreach ($nomenclatures as $item){
-            foreach ($cids as $meti){
-                    array_push($array, $item->NameN.' ('.$item->NameUM .') - '.$meti->CID_Name);
-            }
+                    array_push($array, $item->id);
         }
-
 
         //Je ne garde que ceux qui ont bien des valeurs dans biochemistry
         $results = DB::SELECT("SELECT distinct CONCAT(n.NameN,' (',u.NameUM ,') - ', cid.CID_NAME) AS bioCid
@@ -293,9 +280,9 @@ class ResultController extends Controller{
                                     AND b.CID_ID = cp.CID_ID
                                     AND b.Nomenclature_ID = n.Nomenclature_ID
                                     AND b.Unite_Mesure_ID = u.Unite_Mesure_ID 
-                                    AND b.valeur > 0
-                                    AND CONCAT(n.NameN,' (',u.NameUM ,') - ', cid.CID_NAME) in ".$this->createList($array)
-                                 ." AND b.Patient_ID in ".$patients."
+                                    AND b.biochemistry_ID in ".createList($array)
+                                 ." AND cid.CID_ID in".createList(Session::get('cidID'))
+                                 ." 
                                  ORDER BY n.NameN ASC, u.NameUM ASC, cid.CID_ID ASC ");
         $return = [];
         foreach ($results as $result){
@@ -306,6 +293,11 @@ class ResultController extends Controller{
 
         return $return;
     }
+
+
+
+
+
 
 
 

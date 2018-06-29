@@ -87,14 +87,14 @@ class BiochemistryController extends Controller
             }
 
 
-            if($request != ""){
-                $res = DB::SELECT($request);
+                    if($request != ""){
+                        $res = DB::SELECT($request);
 
-                //Si il y a des resultats -> session
-                //sinon message d'erreur et retour arriere avec les données
-                if(count($res)){
-                    Session::put('patientID', createArray($res, 'Patient_ID'));
-                }else{
+                        //Si il y a des resultats -> session
+                        //sinon message d'erreur et retour arriere avec les données
+                        if(count($res)){
+                            Session::put('patientID', createArray($res, 'Patient_ID'));
+                        }else{
                     Session::flash('nothing',"Aucune donnée n'existe avec vos critères");
                     return redirect()->route('biochemistry')->withInput();
                 }
