@@ -11,6 +11,9 @@ use Illuminate\Support\Facades\Session;
 
 class ResultController extends Controller{
 
+    private $biochemistryID = array();
+    private $experimentsID = array();
+
     /**
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
@@ -23,7 +26,7 @@ $time = microtime(true);
         $bioCid = $this->createBioCidArray();
 $time = microtime(true)-$time;
 var_dump(' CreateBioCid '.$time);
-        $requestBio = $this->createRequestBio($bioCid);
+        $requestBio = $this->createRequestBio();
 
 
         //geneCid
@@ -31,7 +34,7 @@ var_dump(' CreateBioCid '.$time);
         $newCols = array();
 
         //S'il ya des genes que je souhaite voir
-        if(Session::has('geneID')){
+        if(Session::has('geneID') && count(Session::get('analyseID'))){
 
             //Recuperation des genes au format
             //PCYT1A (A_24_P106057) (3-7-2) - CID2 - 1
@@ -42,7 +45,7 @@ $time = microtime(true)-$time;
 var_dump(' CreateGeneCid '.$time);
 
             //Creation et execution de la requete
-            $requestGene = $this->createRequestGene($geneCid);
+            $requestGene = $this->createRequestGene();
 $time = microtime(true);
             $resultsGene = DB::SELECT($requestGene);
 $time = microtime(true)-$time;
@@ -69,7 +72,7 @@ var_dump(' GeneExec '.$time);
                     $newCols[]= $newCol;
                     $array[strval($item->Patient_ID)][$newCol] = $item->valeur;
                 }else{
-                    //Sinon j'ajoute simplement la valeur dans la tableau
+                    //Sinon j'ajoute simplement la valeur dans le tableau
                     $array[strval($item->Patient_ID)][$item->item]=$item->valeur;
                 }
 
@@ -103,7 +106,6 @@ var_dump(' ExecBio '.$time);
         }
 
 
-
         $keys = array_keys($array);              //Recuperation des cles (Patient_ID)
         $cols = array_merge($bioCid, $geneCid);  //Fusion des nom de colonnes entre Biochemistry et Genes
         $this->sendToSession($array,$keys,$cols);//Ajout du tableau de valeur, des clefs et colonnes en Session
@@ -117,6 +119,173 @@ var_dump(' ExecBio '.$time);
 
        return view('results', compact('array', 'cols', 'keys'));
     }
+
+
+
+
+
+
+    /**
+     * Creation de la requete sur biochemistry
+     *
+     * @param $bioCid
+     * @return string
+     */
+    public function createRequestBio(){
+        $request = " SELECT p.patient_id as Patient_ID, p.SUBJID, p.Sex as Sex,
+                            CONCAT(c.Center_Acronym, ' - ', c.Center_City, ' - ', c.Center_Country) AS Center,
+                            prot.Protocol_Name as Protocol, p.Class as Class, 
+                            CONCAT(n.NameN,' (',u.NameUM ,') - ', cid.CID_NAME) as item, b.valeur as valeur 
+                     FROM centers c, protocols prot, center_protocol c_p, patients p, 
+                          cid_patient cp, cids cid, biochemistry b, nomenclatures n, unite_mesure u
+                     WHERE c_p.Center_ID = c.Center_ID
+                     AND c_p.Protocol_ID = prot.Protocol_ID
+                     AND p.Protocol_ID = c_p.Protocol_ID
+                     AND p.Center_ID = c_p.Center_ID
+                     AND cp.CID_ID = cid.CID_ID
+                     AND cp.Patient_ID = p.Patient_ID
+                     AND b.CID_ID = cp.CID_ID
+                     AND b.Patient_ID = cp.Patient_ID
+                     AND b.Nomenclature_ID = n.Nomenclature_ID
+                     AND b.Unite_Mesure_ID = u.Unite_Mesure_ID
+                     AND B.VALEUR > 0";
+        $request .=" AND b.Biochemistry_ID in ".$this->createList($this->biochemistryID);
+
+        return $request;
+    }
+
+
+
+    /**
+     * Creation de la requete sur les genes
+     *
+     * @param $geneCid
+     * @return string
+     */
+    public function createRequestGene(){
+        $request = " SELECT p.Patient_ID, CONCAT(e.Gene_Symbol, ' (',e.Probe_ID, ') (', 
+                                                                  a.SampleType_ID, '-', a.Technique_ID,'-',
+                                                                  a.Molecule_ID, ') - ', cid.CID_Name,' - 1') as item, 
+                            e.value1 as valeur
+                     FROM experiments e, ea_analyse a, cids cid, cid_patient cp, patients p
+                     WHERE cp.Patient_ID = p.Patient_ID
+                     AND cp.CID_ID = cid.CID_ID
+                     AND a.CID_ID = cp.CID_ID
+                     AND a.Patient_ID = cp.Patient_ID
+                     AND e.Analyse_ID = a.Analyse_ID ";
+        $request.=" AND e.Experiments_ID in ".createList($this->experimentsID);
+
+        return $request;
+    }
+
+
+
+    /**
+     * Genere un tableau contenant des valeurs au format :
+     *              Nomenclature->NameN (UniteMesure->NameUM) - Cid->CID_Name
+     * pour les entetes
+     * @param $cids
+     * @param $nomenclatures
+     * @return array
+     */
+    public function createBioCidArray(){
+        $patients = createList(Session::get('patientID'));
+        $array = array();
+        $biochemistry_ID = DB::SELECT("SELECT b.biochemistry_ID as id
+                                             FROM biochemistry b
+                                             WHERE b.Valeur > 0
+                                             AND CONCAT(b.Nomenclature_ID,'-', b.Unite_Mesure_ID) in ".$this->createList(Session::get('biochemistryToView'))."
+                                             AND b.Patient_ID in ".$patients ." ORDER BY b.Patient_ID");
+
+        foreach ($biochemistry_ID as $item){
+                    array_push($array, $item->id);
+        }
+        $this->biochemistryID = $array;
+
+        //Je ne garde que ceux qui ont bien des valeurs dans biochemistry
+        $results = DB::SELECT("SELECT distinct CONCAT(n.NameN,' (',u.NameUM ,') - ', cid.CID_NAME) AS bioCid
+                                    FROM biochemistry b, nomenclatures n, unite_mesure u, cids cid, cid_patient cp
+                                    WHERE cp.CID_ID = cid.CID_ID
+                                    AND b.CID_ID = cp.CID_ID
+                                    AND b.Nomenclature_ID = n.Nomenclature_ID
+                                    AND b.Unite_Mesure_ID = u.Unite_Mesure_ID 
+                                    AND b.biochemistry_ID in ".createList($array)
+                                 ." AND cid.CID_ID in".createList(Session::get('cidID'))
+                                 ." 
+                                 ORDER BY n.NameN ASC, u.NameUM ASC, cid.CID_ID ASC ");
+        $return = [];
+        foreach ($results as $result){
+            if(isset($result->bioCid)){
+                array_push($return, $result->bioCid);
+            }
+        }
+
+        return $return;
+    }
+
+
+
+
+
+
+
+
+    /**
+     * Genere un tableau avec gene_symbol(probe_id) - cid_name
+     * pour les entetes
+     *
+     * @return array
+     */
+    public function getGeneCidArray(){
+
+            $request = " SELECT e.Experiments_ID as id
+                         FROM experiments e, ea_analyse a 
+                         WHERE e.Analyse_ID = a.Analyse_ID
+                         AND a.Analyse_ID in ".createList(Session::get('analyseID'))."
+                         AND e.Gene_Symbol in ".$this->createList(Session::get('geneID'))."
+                         AND a.CID_ID in ".createList(Session::get('cidID'));
+
+$time = microtime(true);
+            $experiments_ID = DB::SELECT($request ." ORDER BY a.Patient_ID ");
+$time = microtime(true)-$time;
+var_dump($time);
+            $array = [];
+            foreach ($experiments_ID as $experiment) {
+                    array_push($array, $experiment->id );
+            }
+            $this->experimentsID = $array;
+
+            //Je ne garde que les genes qui ont bien des valeurs dans experiments
+            $results = DB::SELECT(" SELECT distinct CONCAT(e.Gene_Symbol, ' (',e.Probe_ID, ') (', 
+                                                                      a.SampleType_ID, '-', a.Technique_ID,'-',
+                                                                      a.Molecule_ID, ') - ', cid.CID_Name,' - 1') as geneCid
+                                                FROM experiments e, ea_analyse a, cids cid, cid_patient cp
+                                                WHERE a.Analyse_ID = e.Analyse_ID
+                                                AND a.CID_ID = cp.CID_ID
+                                                AND cp.CID_ID = cid.CID_ID
+                                                AND e.Experiments_ID in " . createList($array) . "
+                                                ORDER BY e.Gene_Symbol, e.Probe_ID, a.SampleType_ID, a.Technique_ID, a.Molecule_ID, cid.CID_ID 
+                                                ");
+            $return = [];
+            foreach ($results as $result) {
+                if (isset($result->geneCid)) {
+                    array_push($return, $result->geneCid);
+                }
+            }
+             return $return;
+    }
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -173,7 +342,7 @@ var_dump(' ExecBio '.$time);
 
             $actualI = intval(substr($item,-1,1));      //je recupere l'indice de la valeur a ajouter
             $nameToSearch = substr_replace($item,$actualI-1,-1,1);  //Je defini le nom dont je vais chercher l'indice
-                                                                                            //dans le tableau edite
+            //dans le tableau edite
 
             $key = array_search($nameToSearch, $editedArray); //je recupere la clef qui correspond
 
@@ -188,197 +357,6 @@ var_dump(' ExecBio '.$time);
         }
         return $editedArray;    //Retour du tableau modifié
     }
-
-
-    /**
-     * Creation de la requete sur biochemistry
-     *
-     * @param $bioCid
-     * @return string
-     */
-    public function createRequestBio($bioCid){
-        $request = " SELECT p.patient_id as Patient_ID, p.SUBJID, p.Sex as Sex,
-                            CONCAT(c.Center_Acronym, ' - ', c.Center_City, ' - ', c.Center_Country) AS Center,
-                            prot.Protocol_Name as Protocol, p.Class as Class, 
-                            CONCAT(n.NameN,' (',u.NameUM ,') - ', cid.CID_NAME) as item, b.valeur as valeur " ;
-
-        $request .= " FROM centers c, protocols prot, center_protocol c_p, patients p, 
-                                                              cid_patient cp, cids cid, biochemistry b, nomenclatures n, unite_mesure u
-                                                        WHERE c_p.Center_ID = c.Center_ID
-                                                        AND c_p.Protocol_ID = prot.Protocol_ID
-                                                        AND p.Protocol_ID = c_p.Protocol_ID
-                                                        AND p.Center_ID = c_p.Center_ID
-                                                        AND cp.CID_ID = cid.CID_ID
-                                                        AND cp.Patient_ID = p.Patient_ID
-                                                        AND b.CID_ID = cp.CID_ID
-                                                        AND b.Patient_ID = cp.Patient_ID
-                                                        AND b.Nomenclature_ID = n.Nomenclature_ID
-                                                        AND b.Unite_Mesure_ID = u.Unite_Mesure_ID
-                                                        and B.VALEUR > 0";
-
-        $request .=" AND CONCAT(n.NameN,' (',u.NameUM ,') - ', cid.CID_NAME) in ".$this->createList($bioCid).
-                    " AND p.Patient_ID in ".createList(Session::get('patientID'));
-
-        return $request;
-    }
-
-
-
-    /**
-     * Creation de la requete sur les genes
-     *
-     * @param $geneCid
-     * @return string
-     */
-    public function createRequestGene($geneCid){
-        $request = " SELECT p.Patient_ID, CONCAT(e.Gene_Symbol, ' (',e.Probe_ID, ') (', 
-                                                                  a.SampleType_ID, '-', a.Technique_ID,'-',
-                                                                  a.Molecule_ID, ') - ', cid.CID_Name,' - 1') as item, 
-                            e.value1 as valeur
-                     FROM experiments e, ea_analyse a, cids cid, cid_patient cp, patients p
-                     WHERE cp.Patient_ID = p.Patient_ID
-                     AND cp.CID_ID = cid.CID_ID
-                     AND a.CID_ID = cp.CID_ID
-                     AND a.Patient_ID = cp.Patient_ID
-                     AND e.Analyse_ID = a.Analyse_ID
-                     AND e.value1 > 0 ";
-        $request.=" AND CONCAT(e.Gene_Symbol, ' (',e.Probe_ID, ') (', 
-                                                                  a.SampleType_ID, '-', a.Technique_ID,'-',
-                                                                  a.Molecule_ID, ') - ', cid.CID_Name,' - 1') in ".$this->createList($geneCid).
-            " AND p.Patient_ID in ".createList(Session::get('patientID'));
-
-        return $request;
-    }
-
-
-
-    /**
-     * Genere un tableau contenant des valeurs au format :
-     *              Nomenclature->NameN (UniteMesure->NameUM) - Cid->CID_Name
-     * pour les entetes
-     * @param $cids
-     * @param $nomenclatures
-     * @return array
-     */
-    public function createBioCidArray(){
-        $patients = createList(Session::get('patientID'));
-
-        $nomenclatures = DB::SELECT("SELECT b.biochemistry_ID as id
-                  FROM biochemistry b
-                  WHERE b.Valeur > 0
-                  AND CONCAT(b.Nomenclature_ID,'-', b.Unite_Mesure_ID) in ".$this->createList(Session::get('biochemistryToView'))."
-                  AND b.Patient_ID in ".$patients ." ORDER BY 1");
-        $array = [];
-        foreach ($nomenclatures as $item){
-                    array_push($array, $item->id);
-        }
-
-        //Je ne garde que ceux qui ont bien des valeurs dans biochemistry
-        $results = DB::SELECT("SELECT distinct CONCAT(n.NameN,' (',u.NameUM ,') - ', cid.CID_NAME) AS bioCid
-                                    FROM biochemistry b, nomenclatures n, unite_mesure u, cids cid, cid_patient cp
-                                    WHERE cp.CID_ID = cid.CID_ID
-                                    AND b.CID_ID = cp.CID_ID
-                                    AND b.Nomenclature_ID = n.Nomenclature_ID
-                                    AND b.Unite_Mesure_ID = u.Unite_Mesure_ID 
-                                    AND b.biochemistry_ID in ".createList($array)
-                                 ." AND cid.CID_ID in".createList(Session::get('cidID'))
-                                 ." 
-                                 ORDER BY n.NameN ASC, u.NameUM ASC, cid.CID_ID ASC ");
-        $return = [];
-        foreach ($results as $result){
-            if(isset($result->bioCid)){
-                array_push($return, $result->bioCid);
-            }
-        }
-
-        return $return;
-    }
-
-
-
-
-
-
-
-
-    /**
-     * Genere un tableau avec gene_symbol(probe_id) - cid_name
-     * pour les entetes
-     *
-     * @return array
-     */
-    public function getGeneCidArray(){
-        $cids = Cid::whereIn('CID_ID', Session::get('cidID'))->orderBy('CID_ID', 'ASC')->get(['CID_Name']);
-        $i =0;
-        $request ="";
-
-         if(Session::has('geneID')){
-
-             foreach(Session::get('geneID') as $item){
-                 if($i == 0){
-                     $request.= " ( SELECT DISTINCT CONCAT(e.Gene_Symbol, ' (',e.Probe_ID,') ') as gene
-                                    FROM experiments e
-                                    WHERE e.Gene_Symbol = '". $item."' 
-                                     AND e.Analyse_ID in ".createList(Session::get('analyseID'))."
-                                     AND e.value1 > 0) ";
-
-                     $i++;
-                 }else{
-                     $request.= " UNION ( SELECT DISTINCT CONCAT(e.Gene_Symbol, ' (',e.Probe_ID,') ') as gene
-                                    FROM experiments e
-                                    WHERE e.Gene_Symbol = '". $item."'
-                                    AND e.Analyse_ID in ".createList(Session::get('analyseID'))."
-                                    AND e.value1 > 0) ";
-                 }
-             }
-
-             $genes = DB::SELECT($request . " ORDER BY 1");
-             $array = [];
-             foreach ($genes as $gene){
-                 foreach ($cids as $meti){
-                     array_push($array, $gene->gene.'- '.$meti->CID_Name);
-                 }
-             }
-
-
-             //Je ne garde que les genes qui ont bien des valeurs dans experiments
-             $results = DB::SELECT(" SELECT distinct CONCAT(e.Gene_Symbol, ' (',e.Probe_ID, ') (', 
-                                                                  a.SampleType_ID, '-', a.Technique_ID,'-',
-                                                                  a.Molecule_ID, ') - ', cid.CID_Name,' - 1') as geneCid
-                                            FROM experiments e, ea_analyse a, cids cid, cid_patient cp
-                                            WHERE a.Analyse_ID = e.Analyse_ID
-                                            AND a.CID_ID = cp.CID_ID
-                                            AND cp.CID_ID = cid.CID_ID
-                                            AND e.value1 > 0
-                                            AND CONCAT(e.Gene_Symbol, ' (',e.Probe_ID,') - ',cid.CID_Name) in ".$this->createList($array)."
-                                            ORDER BY e.Gene_Symbol, e.Probe_ID, a.SampleType_ID, a.Technique_ID, a.Molecule_ID, cid.CID_ID 
-                                            ");
-             $return = [];
-             foreach ($results as $result){
-                 if(isset($result->geneCid)){
-                     array_push($return, $result->geneCid);
-                 }
-             }
-
-             return $return;
-         }
-    }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
