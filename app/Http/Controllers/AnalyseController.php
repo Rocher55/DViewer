@@ -14,7 +14,6 @@ use Illuminate\Support\Facades\Input;
 class AnalyseController extends Controller
 {
     public  function  index(){
-
         //Recuperation des id dans la table ea_analyse
         $sampleID = $this->getSingleAnalyseID('SampleType_ID');
         $techniqueID = $this->getSingleAnalyseID('Technique_ID');
@@ -59,8 +58,10 @@ class AnalyseController extends Controller
             }
 
             //Execution des requetes
-            $analyseID = DB::SELECT($requestAnalyse);
-            $patientID = DB::SELECT($requestPatient);
+            $analyseID = DB::SELECT($requestAnalyse."
+                         AND a.CID_ID in ".createList(Session::get('cidID')));
+            $patientID = DB::SELECT($requestPatient."
+                         AND a.CID_ID in ".createList(Session::get('cidID')));
 
             //Si il y a des resultats -> session
             //sinon message d'erreur et retour arriere avec les données
@@ -76,8 +77,9 @@ class AnalyseController extends Controller
             Session::put('patientID', createArray($patientID, 'Patient_ID'));
 
         }else{
-            $analyseID = DB::SELECT($requestAnalyse);
-            Session::put('analyseID',createArray(Analyse::whereIn('Patient_ID', Session::get('patientID'))->get(), 'Analyse_ID'));
+            $analyseID = DB::SELECT($requestAnalyse."
+                         AND a.CID_ID in ".createList(Session::get('cidID')));
+            Session::put('analyseID',createArray($analyseID, 'Analyse_ID'));
         }
 
 
