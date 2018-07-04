@@ -201,9 +201,11 @@ var_dump(' GeneExec '.$time);
                                              AND CONCAT(b.Nomenclature_ID,'-', b.Unite_Mesure_ID) in ".$this->createList(Session::get('biochemistryToView'))."
                                              AND b.Patient_ID in ".$patients ." ORDER BY b.Patient_ID");
 
-        foreach ($biochemistry_ID as $item){
-                    array_push($array, $item->id);
-        }
+        //foreach ($biochemistry_ID as $item){
+                   // array_push($array, $item->id);
+        //}
+
+        $array= createArray($biochemistry_ID,'id');
         $this->biochemistryID = $array;
 
         //Je ne garde que ceux qui ont bien des valeurs dans biochemistry
@@ -217,12 +219,12 @@ var_dump(' GeneExec '.$time);
                                  ." AND cid.CID_ID in".createList(Session::get('cidID'))
                                  ." 
                                  ORDER BY n.NameN ASC, u.NameUM ASC, cid.CID_ID ASC ");
-        $return = [];
-        foreach ($results as $result){
+        $return = createArray($results,'bioCid');
+        /*foreach ($results as $result){
             if(isset($result->bioCid)){
                 array_push($return, $result->bioCid);
             }
-        }
+        }*/
 
         return $return;
     }
@@ -241,7 +243,6 @@ var_dump(' GeneExec '.$time);
      * @return array
      */
     public function getGeneCidArray(){
-
             $request = " SELECT e.Experiments_ID as id
                          FROM experiments e, ea_analyse a
                          WHERE e.Analyse_ID = a.Analyse_ID
@@ -253,10 +254,10 @@ $time = microtime(true);
             $experiments_ID = DB::SELECT($request);
 $time = microtime(true)-$time;
 var_dump($time);
-            $array = createArray($experiments_ID, 'id');
-            /*foreach ($experiments_ID as $experiment) {
+            $array = array();
+            foreach ($experiments_ID as $experiment) {
                     array_push($array, $experiment->id );
-            }*/
+            }
             $this->experimentsID = $array;
 
             //Je ne garde que les genes qui ont bien des valeurs dans experiments
@@ -270,12 +271,12 @@ var_dump($time);
                                                 AND e.Experiments_ID in " . createList($array) . "
                                                 ORDER BY e.Gene_Symbol, e.Probe_ID, a.SampleType_ID, a.Technique_ID, a.Molecule_ID, cid.CID_ID ");
 
-            $return = createArray($results,'geneCid');
-            /*foreach ($results as $result) {
+            $return = array();
+            foreach ($results as $result) {
                 if (isset($result->geneCid)) {
                     array_push($return, $result->geneCid);
                 }
-            }*/
+            }
              return $return;
     }
 
