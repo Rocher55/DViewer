@@ -1,7 +1,6 @@
 @extends('layouts.template')
 
 @section('content')
-
     <div class="container container-body">
         {!! Form::open(['url' => 'research/select-bio', 'method' => 'post']) !!}
         <select data-placeholder="Choose something..." class="chosen-tag" multiple="true" name="select[]">

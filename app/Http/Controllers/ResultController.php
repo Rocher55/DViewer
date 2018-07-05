@@ -18,101 +18,99 @@ class ResultController extends Controller{
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
     public function index(){
-        //Tableau contenant les valeurs
-        $array = array();
+        $previousPath = str_replace(url('/'), '', url()->previous());
 
-        //bioCid
-$time = microtime(true);
-        $bioCid = $this->createBioCidArray();
-$time = microtime(true)-$time;
-var_dump(' CreateBioCid '.$time);
-        $requestBio = $this->createRequestBio();
+        //Si je n'ai pas colonnes, clefs et la tableau en session OU que la page précédente est "/research/select-gene/"
+        //alors je recupere les donnees
+        if(!Session::has('results-columns') and !Session::has('results-keys') and !Session::has('results-array')
+            or $previousPath == '/research/select-gene') {
+            //Tableau contenant les valeurs
+            $array = array();
 
-$time = microtime(true);
-        //Execution de la requete
-        $resultsBio = DB::SELECT($requestBio);
- $time = microtime(true)-$time;
- var_dump(' ExecBio '.$time);
-        //Pour chaque resultat le mettre dans
-        //le tableau à l'indice 1 : Patient_ID
-        //et 2 : item
-
-        foreach($resultsBio as $item) {
-            $array[strval($item->Patient_ID)]['SUBJID'] =$item->SUBJID;
-            $array[strval($item->Patient_ID)]['Sex']=$item->Sex;
-            $array[strval($item->Patient_ID)]['Center']=$item->Center;
-            $array[strval($item->Patient_ID)]['Protocol']=$item->Protocol;
-            $array[strval($item->Patient_ID)]['Class']=$item->Class;
-            $array[strval($item->Patient_ID)][$item->item]=$item->valeur;
-        }
+            //bioCid
+            $bioCid = $this->createBioCidArray();
+            $requestBio = $this->createRequestBio();
 
 
+            //Execution de la requete
+            $resultsBio = DB::SELECT($requestBio);
+
+            //Pour chaque resultat le mettre dans
+            //le tableau à l'indice 1 : Patient_ID
+            //et 2 : item
+            foreach ($resultsBio as $item) {
+                $array[strval($item->Patient_ID)]['SUBJID'] = $item->SUBJID;
+                $array[strval($item->Patient_ID)]['Sex'] = $item->Sex;
+                $array[strval($item->Patient_ID)]['Center'] = $item->Center;
+                $array[strval($item->Patient_ID)]['Protocol'] = $item->Protocol;
+                $array[strval($item->Patient_ID)]['Class'] = $item->Class;
+                $array[strval($item->Patient_ID)][$item->item] = $item->valeur;
+            }
 
 
-        //geneCid
-        $geneCid = array();
-        $newCols = array();
+            //geneCid
+            $geneCid = array();
+            $newCols = array();
 
-        //S'il ya des genes que je souhaite voir et que des analyses existent
-        if(Session::has('geneID') && count(Session::get('analyseID'))){
+            //S'il ya des genes que je souhaite voir et que des analyses existent
+            if (Session::has('geneID') && count(Session::get('analyseID'))) {
 
-            //Recuperation des genes au format
-            //PCYT1A (A_24_P106057) (3-7-2) - CID2 - 1
-            //Gene_Symbol (Probe_ID) (SampleType_ID-Technique_ID-Molecule_ID) - CID_Name - indice
-$time = microtime(true);
-            $geneCid = $this->getGeneCidArray();
-$time = microtime(true)-$time;
-var_dump(' CreateGeneCid '.$time);
+                //Recuperation des genes au format
+                //PCYT1A (A_24_P106057) (3-7-2) - CID2 - 1
+                //Gene_Symbol (Probe_ID) (SampleType_ID-Technique_ID-Molecule_ID) - CID_Name - indice
 
-            //Creation et execution de la requete
-            $requestGene = $this->createRequestGene();
-$time = microtime(true);
-            $resultsGene = DB::SELECT($requestGene);
-$time = microtime(true)-$time;
-var_dump(' GeneExec '.$time);
+                $geneCid = $this->getGeneCidArray();
 
-            //Pour chaque resultat
-            foreach ($resultsGene as $item){
-                //Si une valeur exite a cet endroit alors
-                if(isset($array[strval($item->Patient_ID)][$item->item])){
-                    $i=2;   //indice = 2
+                //Creation et execution de la requete
+                $requestGene = $this->createRequestGene();
+                $resultsGene = DB::SELECT($requestGene);
 
-                    //Je cree le nom que portera la colonne
-                    $newCol = substr_replace($item->item,$i,-1,1);
 
-                    //Et temps que j'ai un resultat pour la nouvelle colonne
-                    //Incrementer i et changer le nom de la colonne en fonction
-                    while (isset($array[strval($item->Patient_ID)][$newCol])){
-                        $i++;
-                        $newCol = substr_replace($item->item,$i,-1,1);
+                //Pour chaque resultat
+                foreach ($resultsGene as $item) {
+                    //Si une valeur exite a cet endroit alors
+                    if (isset($array[strval($item->Patient_ID)][$item->item])) {
+                        $i = 2;   //indice = 2
+
+                        //Je cree le nom que portera la colonne
+                        $newCol = substr_replace($item->item, $i, -1, 1);
+
+                        //Et temps que j'ai un resultat pour la nouvelle colonne
+                        //Incrementer i et changer le nom de la colonne en fonction
+                        while (isset($array[strval($item->Patient_ID)][$newCol])) {
+                            $i++;
+                            $newCol = substr_replace($item->item, $i, -1, 1);
+                        }
+
+                        //J'ajoute dans mon tableau des nouvelles colonnes la colonne
+                        //ainsi que la valeur pour le patient dans la nouvelle colonne
+                        $newCols[] = $newCol;
+                        $array[strval($item->Patient_ID)][$newCol] = $item->valeur;
+                    } else {
+                        //Sinon j'ajoute simplement la valeur dans le tableau
+                        $array[strval($item->Patient_ID)][$item->item] = $item->valeur;
                     }
 
-                    //J'ajoute dans mon tableau des nouvelles colonnes la colonne
-                    //ainsi que la valeur pour le patient dans la nouvelle colonne
-                    $newCols[]= $newCol;
-                    $array[strval($item->Patient_ID)][$newCol] = $item->valeur;
-                }else{
-                    //Sinon j'ajoute simplement la valeur dans le tableau
-                    $array[strval($item->Patient_ID)][$item->item]=$item->valeur;
+                    //Je garde le nom des colonnes en un exemplaire
+                    $newCols = array_unique($newCols);
                 }
 
-                //Je garde le nom des colonnes en un exemplaire
-                $newCols = array_unique($newCols);
+                //Si mon tableau de nouvelles colonnes existe alors je reorganise
+                //mon tableau d'entete : geneCid
+                if (isset($newCols)) {
+                    $geneCid = $this->reorganizeArray($geneCid, $newCols);
+                }
             }
 
-            //Si mon tableau de nouvelles colonnes existe alors je reorganise
-            //mon tableau d'entete : geneCid
-            if(isset($newCols)){
-                $geneCid = $this->reorganizeArray($geneCid, $newCols);
-            }
+
+            $keys = array_keys($array);              //Recuperation des cles (Patient_ID)
+            $cols = array_merge($bioCid, $geneCid);  //Fusion des nom de colonnes entre Biochemistry et Genes
+            $this->sendToSession($array, $keys, $cols);//Ajout du tableau de valeur, des clefs et colonnes en Session
+        }else{
+            $keys = Session::get('results-keys');
+            $cols = Session::get('results-columns');
+            $array = Session::get('results-array');
         }
-
-
-
-        $keys = array_keys($array);              //Recuperation des cles (Patient_ID)
-        $cols = array_merge($bioCid, $geneCid);  //Fusion des nom de colonnes entre Biochemistry et Genes
-        $this->sendToSession($array,$keys,$cols);//Ajout du tableau de valeur, des clefs et colonnes en Session
-
 
         //Pagination
         $currentPage = LengthAwarePaginator::resolveCurrentPage();
@@ -194,16 +192,12 @@ var_dump(' GeneExec '.$time);
      */
     public function createBioCidArray(){
         $patients = createList(Session::get('patientID'));
-        $array = array();
         $biochemistry_ID = DB::SELECT("SELECT b.biochemistry_ID as id
                                              FROM biochemistry b
                                              WHERE b.Valeur > 0
                                              AND CONCAT(b.Nomenclature_ID,'-', b.Unite_Mesure_ID) in ".$this->createList(Session::get('biochemistryToView'))."
                                              AND b.Patient_ID in ".$patients ." ORDER BY b.Patient_ID");
 
-        //foreach ($biochemistry_ID as $item){
-                   // array_push($array, $item->id);
-        //}
 
         $array= createArray($biochemistry_ID,'id');
         $this->biochemistryID = $array;
@@ -220,18 +214,9 @@ var_dump(' GeneExec '.$time);
                                  ." 
                                  ORDER BY n.NameN ASC, u.NameUM ASC, cid.CID_ID ASC ");
         $return = createArray($results,'bioCid');
-        /*foreach ($results as $result){
-            if(isset($result->bioCid)){
-                array_push($return, $result->bioCid);
-            }
-        }*/
 
         return $return;
     }
-
-
-
-
 
 
 
@@ -246,18 +231,11 @@ var_dump(' GeneExec '.$time);
             $request = " SELECT e.Experiments_ID as id
                          FROM experiments e, ea_analyse a
                          WHERE e.Analyse_ID = a.Analyse_ID
-                         AND e.Gene_Symbol in ".$this->createList(Session::get('geneID'))."
-                         AND e.value1 != -9999
+                         AND e.Gene_Symbol in ".$this->createList(Session::get('geneID'))."                        
                          AND  e.Analyse_ID in ".createList(Session::get('analyseID'));
 
-$time = microtime(true);
             $experiments_ID = DB::SELECT($request);
-$time = microtime(true)-$time;
-var_dump($time);
-            $array = array();
-            foreach ($experiments_ID as $experiment) {
-                    array_push($array, $experiment->id );
-            }
+            $array = createArray($experiments_ID, 'id');
             $this->experimentsID = $array;
 
             //Je ne garde que les genes qui ont bien des valeurs dans experiments
@@ -271,26 +249,10 @@ var_dump($time);
                                                 AND e.Experiments_ID in " . createList($array) . "
                                                 ORDER BY e.Gene_Symbol, e.Probe_ID, a.SampleType_ID, a.Technique_ID, a.Molecule_ID, cid.CID_ID ");
 
-            $return = array();
-            foreach ($results as $result) {
-                if (isset($result->geneCid)) {
-                    array_push($return, $result->geneCid);
-                }
-            }
+            $return = createArray($results,'geneCid');
+
              return $return;
     }
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -309,9 +271,6 @@ var_dump($time);
         Session::put('results-keys', $keys);
         Session::put('results-columns', $columns);
     }
-
-
-
 
 
 
@@ -362,19 +321,6 @@ var_dump($time);
         }
         return $editedArray;    //Retour du tableau modifié
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 

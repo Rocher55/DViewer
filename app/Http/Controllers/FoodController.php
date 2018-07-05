@@ -77,7 +77,7 @@ class FoodController extends Controller
                 if(count($res)){
                     Session::put('patientID', createArray($res, 'Patient_ID'));
                 }else{
-                    Session::flash('nothing',"Aucune donnée n'existe avec vos critères");
+                    Session::flash('nothing',"No data found with your criteria");
                     return redirect()->route('food')->withInput();
                 }
             }

@@ -1,8 +1,5 @@
 @extends('layouts.template')
 
-
-
-
 @section('content')
     <div class="container-body ">
         <div class="row">
@@ -26,7 +23,6 @@
             </div>
         </div>
 
-
         {!! Form::button('Previous', ['class' => 'previous-button', 'onclick' => "window.history.back();"]) !!}
         {!! Form::submit('Next', ['class' => 'next-button']) !!}
         {!! Form::close() !!}
@@ -38,18 +34,3 @@
     <script src="{!! asset('js/ajax-gene.js') !!}"></script>
 @endsection
 
-
-
-
-{{--
-
-<script type="text/javascript">
-    $( '#recherche').autocomplete({
-        source: '{!!URL::route('ajax')!!}',
-        minLength: 2,
-        select: function(event, ui) {
-            $('#recherche').val(ui.item.value);
-        }
-    });
-</script>
---}}

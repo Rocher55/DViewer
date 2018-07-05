@@ -1,6 +1,9 @@
 @extends('layouts.template')
 
 @section('content')
+    <div class="path">
+        {{str_replace(url('/'), '', url()->current())}}
+    </div>
 
     <div class="boutons">
         <a href="/" class="btn btn-primary">Home</a>
@@ -52,19 +55,4 @@
     {{$keys->links()}}
 
 </div>
-
-
-
-    {{--
-    {!! var_dump(Session::get('geneID')) !!}
-    {!! var_dump(Session::get('cidID')) !!}
-
-    {!! var_dump(Session::get('biochemistryToView')) !!}
-    --}}
-
-
-
-
-
-
 @endsection

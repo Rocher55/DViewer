@@ -14,6 +14,7 @@
 
 Route::get('test','tests@index');
 
+Auth::routes();
 Route::get('/', 'HomeController@index')->name('home');
 Route::get('/ajax', 'AjaxController@ajax_call')->name('ajax');
 Route::get('research/results','ResultController@index')->name('result');
@@ -69,3 +70,14 @@ Route::post('research/select-gene', 'GeneController@postSelect')->name('postSele
                                         Exportation
 -------------------------------------------------------------------------------------------*/
 Route::get('research/export','ResultController@export')->name('export');
+
+
+
+
+Auth::routes();
+
+Route::get('/home', 'HomeController@index')->name('home');
+
+Auth::routes();
+
+Route::get('/home', 'HomeController@index')->name('home');

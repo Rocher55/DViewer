@@ -52,7 +52,9 @@
             </div>
         </div>
     </nav>
-
+    <div class="path">
+        {{str_replace(url('/'), '', url()->current())}}
+    </div>
 
     @if(session('success'))
         <div class="container">

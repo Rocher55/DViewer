@@ -38,8 +38,7 @@ class AnalyseController extends Controller
      *
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function postSelect()
-    {
+    public function postSelect(){
         $params = Input::except('_token');  //Recuperation de tous les Input sauf le token
         $analyseID = "";                    //Resultat de la requete d'analyse
 
@@ -68,7 +67,7 @@ class AnalyseController extends Controller
             if(count($patientID)){
                 Session::put('patientID', createArray($patientID, 'Patient_ID'));
             }else{
-                Session::flash('nothing',"Aucune donnée n'existe avec vos critères");
+                Session::flash('nothing',"No data found with your criteria");
                 return redirect()->route('analyse')->withInput();
             }
 

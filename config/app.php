@@ -163,6 +163,10 @@ return [
 
 
         Krlove\EloquentModelGenerator\Provider\GeneratorServiceProvider::class,
+
+        //For LDAP
+        Adldap\Laravel\AdldapServiceProvider::class,
+        Adldap\Laravel\AdldapAuthServiceProvider::class,
     ],
 
     /*
@@ -213,6 +217,7 @@ return [
         'View' => Illuminate\Support\Facades\View::class,
         'Form' => Collective\Html\FormFacade::class,
         'Html' => Collective\Html\HtmlFacade::class,
+        'Adldap' => Adldap\Laravel\Facades\Adldap::class,
 
     ],
 

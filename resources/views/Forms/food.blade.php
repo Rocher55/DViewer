@@ -14,7 +14,6 @@
 
 
 @section('content')
-
     <div class="container-big-body">
         {!! Form::open(['url' => 'research/food', 'method' => 'post']) !!}
 
