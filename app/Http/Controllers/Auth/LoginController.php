@@ -4,6 +4,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Illuminate\Http\Request;
 use Adldap\Laravel\Facades\Adldap;
+use App\User;
 
 
 class LoginController extends Controller
@@ -51,21 +52,24 @@ class LoginController extends Controller
         $username = $credentials[$this->username()];
         $password = $credentials['password'];
 
-        $user_format = env('ADLDAP_USER_FORMAT', 'cn=%s,'.env('ADLDAP_BASEDN', ''));
+        $user_format = env('ADLDAP_USER_FORMAT', 'uid=%s'.env('ADLDAP_BASEDN', ',ou=users,dc=inserm.fr,dc=local'));
+        $user_format='uid=%s,ou=mathematicians,dc=example,dc=com';
         $userdn = sprintf($user_format, $username);
 
         // you might need this, as reported in
         // [#14](https://github.com/jotaelesalinas/laravel-simple-ldap-auth/issues/14):
-        // Adldap::auth()->bind($userdn, $password);
+        //Adldap::auth()->bind($userdn, $password);
+
 
         if(Adldap::auth()->attempt($userdn, $password, $bindAsUser = true)) {
             // the user exists in the LDAP server, with the provided password
 
-            $user = \App\User::where($this->username(), $username) -> first();
+
+          $user = User::where($this->username(), $username) -> first();
             if (!$user) {
                 // the user doesn't exist in the local database, so we have to create one
 
-                $user = new \App\User();
+                $user = new User();
                 $user->username = $username;
                 $user->password = '';
 
@@ -74,16 +78,19 @@ class LoginController extends Controller
                 // in sync with the LDAP server
                 $sync_attrs = $this->retrieveSyncAttributes($username);
                 foreach ($sync_attrs as $field => $value) {
-                    $user->$field = $value !== null ? $value : '';
+                      $user->$field = $value !== null ? $value : '';
                 }
             }
+
 
             // by logging the user we create the session, so there is no need to login again (in the configured time).
             // pass false as second parameter if you want to force the session to expire when the user closes the browser.
             // have a look at the section 'session lifetime' in `config/session.php` for more options.
-            $this->guard()->login($user, true);
+
+            $this->guard()->login($user, false);
             return true;
         }
+
 
         // the user doesn't exist in the LDAP server or the password is wrong
         // log error

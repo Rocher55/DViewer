@@ -2,18 +2,15 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-use App\Gene;
-use Illuminate\Support\Facades\URL;
+use Adldap\Laravel\Facades\Adldap;
 
 class tests extends Controller
 {
     public function index()
     {
+            $username='riemann';
 
-            $urlPlusKey = URL::current();
-            $urlArray = explode('/', $urlPlusKey);
-            $param = end($urlArray);
+            $param =  1;
 
         return view('test', compact('param'));
     }

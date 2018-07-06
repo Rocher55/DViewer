@@ -14,7 +14,12 @@
 
 Route::get('test','tests@index');
 
-Auth::routes();
+// Authentication Routes...
+Route::get('login', 'Auth\LoginController@showLoginForm')->name('login');
+Route::post('login', 'Auth\LoginController@login');
+Route::post('logout', 'Auth\LoginController@logout')->name('logout');
+
+
 Route::get('/', 'HomeController@index')->name('home');
 Route::get('/ajax', 'AjaxController@ajax_call')->name('ajax');
 Route::get('research/results','ResultController@index')->name('result');

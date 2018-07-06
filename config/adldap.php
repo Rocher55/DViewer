@@ -34,7 +34,7 @@ return [
             |
             */
 
-            'auto_connect' => env('ADLDAP_AUTO_CONNECT', true),
+            'auto_connect' => env('ADLDAP_AUTO_CONNECT', TRUE),
 
             /*
             |--------------------------------------------------------------------------
@@ -127,7 +127,7 @@ return [
                 |
                 */
 
-                'domain_controllers' => explode(' ', env('ADLDAP_CONTROLLERS', 'ldap1.inserm.fr ldap2.inserm.fr ldap3.inserm.fr')),
+                'domain_controllers' => explode(' ', env('ADLDAP_CONTROLLERS', 'ldap3.inserm.fr ldap2.inser.fr ldap1.inserm.fr')),
 
                 /*
                 |--------------------------------------------------------------------------
@@ -138,7 +138,7 @@ return [
                 |
                 */
 
-                'port' => env('ADLDAP_PORT', 389),
+                'port' => env('ADLDAP_PORT', 636),
 
                 /*
                 |--------------------------------------------------------------------------
@@ -167,7 +167,7 @@ return [
                 |
                 */
 
-                'base_dn' => env('ADLDAP_BASEDN', 'ou=users,dc=inserm.fr,dc=local'),
+                'base_dn' => env('ADLDAP_BASEDN', ',ou=users,dc=inserm.fr,dc=local'),
 
                 /*
                 |--------------------------------------------------------------------------
@@ -183,7 +183,7 @@ return [
                 */
 
                 'admin_account_prefix' => env('ADLDAP_ADMIN_ACCOUNT_PREFIX', ''),
-                'admin_account_suffix' => env('ADLDAP_ADMIN_ACCOUNT_SUFFIX', 'ou=sysusers,dc=local'),
+                'admin_account_suffix' => env('ADLDAP_ADMIN_ACCOUNT_SUFFIX', ''),
 
                 /*
                 |--------------------------------------------------------------------------
@@ -198,7 +198,7 @@ return [
                 |
                 */
 
-                'admin_username' => env('ADLDAP_ADMIN_USERNAME', 'ldapreader-toul'),
+                'admin_username' => env('ADLDAP_ADMIN_USERNAME', 'uid=ldapreader-toul,ou=sysusers,dc=local'),
                 'admin_password' => env('ADLDAP_ADMIN_PASSWORD', 'YeEa#hh6e'),
 
                 /*
@@ -231,7 +231,7 @@ return [
                 |
                 */
 
-                'use_ssl' => env('ADLDAP_USE_SSL', false),
+                'use_ssl' => env('ADLDAP_USE_SSL', true),
                 'use_tls' => env('ADLDAP_USE_TLS', false),
 
             ],

@@ -195,7 +195,7 @@ return [
         |
         */
 
-        'sync' => env('ADLDAP_PASSWORD_SYNC', false),
+        'sync' => env('ADLDAP_PASSWORD_SYNC', true),
 
         /*
         |--------------------------------------------------------------------------
@@ -248,14 +248,14 @@ return [
     | to the DatabaseUserProvider.
     |
     */
-/*
-    'sync_attributes' => [
 
-        'username' => 'uid', // was 'email' => 'userprincipalname',
-        'name' => 'cn',
-        'phone' => 'telephonenumber',
-    ],
-*/
+    'sync_attributes' => [
+    // 'field_in_local_db' => 'attribute_in_ldap_server',
+    'username' => 'uid', // was 'email' => 'userprincipalname',
+    'name' => 'cn',
+    'phone' => 'telephonenumber',
+],
+
     /*
     |--------------------------------------------------------------------------
     | Logging
