@@ -42,7 +42,7 @@ class LoginController extends Controller
 
     protected function validateLogin(Request $request) {
         $this->validate($request, [
-            $this->username() => 'required|string|regex:/^\w+$/',
+            $this->username() => 'required|string|regex:/^[a-zA-Z]+\.[a-zA-Z]+$/',
             'password' => 'required|string',
         ]);
     }
@@ -53,40 +53,42 @@ class LoginController extends Controller
         $password = $credentials['password'];
 
         $user_format = env('ADLDAP_USER_FORMAT', 'uid=%s'.env('ADLDAP_BASEDN', ',ou=users,dc=inserm.fr,dc=local'));
-        $user_format='uid=%s,ou=mathematicians,dc=example,dc=com';
         $userdn = sprintf($user_format, $username);
 
         // you might need this, as reported in
         // [#14](https://github.com/jotaelesalinas/laravel-simple-ldap-auth/issues/14):
+        //if(Adldap::auth()->bindAsAdministrator($userdn, $password)){
         //Adldap::auth()->bind($userdn, $password);
 
-
-        if(Adldap::auth()->attempt($userdn, $password, $bindAsUser = true)) {
+        if(Adldap::auth()->attempt($userdn, $password, $bindAsUser = false)) {
             // the user exists in the LDAP server, with the provided password
 
+            /*
+                      $user = User::where($this->username(), $username) -> first();
+                        if (!$user) {
+                            // the user doesn't exist in the local database, so we have to create one
 
-          $user = User::where($this->username(), $username) -> first();
-            if (!$user) {
-                // the user doesn't exist in the local database, so we have to create one
+                            $user = new User();
+                            $user->username = $username;
+                            $user->password = '';
 
-                $user = new User();
-                $user->username = $username;
-                $user->password = '';
+                            // you can skip this if there are no extra attributes to read from the LDAP server
+                            // or you can move it below th if(!$user) block if you want to keep the user always
+                            // in sync with the LDAP server
+                            /*
+                            $sync_attrs = $this->retrieveSyncAttributes($username);
+                            foreach ($sync_attrs as $field => $value) {
+                                  $user->$field = $value !== null ? $value : '';
+                            }
 
-                // you can skip this if there are no extra attributes to read from the LDAP server
-                // or you can move it below this if(!$user) block if you want to keep the user always
-                // in sync with the LDAP server
-                $sync_attrs = $this->retrieveSyncAttributes($username);
-                foreach ($sync_attrs as $field => $value) {
-                      $user->$field = $value !== null ? $value : '';
-                }
             }
-
+        */
 
             // by logging the user we create the session, so there is no need to login again (in the configured time).
             // pass false as second parameter if you want to force the session to expire when the user closes the browser.
             // have a look at the section 'session lifetime' in `config/session.php` for more options.
-
+            $user = new User();
+            $user->username = $username;
             $this->guard()->login($user, false);
             return true;
         }

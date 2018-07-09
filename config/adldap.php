@@ -34,7 +34,7 @@ return [
             |
             */
 
-            'auto_connect' => env('ADLDAP_AUTO_CONNECT', TRUE),
+            'auto_connect' => env('ADLDAP_AUTO_CONNECT', true),
 
             /*
             |--------------------------------------------------------------------------
@@ -111,7 +111,7 @@ return [
                 |
                 */
 
-                'account_suffix' => env('ADLDAP_ACCOUNT_SUFFIX', ''),
+                'account_suffix' => env('ADLDAP_ACCOUNT_SUFFIX', '@inserm.fr'),
 
                 /*
                 |--------------------------------------------------------------------------
@@ -127,7 +127,7 @@ return [
                 |
                 */
 
-                'domain_controllers' => explode(' ', env('ADLDAP_CONTROLLERS', 'ldap3.inserm.fr ldap2.inser.fr ldap1.inserm.fr')),
+                'domain_controllers' => explode(' ', env('ADLDAP_CONTROLLERS', 'ldap1.inserm.fr ldap2.inserm.fr ldap3.inserm.fr')),
 
                 /*
                 |--------------------------------------------------------------------------

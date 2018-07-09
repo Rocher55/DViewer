@@ -35,7 +35,7 @@ return [
     |
     */
 
-    'provider' => Adldap\Laravel\Auth\DatabaseUserProvider::class,
+    'provider' =>  Adldap\Laravel\Auth\NoDatabaseUserProvider::class,
 
     /*
     |--------------------------------------------------------------------------
