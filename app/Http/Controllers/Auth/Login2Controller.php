@@ -55,15 +55,13 @@ class Login2Controller extends Controller
         if($this->verificationIdentifiant($username)) {
             if($this->verificationUtilisateur($username, $password)){
                 $user = new User();
-                $user->username = $username;
+                $user->name = $username; //$user->username
                 $this->guard()->login($user, false);
                 return true;
             }
         }
 
 
-        // the user doesn't exist in the LDAP server or the password is wrong
-        // log error
         return false;
     }
 
@@ -76,25 +74,25 @@ class Login2Controller extends Controller
         $connexion = $this->connexionServeur($idRoot, $mdpRoot);
 
         if ($connexion != null){
-        $filtre = "(uid=".$idUtilisateur.")";
-        $recherche = ldap_search($connexion, 'dc=local', $filtre);
-        if ($recherche){
-        $resultat = ldap_get_entries($connexion, $recherche);
-        if($resultat['count'] > 0){
-            // on place en variable globale le groupe (region-centre-euipe) de l utilisateur
-        $GLOBALS['groupe'] =  $resultat[0]["ou"][0];
-        return true;
-        }else{
-            $mail = $idUtilisateur;
-            ?>
-            <div class="alert alert-danger"><center>Adresse mail <?php echo $mail; ?>inconnue</center></div>
-            <?php
-        }
-        }else{
-            ?>
-            <div class="alert alert-danger"><center>Erreur lors de la recherche</center></div>
-            <?php
-        }
+            $filtre = "(uid=".$idUtilisateur.")";
+            $recherche = ldap_search($connexion, 'dc=local', $filtre);
+            if ($recherche){
+                $resultat = ldap_get_entries($connexion, $recherche);
+                if($resultat['count'] > 0){
+                    // on place en variable globale le groupe (region-centre-euipe) de l utilisateur
+                    $GLOBALS['groupe'] =  $resultat[0]["ou"][0];
+                    return true;
+                }else{
+                    $mail = $idUtilisateur;
+                    ?>
+                    <div class="alert alert-danger"><center>Adresse mail <?php echo $mail; ?>inconnue</center></div>
+                    <?php
+                }
+            }else{
+                ?>
+                <div class="alert alert-danger"><center>Erreur lors de la recherche</center></div>
+                <?php
+            }
         }
         //ldap_close($connexion);
         return false;

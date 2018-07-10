@@ -24,7 +24,7 @@ class PatientController extends Controller
             ->get(['Patient_ID']);
 
         Session::put('patientID', createArray($patient, 'Patient_ID'));
-
+        Session::put('save-patientID-1', createArray($patient, 'Patient_ID'));
 
 
         //Recuperation des sexes
@@ -73,6 +73,7 @@ class PatientController extends Controller
             if(count($newPatientID)){
                 //Ajout des resultats dans la sesion precedente
                 Session::put('patientID', createArray($newPatientID, 'Patient_ID'));
+                Session::put('save-patientID-1', createArray($newPatientID, 'Patient_ID'));
             }else{
                 Session::flash('nothing',"Aucune donnée n'existe avec vos critères");
                 return redirect()->route('patient')->withInput();

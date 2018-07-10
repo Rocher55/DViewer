@@ -28,7 +28,13 @@ class AnalyseController extends Controller
         $molecule = Molecule::whereIn('Molecule_ID', createArray($moleculeID, 'Molecule_ID'))
                             ->get(['Molecule_ID', 'Molecule_Name']);
 
-        return view('Forms.analyse', compact('molecule', 'sample', 'technique'));
+        if(count($sample) && count($technique) && count($molecule)){
+            return view('Forms.analyse', compact('molecule', 'sample', 'technique'));
+        }else{
+            return redirect()->route('result');
+        }
+
+
     }
 
 

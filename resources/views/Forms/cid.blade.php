@@ -1,6 +1,8 @@
 @extends('layouts.template')
 
 @section('content')
+    {{count(Session::get('patientID'))}}
+    {{count(Session::get('save-patientID-1'))}}
     <div class="container-body">
         {!! Form::open(['url' => 'research/cid', 'method' => 'post']) !!}
 

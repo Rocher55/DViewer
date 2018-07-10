@@ -2,17 +2,17 @@
 
 namespace App\Http\Controllers;
 
-use Adldap\Laravel\Facades\Adldap;
 
 class tests extends Controller
 {
     public function index()
     {
-            $username='riemann';
+        $connexion = ldap_connect("ldaps://ldap1.inserm.fr");
+        $set = ldap_set_option($connexion, LDAP_OPT_PROTOCOL_VERSION, 3);
+        $bind = @ldap_bind($connexion,'uid=ldapreader-toul,ou=sysusers,dc=local', 'YeEa#hh6e');
+        $error = ldap_error($connexion);
 
-            $param =  1;
-
-        return view('test', compact('param'));
+        return view('test', compact('bind', 'error', 'set'));
     }
 
 }

@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
+
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Input;
 use Illuminate\Support\Facades\Session;
@@ -11,7 +11,14 @@ use App\Food;
 class FoodController extends Controller
 {
     public  function  index(){
-        return view('Forms.food');
+        $result = Food::whereIn('Patient_ID',Session::get("patientID"))->count();
+
+        if($result > 0){
+            return view('Forms.food', compact('result'));
+        }else{
+            return redirect()->route("biochemistry");
+        }
+
     }
 
 

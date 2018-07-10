@@ -27,7 +27,7 @@ $(document).ready(function () {
     });
 });
 
-$('[name="gene"]').dblclick(function(){
+$('[name="gene"]').on('dblclick',function(){
     let textarea = $('[name="genes"]');
 
     if($('[name="gene"] option:selected').val()) {

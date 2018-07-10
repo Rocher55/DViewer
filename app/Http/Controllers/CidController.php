@@ -18,7 +18,14 @@ class CidController extends Controller
      */
     public function index()
     {
-        $patient=Session::get('patientID');
+        if (Session::has('save-patientID-1')){
+            $patient = Session::get('save-patientID-1');
+        }else{
+            $patient=Session::get('patientID');
+
+            Session::put('save-patientID-2', Session::get('patientID'));
+        }
+
 
         //Recuperation et cretion d'une liste des tous les CID_ID
         $cid_id = Cid_patient::whereIn('Patient_ID', $patient)
@@ -65,6 +72,8 @@ class CidController extends Controller
 
             //Ajout des resultats dans les sesions
             Session::put('patientID', createArray($results_p, 'Patient_ID'));
+            Session::put('save-patientID-2', createArray($results_p, 'Patient_ID'));
+
             Session::put('cidID', createArray($results_c, 'CID_ID'));
         } else {
             $results_c = $this->getCID($patientID,$paramReq="");

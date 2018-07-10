@@ -14,6 +14,8 @@
 
 
 @section('content')
+    {{count(Session::get('patientID'))}}
+    {{count(Session::get('save-patientID-2'))}}
     <div class="container-big-body">
         {!! Form::open(['url' => 'research/food', 'method' => 'post']) !!}
 
