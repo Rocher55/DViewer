@@ -28,6 +28,16 @@ class AjaxController extends Controller
    }
 
 
+    /**
+     * Recupere le chemin de l'url demandant a revenir à la page precedente
+     *
+     * @param Request $request
+     */
+   public function pathThatDemandPrevious(Request $request){
+       Session::put('previous', $request->previous);
+   }
+
+
 
 
 }

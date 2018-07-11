@@ -47,6 +47,12 @@ class AnalyseController extends Controller
     public function postSelect(){
         $params = Input::except('_token');  //Recuperation de tous les Input sauf le token
         $analyseID = "";                    //Resultat de la requete d'analyse
+        $previousPath = Session::get('previous');
+
+        if (Session::has('save-patientID-4') and $previousPath=='/research/biochemistry'){
+            $patient = Session::get('save-patientID-4');
+            Session::put('patientID', $patient);
+        }
 
         //Creation de la requete
         $requestAnalyse = "SELECT a.Analyse_ID as Analyse_ID FROM ea_analyse a WHERE a.Patient_ID in ".createList(Session::get('patientID'));

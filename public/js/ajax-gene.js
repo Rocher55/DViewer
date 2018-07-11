@@ -27,7 +27,9 @@ $(document).ready(function () {
     });
 });
 
-$('[name="gene"]').on('dblclick',function(){
+//contextmenu == clic droit
+//doit toujours retourner false
+$('[name="gene"]').on('contextmenu',function(){
     let textarea = $('[name="genes"]');
 
     if($('[name="gene"] option:selected').val()) {
@@ -37,4 +39,5 @@ $('[name="gene"]').on('dblclick',function(){
             textarea.val(textarea.val() + '; ' + $('[name="gene"] option:selected').val());
         }
     }
+    return false;
 });

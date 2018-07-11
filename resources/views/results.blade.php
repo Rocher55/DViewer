@@ -1,9 +1,6 @@
 @extends('layouts.template')
 
 @section('content')
-    <div class="path">
-        {{str_replace(url('/'), '', url()->current())}}
-    </div>
 
     <div class="boutons">
         <a href="/" class="btn btn-primary">Home</a>
@@ -36,7 +33,7 @@
 
                     @foreach($cols as $item)
                         <td>@if(isset($array[$key][$item]))
-                                {{ $array[$key][$item]}}
+                                {{ round($array[$key][$item],2)}}
                             @else
 
                             @endif

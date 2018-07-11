@@ -1,8 +1,7 @@
 @extends('layouts.template')
 
 @section('content')
-    {{count(Session::get('patientID'))}}
-    {{count(Session::get('save-patientID-1'))}}
+
     <div class="container-body">
         {!! Form::open(['url' => 'research/cid', 'method' => 'post']) !!}
 
@@ -18,8 +17,8 @@
 
 
 
-        {!! Form::button('Previous', ['class' => 'previous-button', 'onclick' => "window.history.back();"]) !!}
-            {!! Form::submit('Next', ['class' => 'next-button']) !!}
+        {!! Form::button('Previous', ['class' => 'previous-button', 'onclick' => "sendPrevious();"]) !!}
+        {!! Form::submit('Next', ['class' => 'next-button']) !!}
         {!! Form::close() !!}
     </div>
 @endsection

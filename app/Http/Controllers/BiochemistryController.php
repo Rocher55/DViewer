@@ -16,6 +16,9 @@ class BiochemistryController extends Controller
     public  function  index(){
         Session::forget('biochemistryToView');
 
+        $patient=Session::get('save-patientID-3');
+        Session::put('save-patientID-4', $patient);
+
         //cf. fonction
         $concerned = $this->getConcernedBIO();
 
@@ -32,6 +35,12 @@ class BiochemistryController extends Controller
     public function postSelect(){
         $params = Input::except('_token');  //Recuperation de tous les Input sauf le token
         $request = "";                     //String de la requete
+        $previousPath = Session::get('previous');
+
+        if (Session::has('save-patientID-3') and $previousPath=='/research/analyse'){
+            $patient = Session::get('save-patientID-3');
+            Session::put('patientID', $patient);
+        }
 
         //Si il existe des parametres alors
         if (isset($params)) {
@@ -93,10 +102,14 @@ class BiochemistryController extends Controller
                 //sinon message d'erreur et retour arriere avec les données
                 if(count($res)){
                     Session::put('patientID', createArray($res, 'Patient_ID'));
+                    Session::put('save-patientID-4', createArray($res, 'Patient_ID'));
+
                 }else{
                     Session::flash('nothing',"No data found with your criteria");
                     return redirect()->route('biochemistry')->withInput();
                 }
+            }else{
+                Session::put('patientID',Session::get('save-patientID-3'));
             }
         }
 

@@ -36,7 +36,7 @@
                     </select>
                 </div>
 
-        {!! Form::button('Previous', ['class' => 'previous-button', 'onclick' => "window.history.back();"]) !!}
+        {!! Form::button('Previous', ['class' => 'previous-button', 'onclick' => "sendPrevious();"]) !!}
             {!! Form::submit('Next', ['class' => 'next-button']) !!}
         {!! Form::close() !!}
     </div>

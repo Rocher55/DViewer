@@ -16,16 +16,10 @@ class CidController extends Controller
      *
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
-    public function index()
-    {
-        if (Session::has('save-patientID-1')){
-            $patient = Session::get('save-patientID-1');
-        }else{
-            $patient=Session::get('patientID');
+    public function index(){
 
-            Session::put('save-patientID-2', Session::get('patientID'));
-        }
-
+        $patient=Session::get('save-patientID-1');
+        Session::put('save-patientID-2', $patient);
 
         //Recuperation et cretion d'une liste des tous les CID_ID
         $cid_id = Cid_patient::whereIn('Patient_ID', $patient)
@@ -48,8 +42,16 @@ class CidController extends Controller
      *
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function postSelect()
-    {
+    public function postSelect(){
+        $previousPath = Session::get('previous');
+
+        if (Session::has('save-patientID-1') and ($previousPath==='/research/food' or $previousPath==='/research/biochemistry')){
+            $patient = Session::get('save-patientID-1');
+            Session::put('patientID', $patient);
+        }
+        //Creation de la liste des Patient_ID de l'etape precedente
+        $patientID =  createList(Session::get('patientID'));
+
         //Recuperation de tous les Input sauf le token
         $params = Input::get('cid');
         $paramReq= "";
@@ -59,8 +61,6 @@ class CidController extends Controller
             $paramReq = "AND CID_ID IN ".createList($params);
         }
 
-        //Creation de la liste des Patient_ID de l'etape precedente
-        $patientID =  createList(Session::get('patientID'));
 
         //Si ma chaine de parametres est valide alors
         if(isset($paramReq) && $paramReq != ""){
@@ -77,6 +77,7 @@ class CidController extends Controller
             Session::put('cidID', createArray($results_c, 'CID_ID'));
         } else {
             $results_c = $this->getCID($patientID,$paramReq="");
+            Session::put('patientID',Session::get('save-patientID-1'));
             Session::put('cidID', createArray($results_c, 'CID_ID'));
         }
 

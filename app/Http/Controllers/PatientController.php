@@ -75,7 +75,7 @@ class PatientController extends Controller
                 Session::put('patientID', createArray($newPatientID, 'Patient_ID'));
                 Session::put('save-patientID-1', createArray($newPatientID, 'Patient_ID'));
             }else{
-                Session::flash('nothing',"Aucune donnée n'existe avec vos critères");
+                Session::flash('nothing',"No data found with your criteria");
                 return redirect()->route('patient')->withInput();
             }
         }

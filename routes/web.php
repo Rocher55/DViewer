@@ -21,7 +21,6 @@ Route::post('logout', 'Auth\LoginController@logout')->name('logout');
 
 
 Route::get('/', 'HomeController@index')->name('home');
-Route::get('/ajax', 'AjaxController@ajax_call')->name('ajax');
 Route::get('research/results','ResultController@index')->name('result');
 
 /*------------------------------------------------------------------------------------------
@@ -68,6 +67,15 @@ Route::post('research/select-bio', 'SelectController@postSelect')->name('postSel
 //Gene
 Route::get('research/select-gene', 'GeneController@index')->name('select-gene');
 Route::post('research/select-gene', 'GeneController@postSelect')->name('postSelect-gene');
+
+
+
+/*-------------------------------------------------------------------------------------------
+                                           Ajax
+-------------------------------------------------------------------------------------------*/
+Route::get('/ajax', 'AjaxController@ajax_call')->name('ajax')->middleware('ajax');
+Route::post('/ajax-previous', 'AjaxController@pathThatDemandPrevious')->name('ajax-previous')->middleware('ajax');
+
 
 
 

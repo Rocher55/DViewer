@@ -11,6 +11,8 @@ use App\Food;
 class FoodController extends Controller
 {
     public  function  index(){
+        $patient=Session::get('save-patientID-2');
+        Session::put('save-patientID-3', $patient);
         $result = Food::whereIn('Patient_ID',Session::get("patientID"))->count();
 
         if($result > 0){
@@ -30,6 +32,12 @@ class FoodController extends Controller
     public function postSelect()    {
         $params = Input::except('_token');  //Recuperation de tous les Input sauf le token
         $request = "";                     //String de la requete
+        $previousPath = Session::get('previous');
+
+        if (Session::has('save-patientID-2') and $previousPath=='/research/biochemistry'){
+            $patient = Session::get('save-patientID-2');
+            Session::put('patientID', $patient);
+        }
 
         //Si il existe des parametres alors
         if (isset($params)) {
@@ -83,10 +91,13 @@ class FoodController extends Controller
                 //sinon message d'erreur et retour arriere avec les données
                 if(count($res)){
                     Session::put('patientID', createArray($res, 'Patient_ID'));
+                    Session::put('save-patientID-3', createArray($res, 'Patient_ID'));
                 }else{
                     Session::flash('nothing',"No data found with your criteria");
                     return redirect()->route('food')->withInput();
                 }
+            }else{
+                Session::put('patientID',Session::get('save-patientID-2'));
             }
         }
 

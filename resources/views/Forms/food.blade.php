@@ -14,8 +14,7 @@
 
 
 @section('content')
-    {{count(Session::get('patientID'))}}
-    {{count(Session::get('save-patientID-2'))}}
+
     <div class="container-big-body">
         {!! Form::open(['url' => 'research/food', 'method' => 'post']) !!}
 
@@ -143,7 +142,7 @@
                 </div>
             </div>
 
-        {!! Form::button('Previous', ['class' => 'previous-button', 'onclick' => "window.history.back();"]) !!}
+        {!! Form::button('Previous', ['class' => 'previous-button', 'onclick' => "sendPrevious();"]) !!}
             {!! Form::submit('Next', ['class' => 'next-button']) !!}
 
         {!! Form::close() !!}
