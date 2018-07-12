@@ -90,6 +90,7 @@
 </div>
 
 
+<script src="{!! asset('js/input-verification.js') !!}"></script>
 @yield("script")
 </body>
 

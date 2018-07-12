@@ -94,6 +94,11 @@ textarea {
 .next-button:hover{
     background-color: #b3ffd8;
 }
+.next-button:disabled{
+    background-color: #6c757d;
+    border-color: #1b1e21;
+}
+
 .previous-button{
     /*Dimensions*/
     width: 140px;
@@ -115,6 +120,7 @@ textarea {
 .previous-button:hover{
     background-color: #ffd1ce;
 }
+
 .reset-button{
     /*Dimensions*/
     width: 140px;

@@ -49,9 +49,6 @@ class BiochemistryController extends Controller
             //(car sinon generation de la partie "patient" meme sans valeur)
 
             //Pour chaque parametres
-
-
-
             foreach ($params as $item => $value) {
                 //Decouper le nom du champ en fonction du "-"
                 $actualElt = explode("-", $item);
@@ -62,28 +59,33 @@ class BiochemistryController extends Controller
 
                     //Si ce n'est pas l'element est different de view alors
                     if($actualElt[1] != 'view') {
-                        //Si je n'ai pas encore croise cet id alors
-                        if (!in_array($actualElt[0], $seenID)) {
-
                             //si mon tableau des vues est vide alors
                             //je cree la requete avec la partie patient
                             //sinon sans la partie patient
                             if (count($seenID) == 0) {
-                                $request .= $this->createRequestPart("base", "");
-                                $request .= $this->createRequestPart("nomenclature", $actualElt[0]);
-                                $request .= $this->createRequestPart('unite', $actualElt[2]);
-                                $request .= $this->createRequestPart($actualElt[1], $value);
+                                if(count(array_keys($seenID,$actualElt[0]))==0){
+                                    $request .= $this->createRequestPart("base", "");
+                                    $request .= $this->createRequestPart("nomenclature", $actualElt[0]);
+                                    $request .= $this->createRequestPart('unite', $actualElt[2]);
+                                    $request .= $this->createRequestPart($actualElt[1], $value);
+                                }else{
+                                    $request .= $this->createRequestPart($actualElt[1], $value);
+                                }
                             } else {
-                                $request .= $this->createRequestPart("intersect", "");
-                                $request .= $this->createRequestPart("base", "");
-                                $request .= $this->createRequestPart("nomenclature", $actualElt[0]);
-                                $request .= $this->createRequestPart('unite', $actualElt[2]);
-                                $request .= $this->createRequestPart($actualElt[1], $value);
+                                if(count(array_keys($seenID,$actualElt[0]))==0){
+                                    $request .= $this->createRequestPart("intersect", "");
+                                    $request .= $this->createRequestPart("base", "");
+                                    $request .= $this->createRequestPart("nomenclature", $actualElt[0]);
+                                    $request .= $this->createRequestPart('unite', $actualElt[2]);
+                                    $request .= $this->createRequestPart($actualElt[1], $value);
+                                }else{
+                                    $request .= $this->createRequestPart($actualElt[1], $value);
+                                }
                             }
 
                             //Ajout de l'id dans mon tableau des vues
                             array_push($seenID, $actualElt[0]);
-                        }
+
                         $end = true;
                     }else{ //Sinon ajout dans la sesion des id d biochemistry a voir
                         Session::push('biochemistryToView', $actualElt[0].'-'.$actualElt[2]);
@@ -94,6 +96,7 @@ class BiochemistryController extends Controller
             if($end){
                 $request .= $this->createRequestPart("patient", createList(Session::get('patientID')));
             }
+
 
             if($request != ""){
                 $res = DB::SELECT($request);
@@ -145,16 +148,14 @@ class BiochemistryController extends Controller
         switch ($part) {
             case "base":
                 $return = " SELECT distinct b.Patient_ID Patient_ID
-                           FROM biochemistry b, unite_mesure u, nomenclatures n 
-                           WHERE b.Nomenclature_ID = n.Nomenclature_ID
-                           AND b.Unite_Mesure_ID = u.Unite_Mesure_ID
-                           AND b.Valeur > 0";
+                           FROM biochemistry b
+                           ";
                 break;
             case "nomenclature":
-                $return = " AND n.Nomenclature_ID = ".$data;
+                $return = " WHERE b.Nomenclature_ID = ".$data;
                 break;
             case "unite":
-                $return = " AND u.Unite_Mesure_ID = ".$data;
+                $return = " AND b.Unite_Mesure_ID = ".$data;
                 break;
             case "from":
                 $return = " AND b.valeur >= ".$data;

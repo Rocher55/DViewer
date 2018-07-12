@@ -58,6 +58,7 @@ class PatientController extends Controller
         $params = Input::except('_token');
         $request = $this->createRequest($params);
 
+
         //Si ma chaine de parametres est valide alors
         if(isset($request) && $request != ""){
 

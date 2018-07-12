@@ -1,7 +1,6 @@
 @extends('layouts.template')
 
 @section('content')
-
     <div class="container-body">
         {!! Form::open(['url' => 'research/cid', 'method' => 'post']) !!}
 

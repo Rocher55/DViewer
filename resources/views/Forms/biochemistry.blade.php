@@ -50,7 +50,7 @@
 
             <div class="container ">
                 {!! Form::button('Previous', ['class' => 'previous-button', 'onclick' => "sendPrevious();"]) !!}
-                {!! Form::submit('Next', ['class' => 'next-button']) !!}
+                {!! Form::submit('Next', ['class' => 'next-button', "disabled" => 'true']) !!}
             </div>
         {!! Form::close() !!}
     </div>
