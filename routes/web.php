@@ -30,59 +30,48 @@ Route::get('research/results','ResultController@index')->name('result');
 Route::get('research/protocol', 'ProtocolController@index')->name('protocol');
 Route::post('research/protocol', 'ProtocolController@postSelect')->name('postProtocol');
 
-//Center
-Route::get('research/center', 'CenterController@index')->name('center');
-Route::post('research/center', 'CenterController@postSelect')->name('postCenter');
 
-//Patient
-Route::get('research/patient', 'PatientController@index')->name('patient');
-Route::post('research/patient', 'PatientController@postSelect')->name('postPatient');
-
-//CID
-Route::get('research/cid', 'CidController@index')->name('cid');
-Route::post('research/cid', 'CidController@postSelect')->name('postCid');
-
-//Food-diaries
-Route::get('research/food', 'FoodController@index')->name('food');
-Route::post('research/food', 'FoodController@postSelect')->name('postFood');
-
-//Biochemistry
-Route::get('research/biochemistry', 'BiochemistryController@index')->name('biochemistry');
-Route::post('research/biochemistry', 'BiochemistryController@postSelect')->name('postBiochemistry');
-
-//Analyse
-Route::get('research/analyse', 'AnalyseController@index')->name('analyse');
-Route::post('research/analyse', 'AnalyseController@postSelect')->name('postAnalyse');
+Route::group(['middleware' => ['in.process']], function () {
+    //Center
+        Route::get('research/center', 'CenterController@index')->name('center');
+        Route::post('research/center', 'CenterController@postSelect')->name('postCenter');
+    //Patient
+        Route::get('research/patient', 'PatientController@index')->name('patient');
+        Route::post('research/patient', 'PatientController@postSelect')->name('postPatient');
+    //CID
+        Route::get('research/cid', 'CidController@index')->name('cid');
+        Route::post('research/cid', 'CidController@postSelect')->name('postCid');
+    //Food-diaries
+        Route::get('research/food', 'FoodController@index')->name('food');
+        Route::post('research/food', 'FoodController@postSelect')->name('postFood');
+    //Biochemistry
+        Route::get('research/biochemistry', 'BiochemistryController@index')->name('biochemistry');
+        Route::post('research/biochemistry', 'BiochemistryController@postSelect')->name('postBiochemistry');
+    //Analyse
+        Route::get('research/analyse', 'AnalyseController@index')->name('analyse');
+        Route::post('research/analyse', 'AnalyseController@postSelect')->name('postAnalyse');
 
 
+    /*------------------------------------------------------------------------------------------
+                                    Pages de données à afficher
+    ------------------------------------------------------------------------------------------*/
+    //Gene
+        Route::get('research/select-gene', 'GeneController@index')->name('select-gene');
+        Route::post('research/select-gene', 'GeneController@postSelect')->name('postSelect-gene');
+});
 
-
-/*------------------------------------------------------------------------------------------
-                                Pages de données à afficher
-------------------------------------------------------------------------------------------*/
-//Biochemistry
-Route::get('research/select-bio', 'SelectController@index')->name('select-bio');
-Route::post('research/select-bio', 'SelectController@postSelect')->name('postSelect-bio');
-
-//Gene
-Route::get('research/select-gene', 'GeneController@index')->name('select-gene');
-Route::post('research/select-gene', 'GeneController@postSelect')->name('postSelect-gene');
-
+    /*-------------------------------------------------------------------------------------------
+                                            Exportation
+    -------------------------------------------------------------------------------------------*/
+    Route::get('research/export','ResultController@export')->name('export');
 
 
 /*-------------------------------------------------------------------------------------------
-                                           Ajax
--------------------------------------------------------------------------------------------*/
+                                               Ajax
+ -------------------------------------------------------------------------------------------*/
 Route::get('/ajax', 'AjaxController@ajax_call')->name('ajax')->middleware('ajax');
 Route::post('/ajax-previous', 'AjaxController@pathThatDemandPrevious')->name('ajax-previous')->middleware('ajax');
 
-
-
-
-/*-------------------------------------------------------------------------------------------
-                                        Exportation
--------------------------------------------------------------------------------------------*/
-Route::get('research/export','ResultController@export')->name('export');
 
 
 

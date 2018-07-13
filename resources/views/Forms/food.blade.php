@@ -16,7 +16,7 @@
 @section('content')
 
     <div class="container-big-body">
-        {!! Form::open(['url' => 'research/food', 'method' => 'post']) !!}
+        {!! Form::open(['url' => 'research/food', 'method' => 'post', 'id'=>'form']) !!}
 
             <div class="row group">
                 <div class="col-md-6 text-right">
@@ -142,7 +142,8 @@
                 </div>
             </div>
 
-        {!! Form::button('Previous', ['class' => 'previous-button', 'onclick' => "sendPrevious();"]) !!}
+            {!! Form::button('Previous', ['class' => 'previous-button', 'onclick' => "sendPrevious();"]) !!}
+            {!! Form::button('Clear', ['class' => 'reset-button', 'onclick' => "resetFields();"]) !!}
             {!! Form::submit('Next', ['class' => 'next-button']) !!}
 
         {!! Form::close() !!}

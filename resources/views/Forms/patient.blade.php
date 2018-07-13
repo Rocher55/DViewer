@@ -2,7 +2,7 @@
 
 @section('content')
     <div class="container-body select">
-        {!! Form::open(['url' => 'research/patient', 'method' => 'post']) !!}
+        {!! Form::open(['url' => 'research/patient', 'method' => 'post', 'id'=>'form']) !!}
 
                 <div class="col-md-3 offset-md-1">
                     {!! Form::label('age-from', 'Age   From')  !!}
@@ -36,7 +36,8 @@
                     </select>
                 </div>
 
-        {!! Form::button('Previous', ['class' => 'previous-button', 'onclick' => "sendPrevious();"]) !!}
+            {!! Form::button('Previous', ['class' => 'previous-button', 'onclick' => "sendPrevious();"]) !!}
+            {!! Form::button('Clear', ['class' => 'reset-button', 'onclick' => "resetFields();"]) !!}
             {!! Form::submit('Next', ['class' => 'next-button']) !!}
         {!! Form::close() !!}
     </div>

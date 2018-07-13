@@ -114,7 +114,7 @@ class ResultController extends Controller{
 
         //Pagination
         $currentPage = LengthAwarePaginator::resolveCurrentPage();
-        $perPage = 16;
+        $perPage = 50;
         $path = LengthAwarePaginator::resolveCurrentPath();
         $keys = new LengthAwarePaginator(array_slice($keys, $perPage * ($currentPage - 1), $perPage), count($keys), $perPage, $currentPage, ['path' => $path]);
 

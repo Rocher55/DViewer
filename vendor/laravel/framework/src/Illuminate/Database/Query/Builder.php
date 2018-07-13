@@ -319,7 +319,7 @@ class Builder
      */
     protected function parseSub($query)
     {
-        if ($query instanceof self) {
+        if ($query instanceof self || $query instanceof EloquentBuilder) {
             return [$query->toSql(), $query->getBindings()];
         } elseif (is_string($query)) {
             return [$query, []];
@@ -1449,7 +1449,7 @@ class Builder
         $this->wheres[] = compact('type', 'column', 'value', 'boolean', 'not');
 
         if (! $value instanceof Expression) {
-            $this->addBinding(json_encode($value));
+            $this->addBinding($this->grammar->prepareBindingForJsonContains($value));
         }
 
         return $this;
@@ -1805,7 +1805,7 @@ class Builder
      * Constrain the query to the next "page" of results after a given ID.
      *
      * @param  int  $perPage
-     * @param  int  $lastId
+     * @param  int|null  $lastId
      * @param  string  $column
      * @return \Illuminate\Database\Query\Builder|static
      */
@@ -1813,8 +1813,11 @@ class Builder
     {
         $this->orders = $this->removeExistingOrdersFor($column);
 
-        return $this->where($column, '>', $lastId)
-                    ->orderBy($column, 'asc')
+        if (! is_null($lastId)) {
+            $this->where($column, '>', $lastId);
+        }
+
+        return $this->orderBy($column, 'asc')
                     ->take($perPage);
     }
 
@@ -2054,7 +2057,7 @@ class Builder
     protected function withoutSelectAliases(array $columns)
     {
         return array_map(function ($column) {
-            return is_string($column) && ($aliasPosition = strpos(strtolower($column), ' as ')) !== false
+            return is_string($column) && ($aliasPosition = stripos($column, ' as ')) !== false
                     ? substr($column, 0, $aliasPosition) : $column;
         }, $columns);
     }
@@ -2088,7 +2091,7 @@ class Builder
     {
         $alias = $alias ?: $column;
 
-        $lastId = 0;
+        $lastId = null;
 
         do {
             $clone = clone $this;

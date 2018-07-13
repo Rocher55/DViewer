@@ -2,7 +2,7 @@
 
 @section('content')
     <div class="container-body">
-        {!! Form::open(['url' => 'research/center', 'method' => 'post']) !!}
+        {!! Form::open(['url' => 'research/center', 'method' => 'post', 'id'=>'form']) !!}
         <select data-placeholder="Choose something..." class="chosen-tag" multiple="true" name="center[]">
             <option value=""></option>
 
@@ -14,6 +14,7 @@
         </select>
 
             {!! Form::button('Previous', ['class' => 'previous-button', 'onclick' => "sendPrevious();"]) !!}
+            {!! Form::button('Clear', ['class' => 'reset-button', 'onclick' => "resetFields();"]) !!}
             {!! Form::submit('Next', ['class' => 'next-button']) !!}
         {!! Form::close() !!}
     </div>

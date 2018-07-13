@@ -17,13 +17,14 @@
                 </div>
             </div>
 
-            {!! Form::open(['url' => 'research/select-gene', 'method' => 'post']) !!}
+            {!! Form::open(['url' => 'research/select-gene', 'method' => 'post', 'id'=>'form']) !!}
             <div class="col-md-8 text-center">
                 {!! Form::textarea('genes', '',['cols'=>'50', 'rows'=>'10', 'id'=>'genes']) !!}
             </div>
         </div>
 
         {!! Form::button('Previous', ['class' => 'previous-button', 'onclick' => "sendPrevious();"]) !!}
+        {!! Form::button('Clear', ['class' => 'reset-button', 'onclick' => "resetFields();"]) !!}
         {!! Form::submit('Next', ['class' => 'next-button']) !!}
         {!! Form::close() !!}
     </div>

@@ -181,3 +181,9 @@ class FoodController extends Controller
     }
 
 }
+/*
+ * SELECT distinct n.NameN, GROUP_CONCAT( distinct u.NameUM) FROM food_diaries f, nomenclatures n, unite_mesure u
+where f.Nomenclature_ID = n.Nomenclature_ID
+and f.Unite_Mesure_ID = u.Unite_Mesure_ID
+group by n.NameN
+ * */
