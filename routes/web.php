@@ -55,8 +55,12 @@ Route::group(['middleware' => ['in.process']], function () {
     /*------------------------------------------------------------------------------------------
                                     Pages de données à afficher
     ------------------------------------------------------------------------------------------*/
+    //Baecke
+        Route::get('research/activities', 'PhysicalController@index')->name('activities');
+        Route::post('research/activities', 'PhysicalController@postSelect')->name('postActivities');
     //Gene
         Route::get('research/select-gene', 'GeneController@index')->name('select-gene');
+
         Route::post('research/select-gene', 'GeneController@postSelect')->name('postSelect-gene');
 });
 

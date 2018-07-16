@@ -1,6 +1,7 @@
 @extends('layouts.template')
 
 @section('content')
+    {{var_dump(Session::get('activitiesToView'))}}
     <div class="boutons">
         <a href="/" class="btn btn-primary">Home</a>
         <a href="/research/export" class="btn btn-primary" >Export</a>

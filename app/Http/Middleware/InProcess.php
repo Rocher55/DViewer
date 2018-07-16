@@ -19,7 +19,7 @@ class InProcess
 
         //URLs autorises
         $allowed = [$base.'protocol', $base.'center', $base.'patient', $base.'cid',
-                    $base.'food', $base.'biochemistry', $base.'analyse', $base.'select-gene', $base.'results'];
+                    $base.'food', $base.'biochemistry',$base.'activities', $base.'analyse', $base.'select-gene', $base.'results'];
 
         //Si la demande n'est pas saisie directement dans l'url
         //sinon redirection vers la page d'accueil

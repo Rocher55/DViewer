@@ -13,6 +13,8 @@ class ResultController extends Controller{
 
     private $biochemistryID = array();
     private $experimentsID = array();
+    private $foodDiariesID = array();
+    private $activitiesID = array();
 
     /**
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
@@ -30,11 +32,8 @@ class ResultController extends Controller{
             //bioCid
             $bioCid = $this->createBioCidArray();
             $requestBio = $this->createRequestBio();
-
-
             //Execution de la requete
             $resultsBio = DB::SELECT($requestBio);
-
             //Pour chaque resultat le mettre dans
             //le tableau à l'indice 1 : Patient_ID
             //et 2 : item
@@ -45,6 +44,37 @@ class ResultController extends Controller{
                 $array[strval($item->Patient_ID)]['Protocol'] = $item->Protocol;
                 $array[strval($item->Patient_ID)]['Class'] = $item->Class;
                 $array[strval($item->Patient_ID)][$item->item] = $item->valeur;
+            }
+
+            //Recuperation des donnees de food_diaries
+            $foodWeek = array();
+            if(Session::has('foodToView')){
+                //foodWeek
+                $foodWeek = $this->createFoodWeekArray();
+                $requestFood = $this->createRequestFood();
+                $resultsFood = DB::SELECT($requestFood);
+                //Pour chaque resultat le mettre dans
+                //le tableau à l'indice 1 : Patient_ID
+                //et 2 : item
+                foreach ($resultsFood as $item){
+                    $array[strval($item->Patient_ID)][$item->item] = $item->valeur;
+                }
+            }
+
+
+            $activitiesCID = array();
+            if(Session::has('activitiesToView')){
+                $activitiesCID = Session::get('activitiesToView');
+                $this->createActivitiesCidArray();
+
+                $requestActivities = $this->createRequestActivities();
+                $resultsActivities = DB::SELECT($requestActivities);
+                //Pour chaque resultat le mettre dans
+                //le tableau à l'indice 1 : Patient_ID
+                //et 2 : item
+                foreach ($resultsActivities as $item){
+                    $array[strval($item->Patient_ID)][$item->item] = $item->valeur;
+                }
             }
 
 
@@ -104,7 +134,7 @@ class ResultController extends Controller{
 
 
             $keys = array_keys($array);              //Recuperation des cles (Patient_ID)
-            $cols = array_merge($bioCid, $geneCid);  //Fusion des nom de colonnes entre Biochemistry et Genes
+            $cols = array_merge($bioCid, $foodWeek,$activitiesCID, $geneCid);  //Fusion des nom de colonnes entre Biochemistry et Genes
             $this->sendToSession($array, $keys, $cols);//Ajout du tableau de valeur, des clefs et colonnes en Session
         }else{
             $keys = Session::get('results-keys');
@@ -114,7 +144,7 @@ class ResultController extends Controller{
 
         //Pagination
         $currentPage = LengthAwarePaginator::resolveCurrentPage();
-        $perPage = 50;
+        $perPage = 16;
         $path = LengthAwarePaginator::resolveCurrentPath();
         $keys = new LengthAwarePaginator(array_slice($keys, $perPage * ($currentPage - 1), $perPage), count($keys), $perPage, $currentPage, ['path' => $path]);
 
@@ -148,12 +178,46 @@ class ResultController extends Controller{
                      AND b.CID_ID = cp.CID_ID
                      AND b.Patient_ID = cp.Patient_ID
                      AND b.Nomenclature_ID = n.Nomenclature_ID
-                     AND b.Unite_Mesure_ID = u.Unite_Mesure_ID
-                     AND B.VALEUR > 0";
-        $request .=" AND b.Biochemistry_ID in ".$this->createList($this->biochemistryID);
+                     AND b.Unite_Mesure_ID = u.Unite_Mesure_ID";
+        $request .=" AND b.Biochemistry_ID in ".createStringList($this->biochemistryID);
 
         return $request;
     }
+
+    /**
+     * Creation de la requete sur food_diaries
+     *
+     * @return string
+     */
+    public function createRequestFood(){
+        $request = " SELECT p.Patient_ID as Patient_ID, CONCAT(n.NameN,' (',u.NameUM ,') - ', w.WK_NAME) as item, f.valeur as valeur
+                     FROM food_diaries f, patient_week pw, weeks w, nomenclatures n, unite_mesure u, patients p
+                     WHERE f.WK_ID = pw.WK_ID
+                     AND pw.WK_ID = w.WK_ID
+                     AND f.Patient_ID = pw.Patient_ID
+                     AND pw.Patient_ID = p.Patient_ID
+                     AND f.Nomenclature_ID = n.Nomenclature_ID
+                     AND f.unite_mesure_id = u.unite_mesure_id";
+        $request .= " AND f.food_diaries_id in".createStringList($this->foodDiariesID)
+                    ." ORDER BY p.Patient_ID ";
+
+        return $request;
+    }
+
+
+
+
+
+
+
+
+
+    public function createRequestActivities(){
+
+    }
+
+
+
 
 
 
@@ -182,25 +246,25 @@ class ResultController extends Controller{
 
 
 
+
+
+
+
+
     /**
      * Genere un tableau contenant des valeurs au format :
      *              Nomenclature->NameN (UniteMesure->NameUM) - Cid->CID_Name
      * pour les entetes
-     * @param $cids
-     * @param $nomenclatures
      * @return array
      */
     public function createBioCidArray(){
         $patients = createList(Session::get('patientID'));
         $biochemistry_ID = DB::SELECT("SELECT b.biochemistry_ID as id
                                              FROM biochemistry b
-                                             WHERE b.Valeur > 0
-                                             AND CONCAT(b.Nomenclature_ID,'-', b.Unite_Mesure_ID) in ".$this->createList(Session::get('biochemistryToView'))."
+                                             WHERE CONCAT(b.Nomenclature_ID,'-', b.Unite_Mesure_ID) in ".createStringList(Session::get('biochemistryToView'))."
                                              AND b.Patient_ID in ".$patients ." ORDER BY b.Patient_ID");
 
-
-        $array= createArray($biochemistry_ID,'id');
-        $this->biochemistryID = $array;
+        $this->biochemistryID = createArray($biochemistry_ID,'id');;
 
         //Je ne garde que ceux qui ont bien des valeurs dans biochemistry
         $results = DB::SELECT("SELECT distinct CONCAT(n.NameN,' (',u.NameUM ,') - ', cid.CID_NAME) AS bioCid
@@ -209,15 +273,60 @@ class ResultController extends Controller{
                                     AND b.CID_ID = cp.CID_ID
                                     AND b.Nomenclature_ID = n.Nomenclature_ID
                                     AND b.Unite_Mesure_ID = u.Unite_Mesure_ID 
-                                    AND b.biochemistry_ID in ".createList($array)
+                                    AND b.biochemistry_ID in ".createList($this->biochemistryID)
                                  ." AND cid.CID_ID in".createList(Session::get('cidID'))
-                                 ." 
-                                 ORDER BY n.NameN ASC, u.NameUM ASC, cid.CID_ID ASC ");
+                                 ." ORDER BY n.NameN ASC, u.NameUM ASC, cid.CID_ID ASC ");
         $return = createArray($results,'bioCid');
 
         return $return;
     }
 
+
+
+    /**
+     * Genere un tableau contenant des valeurs au format :
+     *              Nomenclature->NameN (UniteMesure->NameUM) - Weeks->Wk_Name
+     * pour les entetes
+     *
+     * @return string
+     */
+    public function createFoodWeekArray(){
+        $patients = createList(Session::get('patientID'));
+        $food_ID = DB::SELECT("SELECT f.food_diaries_id as id 
+                                      FROM food_diaries f 
+                                      WHERE CONCAT(f.Nomenclature_ID,'-', f.Unite_Mesure_ID) in ".createStringList(Session::get('foodToView'))."
+                                      AND f.Patient_ID in ".$patients ." ORDER BY f.Patient_ID");
+
+        $this->foodDiariesID = createArray($food_ID, 'id');
+        //Je ne garde que ceux qui ont bien des valeurs dans food_diaries
+        $results = DB::SELECT("SELECT distinct CONCAT(n.NameN,' (',u.NameUM ,') - ', w.WK_NAME) AS foodWeek
+                                    FROM food_diaries f, nomenclatures n, unite_mesure u, weeks w, patient_week pw
+                                    WHERE pw.WK_ID = w.WK_ID
+                                    AND f.WK_ID = pw.WK_ID
+                                    AND f.Nomenclature_ID = n.Nomenclature_ID
+                                    AND f.Unite_Mesure_ID = u.Unite_Mesure_ID 
+                                    AND f.valeur is not null 
+                                    AND f.food_diaries_ID in ".createList($this->foodDiariesID)
+                                 ." ORDER BY n.NameN ASC, u.NameUM ASC, w.WK_ID ASC ");
+        $return = createArray($results,'foodWeek');
+
+        return $return;
+    }
+
+
+
+    /**
+     * Recupere les id de physical_activities des patients et cid correspondants
+     */
+    public function createActivitiesCidArray(){
+        $activities_ID = DB::select('SELECT pa.Physical_Activities_ID as id
+                                            FROM physical_activities pa
+                                            WHERE pa.Patient_ID in'.createList(Session::get('patientID')).'
+                                            AND pa.CID_ID in'.createList(Session::get('cidID')).'
+                                            ORDER BY pa.Patient_IDs');
+
+        $this->activitiesID = createArray($activities_ID, 'id');
+    }
 
 
 
@@ -231,7 +340,7 @@ class ResultController extends Controller{
             $request = " SELECT e.Experiments_ID as id
                          FROM experiments e, ea_analyse a
                          WHERE e.Analyse_ID = a.Analyse_ID
-                         AND e.Gene_Symbol in ".$this->createList(Session::get('geneID'))."                        
+                         AND e.Gene_Symbol in ".createStringList(Session::get('geneID'))."                        
                          AND  e.Analyse_ID in ".createList(Session::get('analyseID'));
 
             $experiments_ID = DB::SELECT($request);
@@ -250,8 +359,7 @@ class ResultController extends Controller{
                                                 ORDER BY e.Gene_Symbol, e.Probe_ID, a.SampleType_ID, a.Technique_ID, a.Molecule_ID, cid.CID_ID ");
 
             $return = createArray($results,'geneCid');
-
-             return $return;
+            return $return;
     }
 
 
@@ -326,22 +434,7 @@ class ResultController extends Controller{
 
 
 
-    /**
-     * Permet de generer une liste de string comprehensible pour
-     * effectuer un "in" dans une requete SQL normale
-     *
-     * @param $data
-     * @return string
-     */
-    function createList($data){
-        $return=" ( ";
-        foreach ($data as $item){
-            $return .= "'".$item ."', ";
-        }
-        $return = substr($return, 0, -2) ." ) ";
 
-        return $return;
-    }
 
 
 

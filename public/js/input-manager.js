@@ -11,12 +11,15 @@ let path = window.location.pathname;
 $( "input[type=checkbox]" ).on( "click", function(){
     var n = $( "input:checked" ).length;    //Nombre de case cochees
 
-    if(n == 0  ){
-        error.push('nb');
-    }else{
-        remove('nb');
+    if(path == '/research/biochemistry'){
+        if(n == 0  ){
+            error.push('nb');
+        }else{
+            remove('nb');
+        }
+        reactToErrors();
     }
-    reactToErrors();
+
 } );
 
 

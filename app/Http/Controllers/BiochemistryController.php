@@ -2,8 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Biochemistry;
-use Illuminate\Http\Request;
+
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Input;
@@ -16,8 +15,7 @@ class BiochemistryController extends Controller
     public  function  index(){
         Session::forget('biochemistryToView');
 
-        $patient=Session::get('save-patientID-3');
-        Session::put('save-patientID-4', $patient);
+        Session::put('save-patientID-4', Session::get('save-patientID-3'));
 
         //cf. fonction
         $concerned = $this->getConcernedBIO();
@@ -95,6 +93,7 @@ class BiochemistryController extends Controller
 
             if($end){
                 $request .= $this->createRequestPart("patient", createList(Session::get('patientID')));
+                $request .= $this->createRequestPart("cid", createList(Session::get('cidID')));
             }
 
 
@@ -116,22 +115,9 @@ class BiochemistryController extends Controller
             }
         }
 
-        if(!Session::has('biochemistryToView')){
-            $allBio = DB::SELECT("SELECT distinct n.Nomenclature_ID, u.Unite_Mesure_ID
-                                        FROM nomenclatures n, unite_mesure u, biochemistry b
-                                        WHERE b.Nomenclature_ID = n.Nomenclature_ID
-                                        AND b.Unite_Mesure_ID = u.Unite_Mesure_ID
-                                        AND b.Patient_ID in". createList(Session::get('patientID')).
-                                        'AND b.CID_ID in'. createList(Session::get('cidID')).
-                                        'AND b.valeur >0
-                                        order by 1');
 
-            foreach ($allBio as $item){
-                Session::push('biochemistryToView', $item->Nomenclature_ID.'-'.$item->Unite_Mesure_ID);
-            }
-        }
 
-        return redirect()->route('analyse');
+        return redirect()->route('activities');
     }
 
 
@@ -168,6 +154,9 @@ class BiochemistryController extends Controller
                 break;
             case "patient":
                 $return = "  AND b.Patient_ID in  ".$data;
+                break;
+            case "cid":
+                $return = "  AND b.CID_ID in  ".$data;
                 break;
         }
 

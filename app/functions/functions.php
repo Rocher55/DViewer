@@ -36,4 +36,22 @@ function createArray($data, $column)
 
     return $return;
 }
+
+
+/**
+ * Permet de generer une liste de string comprehensible pour
+ * effectuer un "in" dans une requete SQL normale
+ *
+ * @param $data
+ * @return string
+ */
+function createStringList($data){
+    $return=" ( ";
+    foreach ($data as $item){
+        $return .= "'".$item ."', ";
+    }
+    $return = substr($return, 0, -2) ." ) ";
+
+    return $return;
+}
 ?>

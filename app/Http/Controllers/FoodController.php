@@ -11,12 +11,18 @@ use App\Food;
 class FoodController extends Controller
 {
     public  function  index(){
+        Session::forget('foodToView');
+
         $patient=Session::get('save-patientID-2');
         Session::put('save-patientID-3', $patient);
         $result = Food::whereIn('Patient_ID',Session::get("patientID"))->count();
 
+
         if($result > 0){
-            return view('Forms.food', compact('result'));
+            $concerned = $this->getConcernedFood();
+
+
+            return view('Forms.food', compact('concerned'));
         }else{
             return redirect()->route("biochemistry");
         }
@@ -53,37 +59,40 @@ class FoodController extends Controller
 
                 //si mon item existe ainsi que sa valeur alors
                 if (isset($item) && isset($value)) {
+                    if($actualElt[1] != 'view') {
+                        //Si je n'ai pas encore croise cet id alors
+                        if (!in_array($actualElt[0], $seenID)) {
 
-                    //Si je n'ai pas encore croise cet id alors
-                    if (!in_array($actualElt[0], $seenID)) {
+                            //si mon tableau des vues est vide alors
+                            //je cree la requete avec la partie patient
+                            //sinon sans la partie patient
+                            if (count($seenID) == 0) {
+                                $request .= $this->createRequestPart("base", "");
+                                $request .= $this->createRequestPart("nomenclature", $actualElt[0]);
+                                $request .= $this->createRequestPart($actualElt[1], $value);
+                            } else {
+                                $request .= $this->createRequestPart("intersect", "");
+                                $request .= $this->createRequestPart("base", "");
+                                $request .= $this->createRequestPart("nomenclature", $actualElt[0]);
+                                $request .= $this->createRequestPart($actualElt[1], $value);
+                            }
 
-                        //si mon tableau des vues est vide alors
-                        //je cree la requete avec la partie patient
-                        //sinon sans la partie patient
-                        if (count($seenID) == 0) {
-                            $request .= $this->createRequestPart("base", "");
-                            $request .= $this->createRequestPart("nomenclature", $actualElt[0]);
-                            $request .= $this->createRequestPart($actualElt[1], $value);
+                            //Ajout de l'id dans mon tableau des vues
+                            array_push($seenID, $actualElt[0]);
                         } else {
-                            $request .= $this->createRequestPart("intersect", "");
-                            $request .= $this->createRequestPart("base", "");
-                            $request .= $this->createRequestPart("nomenclature", $actualElt[0]);
                             $request .= $this->createRequestPart($actualElt[1], $value);
                         }
-
-                        //Ajout de l'id dans mon tableau des vues
-                        array_push($seenID, $actualElt[0]);
-                    } else {
-                        $request .= $this->createRequestPart($actualElt[1], $value);
+                        $end = true;
+                    }else{
+                        Session::push('foodToView', $actualElt[0].'-'.$actualElt[2]);
                     }
-                    $end = true;
+
                 }
             }
 
             if($end){
                 $request .= $this->createRequestPart("patient", createList(Session::get('patientID')));
             }
-
             if($request != ""){
                 $res = DB::SELECT($request);
 
@@ -178,6 +187,20 @@ class FoodController extends Controller
 
         //retour des clefs
         return $uniqueID;
+    }
+
+
+
+    public function getConcernedFood(){
+        $concerned = DB::select("SELECT f.Nomenclature_ID, n.NameN, u.NameUM, u.Unite_Mesure_ID, min(f.Valeur) as min, max(f.valeur) as max 
+                                        FROM food_diaries f, nomenclatures n, unite_mesure u
+                                        WHERE f.Nomenclature_ID = n.Nomenclature_ID
+                                        AND f.Unite_Mesure_ID = u.Unite_Mesure_ID
+                                        AND f.Patient_ID in". createList(Session::get('patientID')).
+                                        "GROUP BY 1,2,3
+                                        ORDER BY 2");
+
+        return $concerned;
     }
 
 }

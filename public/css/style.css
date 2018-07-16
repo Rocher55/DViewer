@@ -10,14 +10,17 @@ body{
     font-size: large;
 }
 .container-big-body{
-    margin: 0 auto;
-    position: fixed;
-    margin-right: 8%;
+    /*margin: 0 auto;*/
+    position: relative;
+    margin-right: 16%;
     margin-left: 8%;
 
-    top: 15vmax;
-    margin-bottom: 25%;
-    font-size: large;
+    top: 10vmax;
+    padding-bottom: 8%;
+   /* margin-bottom: 25%;
+    bottom: 50%;
+    font-size: large;*/
+    overflow-y: hidden;
 }
 .biochemistry{
     margin-top: 5%;
@@ -71,7 +74,7 @@ textarea {
 
 
 /*Boutons de formulaire*/
-
+.bottom-buttons{}
 
 .next-button{
     /*Dimensions*/
@@ -87,7 +90,7 @@ textarea {
 
     /*Position*/
     position: fixed;
-    z-index: 10;
+    z-index: 0;
     bottom: 5%;
     right: 5%;
 }
@@ -113,7 +116,7 @@ textarea {
 
     /*Position*/
     position: fixed;
-    z-index: 10;
+    z-index: 0;
     bottom: 5%;
     left: 5%;
 }
@@ -135,7 +138,7 @@ textarea {
 
     /*Position*/
     position: fixed;
-    z-index: 10;
+    z-index: 0;
     bottom: 5%;
     left: 45%;
     right: 45%;
@@ -170,7 +173,9 @@ textarea {
 .unite-chosen-tag{
     width: 20%;
 }
-
+.food-input{
+    width: 11%;
+}
 
 
 
@@ -207,6 +212,9 @@ tr>td{
     text-overflow: ellipsis;
     white-space: nowrap;
 }
+
+
+
 
 .boutons{
     padding-left: 90%;
