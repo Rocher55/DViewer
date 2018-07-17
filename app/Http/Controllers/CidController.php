@@ -17,7 +17,7 @@ class CidController extends Controller
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
     public function index(){
-
+        womanPercentage();
         $patient=Session::get('save-patientID-1');
         Session::put('save-patientID-2', $patient);
 

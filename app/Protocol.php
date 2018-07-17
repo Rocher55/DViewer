@@ -8,7 +8,10 @@ use Illuminate\Database\Eloquent\Model;
  * @property int $Protocol_ID
  * @property string $Protocol_Name
  * @property string $Protocol_Type
+ * @property string $Image
+ * @property int $Description
  * @property CenterProtocol $centerProtocol
+ * @property Center[] $centers
  */
 class Protocol extends Model
 {
@@ -22,7 +25,7 @@ class Protocol extends Model
     /**
      * @var array
      */
-    protected $fillable = ['Protocol_Name', 'Protocol_Type'];
+    protected $fillable = ['Protocol_Name', 'Protocol_Type', 'Image', 'Description'];
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
@@ -30,5 +33,13 @@ class Protocol extends Model
     public function centerProtocol()
     {
         return $this->belongsTo('App\CenterProtocol', 'Protocol_ID', 'Protocol_ID');
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     */
+    public function centers()
+    {
+        return $this->belongsToMany('App\Center', null, 'Protocol_ID', 'Center_ID');
     }
 }

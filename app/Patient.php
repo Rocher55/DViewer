@@ -31,8 +31,6 @@ use Illuminate\Database\Eloquent\Model;
  * @property string $Concomitant condition
  * @property int $Cigarettes-Pipes/year
  * @property int $EER
- * @property CenterProtocol $centerProtocol
- * @property CenterProtocol $centerProtocol
  * @property Cid[] $cids
  * @property Week[] $weeks
  */
@@ -49,22 +47,6 @@ class Patient extends Model
      * @var array
      */
     protected $fillable = ['SUBJID', 'SUBJINIT', 'Protocol_ID', 'Center_ID', 'Class', 'Sex', 'Age', 'Height (m)', 'Birth_Date', 'Race', 'Family_ID', 'Family_Structure', 'Female premenopausal', 'Female use Oral contraceptives', 'Type_Contraceptive', 'Mother urine pregnant', 'Parents eligible for inclusion', 'Eating disorder', 'Eating disorder comment', 'Alcohol or drug abuse', 'Drink alcohol', 'Alcohol(WK)', 'Concomitant condition', 'Cigarettes-Pipes/year', 'EER'];
-
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     */
-    public function centerProtocol()
-    {
-        return $this->belongsTo('App\CenterProtocol', 'Center_ID', 'Center_ID');
-    }
-
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     */
-    public function protocolCenter()
-    {
-        return $this->belongsTo('App\CenterProtocol', 'Protocol_ID', 'Protocol_ID');
-    }
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany

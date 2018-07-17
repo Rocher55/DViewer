@@ -11,6 +11,7 @@ use App\Food;
 class FoodController extends Controller
 {
     public  function  index(){
+        womanPercentage();
         Session::forget('foodToView');
 
         $patient=Session::get('save-patientID-2');
@@ -20,8 +21,6 @@ class FoodController extends Controller
 
         if($result > 0){
             $concerned = $this->getConcernedFood();
-
-
             return view('Forms.food', compact('concerned'));
         }else{
             return redirect()->route("biochemistry");
@@ -129,17 +128,16 @@ class FoodController extends Controller
                 $return = " SELECT distinct f.Patient_ID Patient_ID
                            FROM food_diaries f, unite_mesure u, nomenclatures n 
                            WHERE f.Nomenclature_ID = n.Nomenclature_ID
-                           AND f.Unite_Mesure_ID = u.Unite_Mesure_ID
-                           AND f.Valeur > 0";
+                           AND f.Unite_Mesure_ID = u.Unite_Mesure_ID";
                 break;
             case "nomenclature":
                     $return = " AND n.Nomenclature_ID = ".$data;
                 break;
             case "from":
-                $return = " AND f.valeur >= ".$data;
+                $return = " AND f.value >= ".$data;
                 break;
             case "to":
-                $return = " AND f.valeur <= ".$data;
+                $return = " AND f.value <= ".$data;
                 break;
             case "unite":
                 $return = " AND u.Unite_Mesure_ID = ".$data;
@@ -192,7 +190,7 @@ class FoodController extends Controller
 
 
     public function getConcernedFood(){
-        $concerned = DB::select("SELECT f.Nomenclature_ID, n.NameN, u.NameUM, u.Unite_Mesure_ID, min(f.Valeur) as min, max(f.valeur) as max 
+        $concerned = DB::select("SELECT f.Nomenclature_ID, n.NameN, u.NameUM, u.Unite_Mesure_ID, min(f.value) as min, max(f.value) as max 
                                         FROM food_diaries f, nomenclatures n, unite_mesure u
                                         WHERE f.Nomenclature_ID = n.Nomenclature_ID
                                         AND f.Unite_Mesure_ID = u.Unite_Mesure_ID

@@ -14,6 +14,7 @@ use Illuminate\Support\Facades\Input;
 class AnalyseController extends Controller
 {
     public  function  index(){
+        womanPercentage();
         //Recuperation des id dans la table ea_analyse
         $sampleID = $this->getSingleAnalyseID('SampleType_ID');
         $techniqueID = $this->getSingleAnalyseID('Technique_ID');

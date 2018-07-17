@@ -14,6 +14,7 @@ class GeneController extends Controller
 
 
     public function index(){
+        womanPercentage();
         return view('Forms.genes');
     }
 

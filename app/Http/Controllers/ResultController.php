@@ -20,6 +20,7 @@ class ResultController extends Controller{
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
     public function index(){
+        womanPercentage();
         $previousPath = str_replace(url('/'), '', url()->previous());
 
         //Si je n'ai pas colonnes, clefs et la tableau en session OU que la page précédente est "/research/select-gene/"
@@ -28,6 +29,22 @@ class ResultController extends Controller{
             or $previousPath == '/research/select-gene') {
             //Tableau contenant les valeurs
             $array = array();
+
+            //Base
+            $base = $this->createBase();
+            foreach ($base as $item){
+                $array[strval($item->Patient_ID)]['SUBJID'] = $item->SUBJID;
+                $array[strval($item->Patient_ID)]['Sex'] = $item->Sex;
+                $array[strval($item->Patient_ID)]['Center'] = $item->Center;
+                $array[strval($item->Patient_ID)]['Protocol'] = $item->Protocol;
+                $array[strval($item->Patient_ID)]['Class'] = $item->Class;
+            }
+
+
+
+
+
+
 
             //bioCid
             $bioCid = $this->createBioCidArray();
@@ -38,11 +55,6 @@ class ResultController extends Controller{
             //le tableau à l'indice 1 : Patient_ID
             //et 2 : item
             foreach ($resultsBio as $item) {
-                $array[strval($item->Patient_ID)]['SUBJID'] = $item->SUBJID;
-                $array[strval($item->Patient_ID)]['Sex'] = $item->Sex;
-                $array[strval($item->Patient_ID)]['Center'] = $item->Center;
-                $array[strval($item->Patient_ID)]['Protocol'] = $item->Protocol;
-                $array[strval($item->Patient_ID)]['Class'] = $item->Class;
                 $array[strval($item->Patient_ID)][$item->item] = $item->valeur;
             }
 
@@ -61,19 +73,25 @@ class ResultController extends Controller{
                 }
             }
 
-
+            //Recuperation des donnees de physical_activities
             $activitiesCID = array();
             if(Session::has('activitiesToView')){
-                $activitiesCID = Session::get('activitiesToView');
-                $this->createActivitiesCidArray();
-
+                $activitiesCID = $this->createActivitiesCidArray();
                 $requestActivities = $this->createRequestActivities();
                 $resultsActivities = DB::SELECT($requestActivities);
                 //Pour chaque resultat le mettre dans
                 //le tableau à l'indice 1 : Patient_ID
                 //et 2 : item
-                foreach ($resultsActivities as $item){
-                    $array[strval($item->Patient_ID)][$item->item] = $item->valeur;
+                foreach ($resultsActivities as $result){
+                    foreach ($activitiesCID as $item){
+                        $columns = explode('-',$item);
+                        $column = str_replace(' ','',$columns[0]);
+                        if(trim($columns[1])==$result->CID_Name){
+                            $array[strval($result->Patient_ID)][$item] = $result->$column;
+                        }
+
+                    }
+
                 }
             }
 
@@ -144,7 +162,7 @@ class ResultController extends Controller{
 
         //Pagination
         $currentPage = LengthAwarePaginator::resolveCurrentPage();
-        $perPage = 16;
+        $perPage = 50;
         $path = LengthAwarePaginator::resolveCurrentPath();
         $keys = new LengthAwarePaginator(array_slice($keys, $perPage * ($currentPage - 1), $perPage), count($keys), $perPage, $currentPage, ['path' => $path]);
 
@@ -152,8 +170,25 @@ class ResultController extends Controller{
     }
 
 
+    /**
+     * Permet de creer la partie fixe du resultat
+     *
+     * @return array
+     */
+    public function createBase(){
+        $request = "SELECT p.Patient_ID, p.SUBJID, p.Sex as Sex,
+                            CONCAT(c.Center_Acronym, ' - ', c.Center_City, ' - ', c.Center_Country) AS Center,
+                            prot.Protocol_Name as Protocol, p.Class as Class
+                    FROM patients p, centers c, protocols prot, center_protocol cp
+                    WHERE p.protocol_id = cp.protocol_id
+                    AND cp.protocol_id = p.protocol_id
+                    AND p.center_id = cp.center_id
+                    AND cp.center_id = c.center_id
+                    AND p.patient_id in".createList(Session::get('patientID'));
+        $result = DB::select($request);
 
-
+        return $result;
+    }
 
 
     /**
@@ -163,17 +198,10 @@ class ResultController extends Controller{
      * @return string
      */
     public function createRequestBio(){
-        $request = " SELECT p.patient_id as Patient_ID, p.SUBJID, p.Sex as Sex,
-                            CONCAT(c.Center_Acronym, ' - ', c.Center_City, ' - ', c.Center_Country) AS Center,
-                            prot.Protocol_Name as Protocol, p.Class as Class, 
-                            CONCAT(n.NameN,' (',u.NameUM ,') - ', cid.CID_NAME) as item, b.valeur as valeur 
-                     FROM centers c, protocols prot, center_protocol c_p, patients p, 
-                          cid_patient cp, cids cid, biochemistry b, nomenclatures n, unite_mesure u
-                     WHERE c_p.Center_ID = c.Center_ID
-                     AND c_p.Protocol_ID = prot.Protocol_ID
-                     AND p.Protocol_ID = c_p.Protocol_ID
-                     AND p.Center_ID = c_p.Center_ID
-                     AND cp.CID_ID = cid.CID_ID
+        $request = " SELECT p.patient_id as Patient_ID,
+                            CONCAT(n.NameN,' (',u.NameUM ,') - ', cid.CID_NAME) as item, b.value as valeur 
+                     FROM  patients p, cid_patient cp, cids cid, biochemistry b, nomenclatures n, unite_mesure u
+                     WHERE  cp.CID_ID = cid.CID_ID
                      AND cp.Patient_ID = p.Patient_ID
                      AND b.CID_ID = cp.CID_ID
                      AND b.Patient_ID = cp.Patient_ID
@@ -190,7 +218,7 @@ class ResultController extends Controller{
      * @return string
      */
     public function createRequestFood(){
-        $request = " SELECT p.Patient_ID as Patient_ID, CONCAT(n.NameN,' (',u.NameUM ,') - ', w.WK_NAME) as item, f.valeur as valeur
+        $request = " SELECT p.Patient_ID as Patient_ID, CONCAT(n.NameN,' (',u.NameUM ,') - ', w.WK_NAME) as item, f.value as valeur
                      FROM food_diaries f, patient_week pw, weeks w, nomenclatures n, unite_mesure u, patients p
                      WHERE f.WK_ID = pw.WK_ID
                      AND pw.WK_ID = w.WK_ID
@@ -213,7 +241,22 @@ class ResultController extends Controller{
 
 
     public function createRequestActivities(){
+        $select ="";
+        $and ="";
+        foreach(Session::get('activitiesToView') as $activity){
+            $select.=", `pa`.`".$activity."` as '".str_replace(' ','',$activity)."'";
+            //$and .= " AND `pa`.`".$activity."` is not null";
+        }
 
+        $request = " SELECT pa.Patient_ID , cid.CID_Name ".$select.
+                   " FROM physical_activities pa, cid_patient cp, cids cid
+                     WHERE pa.CID_ID = cp.CID_ID
+                     AND cp.CID_ID = cid.CID_ID
+                     AND pa.Patient_ID = cp.Patient_ID
+                     AND pa.Physical_Activities_ID in ".createList($this->activitiesID).
+                    $and;
+
+        return $request;
     }
 
 
@@ -305,7 +348,7 @@ class ResultController extends Controller{
                                     AND f.WK_ID = pw.WK_ID
                                     AND f.Nomenclature_ID = n.Nomenclature_ID
                                     AND f.Unite_Mesure_ID = u.Unite_Mesure_ID 
-                                    AND f.valeur is not null 
+                                    AND f.value is not null 
                                     AND f.food_diaries_ID in ".createList($this->foodDiariesID)
                                  ." ORDER BY n.NameN ASC, u.NameUM ASC, w.WK_ID ASC ");
         $return = createArray($results,'foodWeek');
@@ -323,9 +366,19 @@ class ResultController extends Controller{
                                             FROM physical_activities pa
                                             WHERE pa.Patient_ID in'.createList(Session::get('patientID')).'
                                             AND pa.CID_ID in'.createList(Session::get('cidID')).'
-                                            ORDER BY pa.Patient_IDs');
+                                            ORDER BY pa.Patient_ID');
 
         $this->activitiesID = createArray($activities_ID, 'id');
+
+        $activitiesCid = array();
+        $cids = Cid::distinct()->whereIn('CID_ID', Session::get('cidID'))->get();
+        foreach (Session::get('activitiesToView') as $activity){
+            foreach ($cids as $cid){
+                array_push($activitiesCid, $activity.' - '.$cid->CID_Name);
+            }
+        }
+
+        return $activitiesCid;
     }
 
 

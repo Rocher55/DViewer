@@ -16,12 +16,19 @@ class PatientController extends Controller
      *
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
-    public function index()
-    {
+    public function index(){
+
         //Recupere les patients concernes par un centre et protocole
         $patient = Patient::whereIn('Protocol_ID', Session::get('protocolID'))
             ->whereIn('Center_ID', Session::get('centerID'))
             ->get(['Patient_ID']);
+
+        $min= Patient::whereIn('Protocol_ID', Session::get('protocolID'))
+            ->whereIn('Center_ID', Session::get('centerID'))
+            ->min('age');
+        $max = Patient::whereIn('Protocol_ID', Session::get('protocolID'))
+            ->whereIn('Center_ID', Session::get('centerID'))
+            ->max('age');
 
         Session::put('patientID', createArray($patient, 'Patient_ID'));
         Session::put('save-patientID-1', createArray($patient, 'Patient_ID'));
@@ -38,8 +45,8 @@ class PatientController extends Controller
         }
         $uniqueSex = array_keys(array_flip($allSex));
 
-
-        return view('Forms.patient', compact('uniqueSex'));
+        womanPercentage();
+        return view('Forms.patient', compact('uniqueSex', 'min', 'max'));
     }
 
 

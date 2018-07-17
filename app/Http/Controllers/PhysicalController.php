@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Input;
 class PhysicalController extends Controller{
 
     public function index(){
+        womanPercentage();
         $nb = Physical_activities::whereIn('Patient_ID', Session::get('patientID'))->whereIn('CID_ID', Session::get('cidID'))->count();
 
         if ($nb > 0 ){

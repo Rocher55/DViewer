@@ -34,7 +34,7 @@ class Food extends Model
     /**
      * @var array
      */
-    protected $fillable = ['WK_ID', 'Patient_ID', 'NB_Days', 'Valeur', 'Nomenclature_ID', 'Unite_Mesure_ID'];
+    protected $fillable = ['WK_ID', 'Patient_ID', 'NB_Days', 'Value', 'Nomenclature_ID', 'Unite_Mesure_ID'];
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo

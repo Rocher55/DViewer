@@ -13,6 +13,7 @@ class BiochemistryController extends Controller
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
     public  function  index(){
+        womanPercentage();
         Session::forget('biochemistryToView');
 
         Session::put('save-patientID-4', Session::get('save-patientID-3'));
@@ -144,10 +145,10 @@ class BiochemistryController extends Controller
                 $return = " AND b.Unite_Mesure_ID = ".$data;
                 break;
             case "from":
-                $return = " AND b.valeur >= ".$data;
+                $return = " AND b.value >= ".$data;
                 break;
             case "to":
-                $return = " AND b.valeur <= ".$data;
+                $return = " AND b.value <= ".$data;
                 break;
             case "intersect":
                 $return = " INTERSECT ";
@@ -188,12 +189,11 @@ class BiochemistryController extends Controller
      */
     public function getConcernedBIO(){
         $concerned = DB::SELECT('SELECT DISTINCT b.Nomenclature_ID, n.NameN, u.Unite_Mesure_ID, u.NameUM, f.NameF, f.Family_ID,
-                                  min(b.valeur) as min, max(b.valeur) as max
+                                  min(b.value) as min, max(b.value) as max
                                  FROM biochemistry b, nomenclatures n, unite_mesure u, families f
                                  WHERE b.Unite_Mesure_ID = u.Unite_Mesure_ID
                                  AND b.Nomenclature_ID = n.Nomenclature_ID 
                                  AND n.Family_ID = f.Family_ID
-                                 AND b.Valeur > 0
                                  AND b.Patient_ID in'. createList(Session::get('patientID')).
                                 'AND b.CID_ID in'. createList(Session::get('cidID')).
                                 ' GROUP BY 1,2,3,4,5,6

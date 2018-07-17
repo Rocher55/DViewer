@@ -36,7 +36,7 @@ class Biochemistry extends Model
     /**
      * @var array
      */
-    protected $fillable = ['CID_ID', 'Patient_ID', 'Date_Bio', 'Valeur', 'Nomenclature_ID', 'Unite_Mesure_ID'];
+    protected $fillable = ['CID_ID', 'Patient_ID', 'Date_Bio', 'Value', 'Nomenclature_ID', 'Unite_Mesure_ID'];
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
