@@ -8,17 +8,25 @@ use Illuminate\Support\Facades\Input;
 use Illuminate\Support\Facades\Session;
 use App\Food;
 
-class FoodController extends Controller
-{
+class FoodController extends Controller{
+
+
+
+
+
+
     public  function  index(){
         womanPercentage();
         Session::forget('foodToView');
 
-        $patient=Session::get('save-patientID-2');
-        Session::put('save-patientID-3', $patient);
+        $previousPath = Session::get('previous');
+        if (Session::has('save-patientID-2') and $previousPath=='/research/biochemistry'){
+            $patient = Session::get('save-patientID-2');
+            Session::put('patientID', $patient);
+        }
+        Session::put('save-patientID-3', Session::get('save-patientID-2'));
+
         $result = Food::whereIn('Patient_ID',Session::get("patientID"))->count();
-
-
         if($result > 0){
             $concerned = $this->getConcernedFood();
             return view('Forms.food', compact('concerned'));

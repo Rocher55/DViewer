@@ -4,7 +4,6 @@
 
 
 @section('content')
-
     <div class="container-body ">
         {!! Form::open(['url' => 'research/analyse', 'method' => 'post', 'id'=>'form']) !!}
         <div class="col-md-4 offset-md-2">

@@ -53,7 +53,7 @@
                 <!--A gauche-->
                 <ul class="nav navbar-nav navbar-left">
                     <li class="nav-item "><a href="{{ url('/research/protocol') }}"> Research </a></li>
-                    <li class="nav-item "><a href="{{ url('/import') }}"> Import </a></li>
+                    <!--<li class="nav-item "><a href="{{ url('/import') }}"> Import </a></li>-->
 
                 </ul>
 

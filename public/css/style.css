@@ -198,21 +198,26 @@ table{
  tr>th{
      font-size: 15px;
      max-width: none;
-     max-height: 15px;
+     max-height: 10px;
      overflow: hidden;
      text-overflow: ellipsis;
      white-space: nowrap;
 }
 
 tr>td{
-    font-size: 12px;
+    font-size: 13px;
     max-width: none;
-    max-height: 15px;
+    max-height: 10px;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
 }
-
+.table>tbody>tr>td, .table>tbody>tr>th,
+.table>tfoot>tr>td, .table>tfoot>tr>th,
+.table>thead>tr>td, .table>thead>tr>th{
+    padding-bottom: 0px;
+    padding-top: 2px;
+}
 
 
 

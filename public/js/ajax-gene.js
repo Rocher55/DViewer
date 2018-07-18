@@ -14,12 +14,17 @@ $(document).ready(function () {
                 },
                 function(data){
                     let dropdown = $('[name="gene"]');
-
                     dropdown.find('option').remove().end();
 
-                    $.each(data, function (i, item) {
-                        dropdown.append($('<option>', { value: item, text : item }));
-                    });
+                    if(data.length > 0){
+                        $.each(data, function (i, item) {
+                            dropdown.append($('<option>', { value: item, text : item }));
+                        });
+                        dropdown.css('border-color','');
+                    }else{
+                        dropdown.css('border-color','red');
+                    }
+
                 },
                 'json'
             );

@@ -1,18 +1,6 @@
 @extends('layouts.template')
 
 
-@section("2-options")
-    <option value="34">g/day</option>
-    <option value="35">g/kg/day</option>
-@endsection
-@section("3-options")
-    <option value="34">g/day</option>
-    <option value="35">g/kg/day</option>
-    <option value="36">%kcal/day</option>
-@endsection
-
-
-
 @section('content')
     <div class="container-big-body">
         {!! Form::open(['url' => 'research/food', 'method' => 'post', 'id'=>'form']) !!}

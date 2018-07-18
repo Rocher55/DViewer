@@ -9,8 +9,11 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Input;
 use Illuminate\Support\Facades\Session;
 
-class CidController extends Controller
-{
+class CidController extends Controller{
+
+
+
+
     /**
      *  Recupere les cids qui concernent les patients
      *
@@ -18,11 +21,10 @@ class CidController extends Controller
      */
     public function index(){
         womanPercentage();
-        $patient=Session::get('save-patientID-1');
-        Session::put('save-patientID-2', $patient);
+        Session::put('save-patientID-2', Session::get('save-patientID-1'));
 
         //Recuperation et cretion d'une liste des tous les CID_ID
-        $cid_id = Cid_patient::whereIn('Patient_ID', $patient)
+        $cid_id = Cid_patient::whereIn('Patient_ID', Session::get('patientID'))
                                 ->orderBy('CID_ID', 'ASC')
                                 ->distinct()
                                 ->get(['CID_ID']);

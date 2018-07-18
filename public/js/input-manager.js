@@ -1,3 +1,10 @@
+//Verifie qu'une case est bien cochee au chargement de la page
+//Utile si utiisation du bouton previous
+$( document ).ready(function(){
+    reactToErrors();
+});
+
+
 /*
 * -----------------------------------------------------------------------------
 * ---------------- Gestion de la saisie de l'utilisateur ----------------------

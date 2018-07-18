@@ -5,6 +5,7 @@ namespace App;
 use Illuminate\Database\Eloquent\Model;
 
 /**
+ * @property int $Gene_ID
  * @property string $Gene_Symbol
  * @property string $Probe_ID
  * @property string $Gene_Name
@@ -12,6 +13,15 @@ use Illuminate\Database\Eloquent\Model;
  */
 class Gene extends Model
 {
+    public $timestamps = false;
+    
+    /**
+     * The primary key for the model.
+     * 
+     * @var string
+     */
+    protected $primaryKey = 'Gene_ID';
+
     /**
      * @var array
      */

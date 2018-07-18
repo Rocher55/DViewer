@@ -7,8 +7,9 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Input;
 
-class BiochemistryController extends Controller
-{
+class BiochemistryController extends Controller{
+
+
     /** Recuperation des données pour affichage
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
@@ -16,6 +17,12 @@ class BiochemistryController extends Controller
         womanPercentage();
         Session::forget('biochemistryToView');
 
+
+        $previousPath = Session::get('previous');
+        if (Session::has('save-patientID-3') and ($previousPath=='/research/analyse' or $previousPath=='/research/activities')){
+            $patient = Session::get('save-patientID-3');
+            Session::put('patientID', $patient);
+        }
         Session::put('save-patientID-4', Session::get('save-patientID-3'));
 
         //cf. fonction

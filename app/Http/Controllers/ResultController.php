@@ -4,6 +4,7 @@
 namespace App\Http\Controllers;
 
 
+use App\Physical_activities;
 use Illuminate\Pagination\LengthAwarePaginator;
 use App\Cid;
 use Illuminate\Support\Facades\DB;
@@ -31,6 +32,7 @@ class ResultController extends Controller{
             $array = array();
 
             //Base
+
             $base = $this->createBase();
             foreach ($base as $item){
                 $array[strval($item->Patient_ID)]['SUBJID'] = $item->SUBJID;
@@ -39,11 +41,6 @@ class ResultController extends Controller{
                 $array[strval($item->Patient_ID)]['Protocol'] = $item->Protocol;
                 $array[strval($item->Patient_ID)]['Class'] = $item->Class;
             }
-
-
-
-
-
 
 
             //bioCid
@@ -55,8 +52,16 @@ class ResultController extends Controller{
             //le tableau à l'indice 1 : Patient_ID
             //et 2 : item
             foreach ($resultsBio as $item) {
+
+                $array[strval($item->Patient_ID)]['SUBJID'] = $item->SUBJID;
+                $array[strval($item->Patient_ID)]['Sex'] = $item->Sex;
+                $array[strval($item->Patient_ID)]['Center'] = $item->Center;
+                $array[strval($item->Patient_ID)]['Protocol'] = $item->Protocol;
+                $array[strval($item->Patient_ID)]['Class'] = $item->Class;
+
                 $array[strval($item->Patient_ID)][$item->item] = $item->valeur;
             }
+
 
             //Recuperation des donnees de food_diaries
             $foodWeek = array();
@@ -95,24 +100,19 @@ class ResultController extends Controller{
                 }
             }
 
-
             //geneCid
             $geneCid = array();
             $newCols = array();
-
             //S'il ya des genes que je souhaite voir et que des analyses existent
             if (Session::has('geneID') && count(Session::get('analyseID'))) {
-
                 //Recuperation des genes au format
                 //PCYT1A (A_24_P106057) (3-7-2) - CID2 - 1
                 //Gene_Symbol (Probe_ID) (SampleType_ID-Technique_ID-Molecule_ID) - CID_Name - indice
-
                 $geneCid = $this->getGeneCidArray();
 
                 //Creation et execution de la requete
                 $requestGene = $this->createRequestGene();
                 $resultsGene = DB::SELECT($requestGene);
-
 
                 //Pour chaque resultat
                 foreach ($resultsGene as $item) {
@@ -129,7 +129,6 @@ class ResultController extends Controller{
                             $i++;
                             $newCol = substr_replace($item->item, $i, -1, 1);
                         }
-
                         //J'ajoute dans mon tableau des nouvelles colonnes la colonne
                         //ainsi que la valeur pour le patient dans la nouvelle colonne
                         $newCols[] = $newCol;
@@ -138,11 +137,9 @@ class ResultController extends Controller{
                         //Sinon j'ajoute simplement la valeur dans le tableau
                         $array[strval($item->Patient_ID)][$item->item] = $item->valeur;
                     }
-
                     //Je garde le nom des colonnes en un exemplaire
                     $newCols = array_unique($newCols);
                 }
-
                 //Si mon tableau de nouvelles colonnes existe alors je reorganise
                 //mon tableau d'entete : geneCid
                 if (isset($newCols)) {
@@ -176,7 +173,7 @@ class ResultController extends Controller{
      * @return array
      */
     public function createBase(){
-        $request = "SELECT p.Patient_ID, p.SUBJID, p.Sex as Sex,
+        $request = "SELECT  p.Patient_ID, p.SUBJID, p.Sex as Sex,
                             CONCAT(c.Center_Acronym, ' - ', c.Center_City, ' - ', c.Center_Country) AS Center,
                             prot.Protocol_Name as Protocol, p.Class as Class
                     FROM patients p, centers c, protocols prot, center_protocol cp
@@ -184,7 +181,8 @@ class ResultController extends Controller{
                     AND cp.protocol_id = p.protocol_id
                     AND p.center_id = cp.center_id
                     AND cp.center_id = c.center_id
-                    AND p.patient_id in".createList(Session::get('patientID'));
+                    AND p.patient_id in".createList(Session::get('patientID')).
+                  " ORDER BY p.Patient_ID";
         $result = DB::select($request);
 
         return $result;
@@ -198,10 +196,17 @@ class ResultController extends Controller{
      * @return string
      */
     public function createRequestBio(){
-        $request = " SELECT p.patient_id as Patient_ID,
+        $request = " SELECT p.patient_id as Patient_ID, p.SUBJID, p.Sex as Sex,
+                            CONCAT(c.Center_Acronym, ' - ', c.Center_City, ' - ', c.Center_Country) AS Center,
+                            prot.Protocol_Name as Protocol, p.Class as Class, 
                             CONCAT(n.NameN,' (',u.NameUM ,') - ', cid.CID_NAME) as item, b.value as valeur 
-                     FROM  patients p, cid_patient cp, cids cid, biochemistry b, nomenclatures n, unite_mesure u
-                     WHERE  cp.CID_ID = cid.CID_ID
+                     FROM centers c, protocols prot, center_protocol c_p, patients p, 
+                          cid_patient cp, cids cid, biochemistry b, nomenclatures n, unite_mesure u
+                     WHERE c_p.Center_ID = c.Center_ID
+                     AND c_p.Protocol_ID = prot.Protocol_ID
+                     AND p.Protocol_ID = c_p.Protocol_ID
+                     AND p.Center_ID = c_p.Center_ID
+                     AND cp.CID_ID = cid.CID_ID
                      AND cp.Patient_ID = p.Patient_ID
                      AND b.CID_ID = cp.CID_ID
                      AND b.Patient_ID = cp.Patient_ID
@@ -232,14 +237,11 @@ class ResultController extends Controller{
         return $request;
     }
 
-
-
-
-
-
-
-
-
+    /**
+     * Creation de la requete sur l'activité physique
+     *
+     * @return string
+     */
     public function createRequestActivities(){
         $select ="";
         $and ="";
@@ -247,22 +249,17 @@ class ResultController extends Controller{
             $select.=", `pa`.`".$activity."` as '".str_replace(' ','',$activity)."'";
             //$and .= " AND `pa`.`".$activity."` is not null";
         }
-
-        $request = " SELECT pa.Patient_ID , cid.CID_Name ".$select.
-                   " FROM physical_activities pa, cid_patient cp, cids cid
+        $request = " SELECT p.Patient_ID , cid.CID_Name ".$select.
+                   " FROM physical_activities pa, cid_patient cp, cids cid, patients p
                      WHERE pa.CID_ID = cp.CID_ID
                      AND cp.CID_ID = cid.CID_ID
                      AND pa.Patient_ID = cp.Patient_ID
+                     AND cp.Patient_ID= p.Patient_ID
                      AND pa.Physical_Activities_ID in ".createList($this->activitiesID).
                     $and;
 
         return $request;
     }
-
-
-
-
-
 
     /**
      * Creation de la requete sur les genes
@@ -324,8 +321,6 @@ class ResultController extends Controller{
         return $return;
     }
 
-
-
     /**
      * Genere un tableau contenant des valeurs au format :
      *              Nomenclature->NameN (UniteMesure->NameUM) - Weeks->Wk_Name
@@ -356,8 +351,6 @@ class ResultController extends Controller{
         return $return;
     }
 
-
-
     /**
      * Recupere les id de physical_activities des patients et cid correspondants
      */
@@ -369,7 +362,7 @@ class ResultController extends Controller{
                                             ORDER BY pa.Patient_ID');
 
         $this->activitiesID = createArray($activities_ID, 'id');
-
+        //$paCid = Physical_activities::wehereIn('Physical_Activities_ID', $this->activitiesID)->distinct();
         $activitiesCid = array();
         $cids = Cid::distinct()->whereIn('CID_ID', Session::get('cidID'))->get();
         foreach (Session::get('activitiesToView') as $activity){
@@ -380,8 +373,6 @@ class ResultController extends Controller{
 
         return $activitiesCid;
     }
-
-
 
     /**
      * Genere un tableau avec gene_symbol(probe_id) - cid_name

@@ -12,8 +12,10 @@ use Illuminate\Database\Eloquent\Model;
  * @property float $Baecke Leisure
  * @property float $Baecke index total
  */
-class Physical_activities extends Model
-{
+class Physical_activities extends Model{
+
+    public $timestamps = false;
+
     /**
      * @var array
      */
