@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Experiment;
 use App\Gene;
 use App\Patient;
 use App\Patient_Week;
@@ -13,11 +14,27 @@ use Illuminate\Support\Facades\Session;
 
 class tests extends Controller{
 
+
     public function index(){
+        return view('test');
+    }
 
-        $diff = 'hello world';
 
-        return view('test', compact('diff'));
+
+
+
+    /**
+     * Met àa jour la colonne Gene_ID de la table experiments avec les Gene_ID de genes
+     *
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     */
+    public function updateGeneIDExperiments(){
+
+        $update = DB::update(" UPDATE experiments e 
+                                     SET e.Gene_ID = (SELECT g.Gene_ID FROM genes WHERE g.Gene_Symbol = e.Gene_Symbol AND g.Probe_ID = e.Probe_ID)
+                                     WHERE e.Gene_ID = 0 ");
+
+        return view('test');
     }
 
 

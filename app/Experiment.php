@@ -13,8 +13,9 @@ use Illuminate\Database\Eloquent\Model;
  * @property string $Gene_Symbol
  * @property string $Probe_ID
  */
-class Experiment extends Model
-{
+class Experiment extends Model{
+
+    public $timestamps = false;
     /**
      * The primary key for the model.
      * 

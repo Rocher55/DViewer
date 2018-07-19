@@ -1,9 +1,9 @@
 <?php
-
 namespace App\Http\Middleware;
 
 use Closure;
 use Illuminate\Support\Facades\Request;
+use Illuminate\Support\Facades\Session;
 
 class InProcess
 {
@@ -23,7 +23,7 @@ class InProcess
 
         //Si la demande n'est pas saisie directement dans l'url
         //sinon redirection vers la page d'accueil
-        if(Request::server('HTTP_REFERER')){
+        if(Request::server('HTTP_REFERER')) {
             $referer = str_replace(url('/'), '', Request::server('HTTP_REFERER'));
 
             //si le referer ne fait pas partie des autorisations alors redirection

@@ -7,6 +7,7 @@ $.ajaxSetup({
 $(document).ready(function () {
     $('#recherche').change(function(){
         if($('#recherche').val().length >= 2){
+            $('[name="gene"]').css('border-color','');
             $.get(
                 '/ajax',
                 {
