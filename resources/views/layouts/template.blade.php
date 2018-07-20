@@ -53,29 +53,31 @@
                 <!--A gauche-->
                 <ul class="nav navbar-nav navbar-left">
                     <li class="nav-item "><a href="{{ url('/research/protocol') }}"> Research </a></li>
-                    <!--<li class="nav-item "><a href="{{ url('/import') }}"> Import </a></li>-->
 
                 </ul>
 
             </div>
         </div>
     </nav>
-    <div class="path">
-        {{str_replace(url('/'), '', url()->current())}}
-    </div>
-    <div class="number">
-        @if(Session::has('patientID'))
-            {{count(Session::get('patientID'))}}
-            remaining
-            @if(count(Session::get('patientID'))==1)
-                patient
-            @else
-                patients
+    @php($path = explode('/', url()->current()))
+    @if(in_array('research', $path))
+        <div class="path">
+            {{str_replace(url('/'), '', url()->current())}}
+        </div>
+        <div class="number">
+            @if(Session::has('patientID'))
+                {{count(Session::get('patientID'))}}
+                remaining
+                @if(count(Session::get('patientID'))==1)
+                    patient
+                @else
+                    patients
+                @endif
+            <br>
+                Woman % : {{Session::get('percentage')}}
+            <br>
+                Man % : {{100-Session::get('percentage')}}
             @endif
-        <br>
-            Woman % : {{Session::get('percentage')}}
-        <br>
-            Man % : {{100-Session::get('percentage')}}
         @endif
     </div>
 

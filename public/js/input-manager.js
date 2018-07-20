@@ -217,6 +217,9 @@ function resetFields(){
             reactToErrors();
             $("#form")[0].reset()
             break;
+        case '/research/activities':
+            $("#form")[0].reset()
+            break;
         case '/research/analyse':
             $(".analyse-chosen-tag").val([]).trigger("chosen:updated");
             break;

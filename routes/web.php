@@ -22,7 +22,7 @@ Route::post('logout', 'Auth\LoginController@logout')->name('logout');
 
 Route::get('/', 'HomeController@index')->name('home');
 Route::get('research/results','ResultController@index')->name('result');
-
+Route::get('/protocol/{id}', 'SpecificationController@index')->name('protocol.spec');
 /*------------------------------------------------------------------------------------------
                                 Pages de criteres
 ------------------------------------------------------------------------------------------*/

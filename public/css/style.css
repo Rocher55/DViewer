@@ -46,9 +46,11 @@ textarea {
 }
 
 
-/*Boutons Accueil*/
+/*--------------------------------
+            Accueil
+----------------------------------*/
 .buttons-group{
-    padding-top: 20%;
+    margin-bottom: 0 ;
 }
 .button{
     height: 100px;
@@ -61,13 +63,12 @@ textarea {
     border-width: 1px;
     color: black;
 }
-.button-info{
-    padding-top: 35px;
-    background-color: #8bccff;
-    border-color: #005cbf;
-    border-width: 1px;
-    color: black;
+.home{
+    margin-left: 10%;
+    margin-right: 10%;
+    margin-bottom: 10%;
 }
+
 
 
 
@@ -240,4 +241,25 @@ tr>td{
     margin-top: 0px;
     font-weight: lighter;
     font-size: 15px;
+}
+
+
+
+
+
+/*-----------------------------------------
+          Protocol Specifications
+-------------------------------------------*/
+.specifications{
+    margin: 5%;
+}
+.specifications-body{
+    font-size: 15px;
+}
+.references{
+    margin-top: 20px;
+    font-size: 10px;
+}
+img{
+    max-width: 100%;
 }
