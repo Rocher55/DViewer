@@ -4,15 +4,14 @@
     {{Auth::check()}}
     <div class="home">
         <div class="col-md-6">
-            <div class="container table-responsive">
+            <div class="container table-responsive table-home">
                 <table class="table table-bordered" style="width: 100px;">
                     <thead>
                         <tr>
                             <th scope="col">Protocols</th>
                             <th scope="col">Number of patients</th>
                             <th scope="col">Classes</th>
-                            <th scope="col">Minimum age</th>
-                            <th scope="col">Maximum age</th>
+                            <th scope="col">Sex</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -24,9 +23,9 @@
                                         </div>
                                     </a></td>
                                 <td>{{$protocol->nb}}</td>
+                                <td>{{$protocol->sex}}</td>
                                 <td>{{$protocol->class}}</td>
-                                <td>{{$protocol->min}}</td>
-                                <td>{{$protocol->max}}</td>
+
                             </tr>
                         @endforeach
                     </tbody>
@@ -44,11 +43,11 @@
         </div>
     </div>
 
-    <div class="row">
+
         <div class="buttons-group" >
-            <a type="button" class="button btn button-success  "  href="{{ URL::to('/research/protocol')}}">Begin a study</a>
+            <a type="button" class="button btn"  href="{{ URL::to('/research/protocol')}}">Begin a study</a>
         </div>
-    </div>
+
 
 
 

@@ -11,10 +11,6 @@ use App\Food;
 class FoodController extends Controller{
 
 
-
-
-
-
     public  function  index(){
         womanPercentage();
         Session::forget('foodToView');

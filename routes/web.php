@@ -23,18 +23,19 @@ Route::post('logout', 'Auth\LoginController@logout')->name('logout');
 Route::get('/', 'HomeController@index')->name('home');
 Route::get('research/results','ResultController@index')->name('result');
 Route::get('/protocol/{id}', 'SpecificationController@index')->name('protocol.spec');
+Route::post('/protocol/{id}', 'SpecificationController@post')->name('postProtocol.spec');
 /*------------------------------------------------------------------------------------------
                                 Pages de criteres
 ------------------------------------------------------------------------------------------*/
 //Protocol
 Route::get('research/protocol', 'ProtocolController@index')->name('protocol');
 Route::post('research/protocol', 'ProtocolController@postSelect')->name('postProtocol');
-
+//Center
+Route::get('research/center', 'CenterController@index')->name('center');
+Route::post('research/center', 'CenterController@postSelect')->name('postCenter');
 
 Route::group(['middleware' => ['in.process']], function () {
-    //Center
-        Route::get('research/center', 'CenterController@index')->name('center');
-        Route::post('research/center', 'CenterController@postSelect')->name('postCenter');
+
     //Patient
         Route::get('research/patient', 'PatientController@index')->name('patient');
         Route::post('research/patient', 'PatientController@postSelect')->name('postPatient');
@@ -73,7 +74,8 @@ Route::group(['middleware' => ['in.process']], function () {
 /*-------------------------------------------------------------------------------------------
                                                Ajax
  -------------------------------------------------------------------------------------------*/
-Route::get('/ajax', 'AjaxController@ajax_call')->name('ajax')->middleware('ajax');
+Route::get('/ajax-genes', 'AjaxController@genes')->name('ajax-genes');
+//Route::get('/ajax-genes', 'AjaxController@genes')->name('ajax-genes')->middleware('ajax');
 Route::post('/ajax-previous', 'AjaxController@pathThatDemandPrevious')->name('ajax-previous')->middleware('ajax');
 
 

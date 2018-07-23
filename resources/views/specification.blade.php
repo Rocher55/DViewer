@@ -21,4 +21,10 @@
         </div>
 
     </div>
+    <div>
+        {!! Form::open(['url' => 'protocol/'.$specification->Protocol_ID, 'method' => 'post']) !!}
+            {!! Form::hidden('protocol', $specification->Protocol_ID); !!}
+        {!! Form::submit('Begin', ['class' => 'next-button']) !!}
+        {!! Form::close() !!}
+    </div>
 @endsection

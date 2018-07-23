@@ -9,7 +9,7 @@ $(document).ready(function () {
         if($('#recherche').val().length >= 2){
             $('[name="gene"]').css('border-color','');
             $.get(
-                '/ajax',
+                '/ajax-genes',
                 {
                     recherche : $('#recherche').val()
                 },

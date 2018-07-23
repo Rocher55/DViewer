@@ -50,25 +50,39 @@ textarea {
             Accueil
 ----------------------------------*/
 .buttons-group{
-    margin-bottom: 0 ;
+    position : absolute;
+    padding-left: 40%;
+    margin-top: 30%;
 }
 .button{
-    height: 100px;
-    border-radius: 15px;
-}
-.button-success{
-    padding-top: 35px;
+    /*Dimensions*/
+    width: 300px;
+    height: 80px;
+
+    /*Design*/
     background-color: #63FFBB;
     border-color: #1e7e34;
     border-width: 1px;
+    border-radius: 50px;
     color: black;
+
+    margin: 0 auto;
+    padding-top: 22px;
+    text-align: center;
+    display: inline-block;
+    font-size: 150%;
+    font-weight: bold;
 }
 .home{
     margin-left: 10%;
     margin-right: 10%;
     margin-bottom: 10%;
 }
-
+.table-home{
+    width: 100%;
+    overflow-x: scroll;
+    max-height: 100%;
+}
 
 
 
@@ -263,3 +277,4 @@ tr>td{
 img{
     max-width: 100%;
 }
+

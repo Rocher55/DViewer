@@ -27,7 +27,8 @@ class HomeController extends Controller
      */
     public function index(){
         $protocols = DB::select(' SELECT prot.Protocol_ID, prot.Protocol_Name, count( distinct p.Patient_ID) as nb, 
-                                         GROUP_CONCAT(DISTINCT p.Class) as class, min(p.age) as min, max(p.age) as max
+                                         prot.Description as class, min(p.age) as min, max(p.age) as max, 
+													  GROUP_CONCAT( DISTINCT CASE WHEN p.sex = 2 THEN \'F\' ELSE \'M\' END) as sex
                                          FROM protocols prot, center_protocol cp, patients p 
                                          WHERE prot.Protocol_ID = cp.Protocol_ID 
                                          AND cp.Protocol_ID = p.Protocol_ID 
