@@ -48,6 +48,7 @@ use App\Patient;
     }
 
 
+
 /**
  * Permet de generer une liste de string comprehensible pour
  * effectuer un "in" dans une requete SQL normale

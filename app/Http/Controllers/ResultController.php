@@ -173,7 +173,7 @@ class ResultController extends Controller{
      * @return array
      */
     public function createBase(){
-        $request = "SELECT  p.Patient_ID, p.SUBJID, p.Sex as Sex,
+        $request = "SELECT  p.Patient_ID, p.SUBJID, CASE WHEN p.Sex =1 THEN 'M' ELSE 'F' END as Sex,
                             CONCAT(c.Center_Acronym, ' - ', c.Center_City, ' - ', c.Center_Country) AS Center,
                             prot.Protocol_Name as Protocol, p.Class as Class
                     FROM patients p, centers c, protocols prot, center_protocol cp
@@ -196,7 +196,7 @@ class ResultController extends Controller{
      * @return string
      */
     public function createRequestBio(){
-        $request = " SELECT p.patient_id as Patient_ID, p.SUBJID, p.Sex as Sex,
+        $request = " SELECT p.patient_id as Patient_ID, p.SUBJID, CASE WHEN p.Sex =1 THEN 'M' ELSE 'F' END as Sex,
                             CONCAT(c.Center_Acronym, ' - ', c.Center_City, ' - ', c.Center_Country) AS Center,
                             prot.Protocol_Name as Protocol, p.Class as Class, 
                             CONCAT(n.NameN,' (',u.NameUM ,') - ', cid.CID_NAME) as item, b.value as valeur 
@@ -268,16 +268,22 @@ class ResultController extends Controller{
      * @return string
      */
     public function createRequestGene(){
-        $request = " SELECT p.Patient_ID, CONCAT(e.Gene_Symbol, ' (',e.Probe_ID, ') (', 
-                                                                  a.SampleType_ID, '-', a.Technique_ID,'-',
-                                                                  a.Molecule_ID, ') - ', cid.CID_Name,' - 1') as item, 
+        $request = " SELECT p.Patient_ID, CONCAT(g.Gene_Symbol, ' (',g.Probe_ID, ') (', 
+                                                                      s.SampleType_Name, '-', t.Technical_Name,'-',
+                                                                      m.Molecule_Name, ') - ', cid.CID_Name,' - 1') as item, 
                             e.value1 as valeur
-                     FROM experiments e, ea_analyse a, cids cid, cid_patient cp, patients p
+                     FROM experiments e, ea_analyse a, cids cid, cid_patient cp, patients p, genes g
+                     , molecules m, sampletypes s, techniques t
                      WHERE cp.Patient_ID = p.Patient_ID
                      AND cp.CID_ID = cid.CID_ID
                      AND a.CID_ID = cp.CID_ID
                      AND a.Patient_ID = cp.Patient_ID
-                     AND e.Analyse_ID = a.Analyse_ID  ";
+                     AND e.Analyse_ID = a.Analyse_ID 
+                     AND e.Gene_ID = g.Gene_ID 
+                     
+                     AND m.Molecule_ID = a.Molecule_ID
+                     AND s.SampleType_ID = a.SampleType_ID
+                     AND t.Technique_ID = a.Technique_ID";
         $request.=" AND e.Experiments_ID in ".createList($this->experimentsID)."
                     ORDER BY p.Patient_ID";
 
@@ -384,23 +390,30 @@ class ResultController extends Controller{
             $request = " SELECT e.Experiments_ID as id
                          FROM experiments e, ea_analyse a
                          WHERE e.Analyse_ID = a.Analyse_ID
-                         AND e.Gene_Symbol in ".createStringList(Session::get('geneID'))."                        
-                         AND  e.Analyse_ID in ".createList(Session::get('analyseID'));
+                         AND e.Gene_ID in ".createList(Session::get('geneID'))."                        
+                         AND e.Analyse_ID in ".createList(Session::get('analyseID'));
 
             $experiments_ID = DB::SELECT($request);
             $array = createArray($experiments_ID, 'id');
             $this->experimentsID = $array;
 
             //Je ne garde que les genes qui ont bien des valeurs dans experiments
-            $results = DB::SELECT(" SELECT distinct CONCAT(e.Gene_Symbol, ' (',e.Probe_ID, ') (', 
-                                                                      a.SampleType_ID, '-', a.Technique_ID,'-',
-                                                                      a.Molecule_ID, ') - ', cid.CID_Name,' - 1') as geneCid
-                                                FROM experiments e, ea_analyse a, cids cid, cid_patient cp
+            $results = DB::SELECT(" SELECT distinct CONCAT(g.Gene_Symbol, ' (',g.Probe_ID, ') (', 
+                                                                      s.SampleType_Name, '-', t.Technical_Name,'-',
+                                                                      m.Molecule_Name, ') - ', cid.CID_Name,' - 1') as geneCid
+                                                FROM experiments e, ea_analyse a, cids cid, cid_patient cp, genes g
+                                                  , molecules m, sampletypes s, techniques t
                                                 WHERE a.Analyse_ID = e.Analyse_ID
                                                 AND a.CID_ID = cp.CID_ID
                                                 AND cp.CID_ID = cid.CID_ID
+                                                AND e.Gene_ID = g.Gene_ID
+                                                
+                                                AND m.Molecule_ID = a.Molecule_ID
+                                                AND s.SampleType_ID = a.SampleType_ID
+                                                AND t.Technique_ID = a.Technique_ID
+                                                
                                                 AND e.Experiments_ID in " . createList($array) . "
-                                                ORDER BY e.Gene_Symbol, e.Probe_ID, a.SampleType_ID, a.Technique_ID, a.Molecule_ID, cid.CID_ID ");
+                                                ORDER BY g.Gene_Symbol, g.Probe_ID, a.SampleType_ID, a.Technique_ID, a.Molecule_ID, cid.CID_ID ");
 
             $return = createArray($results,'geneCid');
             return $return;

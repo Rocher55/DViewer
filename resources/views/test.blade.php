@@ -5,7 +5,7 @@
 -->
 
 hello world
-{{log(46839.42289,2)}}
+{{Session::get('geneID')}}
 
 
 

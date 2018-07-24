@@ -25,13 +25,15 @@ $(document).ready(function () {
                     }else{
                         dropdown.css('border-color','red');
                     }
-
                 },
                 'json'
             );
         }
     });
 });
+
+
+
 
 //contextmenu == clic droit
 //doit toujours retourner false

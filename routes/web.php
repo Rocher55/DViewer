@@ -74,8 +74,8 @@ Route::group(['middleware' => ['in.process']], function () {
 /*-------------------------------------------------------------------------------------------
                                                Ajax
  -------------------------------------------------------------------------------------------*/
-Route::get('/ajax-genes', 'AjaxController@genes')->name('ajax-genes');
-//Route::get('/ajax-genes', 'AjaxController@genes')->name('ajax-genes')->middleware('ajax');
+//Route::get('/ajax-genes', 'AjaxController@genes')->name('ajax-genes');
+Route::get('/ajax-genes', 'AjaxController@genes')->name('ajax-genes')->middleware('ajax');
 Route::post('/ajax-previous', 'AjaxController@pathThatDemandPrevious')->name('ajax-previous')->middleware('ajax');
 
 

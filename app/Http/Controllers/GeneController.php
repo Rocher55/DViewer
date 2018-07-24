@@ -18,6 +18,8 @@ class GeneController extends Controller
         return view('Forms.genes');
     }
 
+
+
     public function postSelect(){
         $request = Input::get('genes');
 
@@ -27,8 +29,9 @@ class GeneController extends Controller
             $geneArray = array_unique($geneArray);
 
 
-
-            Session::put('geneID', array_values($geneArray));
+            $id = Gene::whereIn('Gene_Symbol',$geneArray)->select('Gene_ID')->groupBy('Gene_ID')->get();
+            Session::put('geneID', createArray($id, 'Gene_ID'));
+            Session::put('geneSymbol', array_values($geneArray));
         }
 
 
