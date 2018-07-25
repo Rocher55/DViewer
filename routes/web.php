@@ -17,7 +17,7 @@ Route::get('test','tests@index');
 // Authentication Routes...
 Route::get('login', 'Auth\Login2Controller@showLoginForm')->name('login');
 Route::post('login', 'Auth\Login2Controller@login');
-Route::post('logout', 'Auth\LoginController@logout')->name('logout');
+Route::post('logout', 'Auth\Login2Controller@logout')->name('logout');
 
 
 Route::get('/', 'HomeController@index')->name('home');

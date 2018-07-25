@@ -5,7 +5,7 @@
 -->
 
 hello world
-{{Session::get('geneID')}}
+{{var_dump($experiments)}}
 
 
 

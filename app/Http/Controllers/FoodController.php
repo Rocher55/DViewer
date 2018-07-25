@@ -199,8 +199,8 @@ class FoodController extends Controller{
                                         WHERE f.Nomenclature_ID = n.Nomenclature_ID
                                         AND f.Unite_Mesure_ID = u.Unite_Mesure_ID
                                         AND f.Patient_ID in". createList(Session::get('patientID')).
-                                        "GROUP BY 1,2,3
-                                        ORDER BY 2");
+                                        "GROUP BY 1, 2, 3
+                                        ORDER BY n.Priority ASC, 2");
 
         return $concerned;
     }

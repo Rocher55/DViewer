@@ -33,14 +33,7 @@ class ResultController extends Controller{
 
             //Base
 
-            $base = $this->createBase();
-            foreach ($base as $item){
-                $array[strval($item->Patient_ID)]['SUBJID'] = $item->SUBJID;
-                $array[strval($item->Patient_ID)]['Sex'] = $item->Sex;
-                $array[strval($item->Patient_ID)]['Center'] = $item->Center;
-                $array[strval($item->Patient_ID)]['Protocol'] = $item->Protocol;
-                $array[strval($item->Patient_ID)]['Class'] = $item->Class;
-            }
+
 
 
             //bioCid
@@ -52,13 +45,6 @@ class ResultController extends Controller{
             //le tableau à l'indice 1 : Patient_ID
             //et 2 : item
             foreach ($resultsBio as $item) {
-
-                $array[strval($item->Patient_ID)]['SUBJID'] = $item->SUBJID;
-                $array[strval($item->Patient_ID)]['Sex'] = $item->Sex;
-                $array[strval($item->Patient_ID)]['Center'] = $item->Center;
-                $array[strval($item->Patient_ID)]['Protocol'] = $item->Protocol;
-                $array[strval($item->Patient_ID)]['Class'] = $item->Class;
-
                 $array[strval($item->Patient_ID)][$item->item] = $item->valeur;
             }
 
@@ -110,41 +96,54 @@ class ResultController extends Controller{
                 //Gene_Symbol (Probe_ID) (SampleType_ID-Technique_ID-Molecule_ID) - CID_Name - indice
                 $geneCid = $this->getGeneCidArray();
 
-                //Creation et execution de la requete
-                $requestGene = $this->createRequestGene();
-                $resultsGene = DB::SELECT($requestGene);
+                if(count($this->experimentsID)>0){
+                    //Creation et execution de la requete
+                    $requestGene = $this->createRequestGene();
+                    $resultsGene = DB::SELECT($requestGene);
 
-                //Pour chaque resultat
-                foreach ($resultsGene as $item) {
-                    //Si une valeur exite a cet endroit alors
-                    if (isset($array[strval($item->Patient_ID)][$item->item])) {
-                        $i = 2;   //indice = 2
+                    //Pour chaque resultat
+                    foreach ($resultsGene as $item) {
+                        //Si une valeur exite a cet endroit alors
+                        if (isset($array[strval($item->Patient_ID)][$item->item])) {
+                            $i = 2;   //indice = 2
 
-                        //Je cree le nom que portera la colonne
-                        $newCol = substr_replace($item->item, $i, -1, 1);
-
-                        //Et temps que j'ai un resultat pour la nouvelle colonne
-                        //Incrementer i et changer le nom de la colonne en fonction
-                        while (isset($array[strval($item->Patient_ID)][$newCol])) {
-                            $i++;
+                            //Je cree le nom que portera la colonne
                             $newCol = substr_replace($item->item, $i, -1, 1);
+
+                            //Et temps que j'ai un resultat pour la nouvelle colonne
+                            //Incrementer i et changer le nom de la colonne en fonction
+                            while (isset($array[strval($item->Patient_ID)][$newCol])) {
+                                $i++;
+                                $newCol = substr_replace($item->item, $i, -1, 1);
+                            }
+                            //J'ajoute dans mon tableau des nouvelles colonnes la colonne
+                            //ainsi que la valeur pour le patient dans la nouvelle colonne
+                            $newCols[] = $newCol;
+                            $array[strval($item->Patient_ID)][$newCol] = $item->valeur;
+                        } else {
+                            //Sinon j'ajoute simplement la valeur dans le tableau
+                            $array[strval($item->Patient_ID)][$item->item] = $item->valeur;
                         }
-                        //J'ajoute dans mon tableau des nouvelles colonnes la colonne
-                        //ainsi que la valeur pour le patient dans la nouvelle colonne
-                        $newCols[] = $newCol;
-                        $array[strval($item->Patient_ID)][$newCol] = $item->valeur;
-                    } else {
-                        //Sinon j'ajoute simplement la valeur dans le tableau
-                        $array[strval($item->Patient_ID)][$item->item] = $item->valeur;
+                        //Je garde le nom des colonnes en un exemplaire
+                        $newCols = array_unique($newCols);
                     }
-                    //Je garde le nom des colonnes en un exemplaire
-                    $newCols = array_unique($newCols);
+                    //Si mon tableau de nouvelles colonnes existe alors je reorganise
+                    //mon tableau d'entete : geneCid
+                    if (isset($newCols)) {
+                        $geneCid = $this->reorganizeArray($geneCid, $newCols);
+                    }
                 }
-                //Si mon tableau de nouvelles colonnes existe alors je reorganise
-                //mon tableau d'entete : geneCid
-                if (isset($newCols)) {
-                    $geneCid = $this->reorganizeArray($geneCid, $newCols);
-                }
+
+            }
+
+
+            $base = $this->createBase(array_keys($array));
+            foreach ($base as $item){
+                $array[strval($item->Patient_ID)]['SUBJID'] = $item->SUBJID;
+                $array[strval($item->Patient_ID)]['Sex'] = $item->Sex;
+                $array[strval($item->Patient_ID)]['Center'] = $item->Center;
+                $array[strval($item->Patient_ID)]['Protocol'] = $item->Protocol;
+                $array[strval($item->Patient_ID)]['Class'] = $item->Class;
             }
 
 
@@ -172,17 +171,18 @@ class ResultController extends Controller{
      *
      * @return array
      */
-    public function createBase(){
+    public function createBase($patient_ids){
         $request = "SELECT  p.Patient_ID, p.SUBJID, CASE WHEN p.Sex =1 THEN 'M' ELSE 'F' END as Sex,
                             CONCAT(c.Center_Acronym, ' - ', c.Center_City, ' - ', c.Center_Country) AS Center,
                             prot.Protocol_Name as Protocol, p.Class as Class
                     FROM patients p, centers c, protocols prot, center_protocol cp
-                    WHERE p.protocol_id = cp.protocol_id
+                    WHERE prot.protocol_id = cp.protocol_id
                     AND cp.protocol_id = p.protocol_id
                     AND p.center_id = cp.center_id
                     AND cp.center_id = c.center_id
-                    AND p.patient_id in".createList(Session::get('patientID')).
-                  " ORDER BY p.Patient_ID";
+                    AND p.patient_id in".createList($patient_ids).
+                  "GROUP BY 1 ORDER BY p.Patient_ID asc
+                  ";
         $result = DB::select($request);
 
         return $result;
@@ -196,17 +196,10 @@ class ResultController extends Controller{
      * @return string
      */
     public function createRequestBio(){
-        $request = " SELECT p.patient_id as Patient_ID, p.SUBJID, CASE WHEN p.Sex =1 THEN 'M' ELSE 'F' END as Sex,
-                            CONCAT(c.Center_Acronym, ' - ', c.Center_City, ' - ', c.Center_Country) AS Center,
-                            prot.Protocol_Name as Protocol, p.Class as Class, 
+        $request = " SELECT p.patient_id as Patient_ID, 
                             CONCAT(n.NameN,' (',u.NameUM ,') - ', cid.CID_NAME) as item, b.value as valeur 
-                     FROM centers c, protocols prot, center_protocol c_p, patients p, 
-                          cid_patient cp, cids cid, biochemistry b, nomenclatures n, unite_mesure u
-                     WHERE c_p.Center_ID = c.Center_ID
-                     AND c_p.Protocol_ID = prot.Protocol_ID
-                     AND p.Protocol_ID = c_p.Protocol_ID
-                     AND p.Center_ID = c_p.Center_ID
-                     AND cp.CID_ID = cid.CID_ID
+                     FROM  patients p, cid_patient cp, cids cid, biochemistry b, nomenclatures n, unite_mesure u
+                     WHERE cp.CID_ID = cid.CID_ID
                      AND cp.Patient_ID = p.Patient_ID
                      AND b.CID_ID = cp.CID_ID
                      AND b.Patient_ID = cp.Patient_ID
@@ -272,7 +265,7 @@ class ResultController extends Controller{
                                                                       s.SampleType_Name, '-', t.Technical_Name,'-',
                                                                       m.Molecule_Name, ') - ', cid.CID_Name,' - 1') as item, 
                             e.value1 as valeur
-                     FROM experiments e, ea_analyse a, cids cid, cid_patient cp, patients p, genes g
+                     FROM experiments_positive e, ea_analyse a, cids cid, cid_patient cp, patients p, genes g
                      , molecules m, sampletypes s, techniques t
                      WHERE cp.Patient_ID = p.Patient_ID
                      AND cp.CID_ID = cid.CID_ID
@@ -373,7 +366,12 @@ class ResultController extends Controller{
         $cids = Cid::distinct()->whereIn('CID_ID', Session::get('cidID'))->get();
         foreach (Session::get('activitiesToView') as $activity){
             foreach ($cids as $cid){
-                array_push($activitiesCid, $activity.' - '.$cid->CID_Name);
+                $exist = Physical_activities::whereIn('Physical_Activities_ID', $this->activitiesID)
+                                                ->where('CID_ID', $cid->CID_ID  )
+                                                ->count($activity);
+                if($exist >0){
+                    array_push($activitiesCid, $activity.' - '.$cid->CID_Name);
+                }
             }
         }
 
@@ -388,7 +386,7 @@ class ResultController extends Controller{
      */
     public function getGeneCidArray(){
             $request = " SELECT e.Experiments_ID as id
-                         FROM experiments e, ea_analyse a
+                         FROM experiments_positive e, ea_analyse a
                          WHERE e.Analyse_ID = a.Analyse_ID
                          AND e.Gene_ID in ".createList(Session::get('geneID'))."                        
                          AND e.Analyse_ID in ".createList(Session::get('analyseID'));
@@ -397,11 +395,12 @@ class ResultController extends Controller{
             $array = createArray($experiments_ID, 'id');
             $this->experimentsID = $array;
 
+        if(count($this->experimentsID)>0) {
             //Je ne garde que les genes qui ont bien des valeurs dans experiments
             $results = DB::SELECT(" SELECT distinct CONCAT(g.Gene_Symbol, ' (',g.Probe_ID, ') (', 
                                                                       s.SampleType_Name, '-', t.Technical_Name,'-',
                                                                       m.Molecule_Name, ') - ', cid.CID_Name,' - 1') as geneCid
-                                                FROM experiments e, ea_analyse a, cids cid, cid_patient cp, genes g
+                                                FROM experiments_positive e, ea_analyse a, cids cid, cid_patient cp, genes g
                                                   , molecules m, sampletypes s, techniques t
                                                 WHERE a.Analyse_ID = e.Analyse_ID
                                                 AND a.CID_ID = cp.CID_ID
@@ -415,7 +414,10 @@ class ResultController extends Controller{
                                                 AND e.Experiments_ID in " . createList($array) . "
                                                 ORDER BY g.Gene_Symbol, g.Probe_ID, a.SampleType_ID, a.Technique_ID, a.Molecule_ID, cid.CID_ID ");
 
-            $return = createArray($results,'geneCid');
+            $return = createArray($results, 'geneCid');
+        }else{
+            $return=array();
+        }
             return $return;
     }
 

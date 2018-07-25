@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Analyse;
 use App\Experiment;
 use App\Gene;
 use App\Patient;
@@ -16,7 +17,12 @@ class tests extends Controller{
 
 
     public function index(){
-        return view('test');
+
+        $analyse = Analyse::where('Technique_ID',7)->select('Analyse_ID')->get();
+
+        $experiments = Experiment::whereIn('Analyse_ID', $analyse)->get();
+
+        return view('test', compact('experiments'));
     }
 
 

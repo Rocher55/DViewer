@@ -2,7 +2,7 @@
 
 
 @section('content')
-    <div class="container">
+    <div class="container ">
         <ul class="nav nav-tabs">
             @foreach($family as $item => $value)
                 @if(key($family) == $item)

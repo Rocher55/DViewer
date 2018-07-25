@@ -36,7 +36,8 @@ class Login2Controller extends Controller
     }
 
     public function username() {
-        return config('adldap_auth.usernames.eloquent');
+        //return config('adldap_auth.usernames.eloquent');
+        return 'username';
     }
 
     protected function validateLogin(Request $request) {

@@ -204,7 +204,7 @@ class BiochemistryController extends Controller{
                                  AND b.Patient_ID in'. createList(Session::get('patientID')).
                                 'AND b.CID_ID in'. createList(Session::get('cidID')).
                                 ' GROUP BY 1,2,3,4,5,6
-                                ORDER BY n.NameN');
+                                ORDER BY n.Priority ASC,n.NameN');
         return $concerned;
     }
 }

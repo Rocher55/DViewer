@@ -29,9 +29,20 @@ class GeneController extends Controller
             $geneArray = array_unique($geneArray);
 
 
-            $id = Gene::whereIn('Gene_Symbol',$geneArray)->select('Gene_ID')->groupBy('Gene_ID')->get();
-            Session::put('geneID', createArray($id, 'Gene_ID'));
-            Session::put('geneSymbol', array_values($geneArray));
+
+            $id = Gene::whereIn('Gene_Symbol',$geneArray)
+                        ->select('Gene_ID')
+                        ->groupBy('Gene_ID')
+                        ->get();
+
+            if(count($id)>0){
+                Session::put('geneID', createArray($id, 'Gene_ID'));
+                Session::put('geneSymbol', array_values($geneArray));
+            }else{
+                Session::flash('nothing',"Gene doesn't exist");
+                return redirect()->route('select-gene')->withInput();
+            }
+
         }
 
 
