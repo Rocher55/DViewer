@@ -1,11 +1,14 @@
 
-<!--image
-<img src="{{--$third--}}" width="879" height="657"/>
 
--->
-
-hello world
-{{var_dump($experiments)}}
+</br>
+Connexion :
+{!!  var_dump($connect) !!}
+</br>
+Bind :
+{!! var_dump($bind) !!}
+</br>
+JJS connexion :
+{!! var_dump($jjs) !!}
 
 
 

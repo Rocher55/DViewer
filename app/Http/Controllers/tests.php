@@ -17,13 +17,96 @@ class tests extends Controller{
 
 
     public function index(){
+        $idRoot = "uid=ldapreader-toul,ou=sysusers,dc=local";
+        $mdpRoot = 'YeEa#hh6e';
+        $connect = ldap_connect("ldaps://ldap1.inserm.fr", 636);
 
-        $analyse = Analyse::where('Technique_ID',7)->select('Analyse_ID')->get();
+        //For test server
+        //$idRoot = "uid=euler,dc=example,dc=com";
+        //$mdpRoot = 'password';
+        //$connect = ldap_connect("ldap.forumsys.com", 389);
 
-        $experiments = Experiment::whereIn('Analyse_ID', $analyse)->get();
 
-        return view('test', compact('experiments'));
+
+        ldap_set_option($connect, LDAP_OPT_PROTOCOL_VERSION, 3);
+        //ldap_set_option($connect, LDAP_OPT_REFERRALS, 0);
+        $bind = @ldap_bind($connect, $idRoot, $mdpRoot);
+
+       $jjs=$this->connexionServeur($idRoot, $mdpRoot);
+        return view('test', compact('connect', 'bind', 'search', 'jjs'));
     }
+
+
+
+
+    function connexionServeur($idConnexion, $mdpConnexion) {
+        $adresse1 = "195.98.252.16";
+        $adresse2 = "193.52.143.178";
+        $adresse3 = "193.52.0.8";
+
+        /*
+        $adresse1 = "ldaps://ldap1.inserm.fr";
+        $adresse2 = "ldaps://ldap2.inserm.fr";
+        $adresse3 = "ldaps://ldap3.inserm.fr";
+         * */
+
+        $connexionLDAP = ldap_connect($adresse1, 636);
+        // comme l inserm est en OpenLDAP, la fonction retournera toujours une ressource et non un booleen
+        if ($connexionLDAP){
+            $bindLDAP = @ldap_bind($connexionLDAP, $idConnexion, $mdpConnexion);// le @ sert a ne pas envoyer un code erreur
+            if ($bindLDAP){
+                return $connexionLDAP;//echo "connexion LDAP réussi";
+            }else{
+                $connexionLDAP = ldap_connect($adresse2);// essai d une connection sur ldap2 Inserm
+                if ($connexionLDAP){
+                    $bindLDAP = @ldap_bind($connexionLDAP, $idConnexion, $mdpConnexion);
+                    if ($bindLDAP){
+                        return $connexionLDAP;//echo "connexion LDAP réussi";
+                    }else{
+                        $connexionLDAP = ldap_connect($adresse3);// essai d une connection sur ldap3 Inserm
+                        if ($connexionLDAP){
+                            $bindLDAP = @ldap_bind($connexionLDAP, $idConnexion, $mdpConnexion);
+                            if ($bindLDAP){
+                                return $connexionLDAP;//echo "connexion LDAP réussi";
+                            }
+                        }
+                        ?>pfu<?php
+                    }
+
+                }
+            }
+        }else{
+            ?>
+            <div class="alert alert-danger"><center>Impossible de joindre le serveur LDAP</center></div>
+            <?php
+        }
+        return null;
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

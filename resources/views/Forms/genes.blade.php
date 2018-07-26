@@ -6,20 +6,20 @@
             <div class="col-md-4 text-center">
                 <div class="row">
                     <div class="search">
-                        {!! Form::text('recherche','',[ 'id'=>'recherche', 'placeholder'=>'Search a gene ...']) !!}
+                        {!! Form::text('recherche','',[ 'id'=>'recherche', 'placeholder'=>'Search a gene symbol ...']) !!}
                     </div>
                 </div>
 
                 <div class="row">
                     {!! Form::label('gene', 'Gene')  !!}
-                    <select data-placeholder="Select a gene ..." class="select-gene" name="gene">
+                    <select placeholder="Select a gene ..." class="select-gene" name="gene">
                     </select>
                 </div>
             </div>
 
             {!! Form::open(['url' => 'research/select-gene', 'method' => 'post', 'id'=>'form']) !!}
             <div class="col-md-8 text-center">
-                {!! Form::textarea('genes', '',['cols'=>'50', 'rows'=>'10', 'id'=>'genes']) !!}
+                {!! Form::textarea('genes', '',['cols'=>'50', 'rows'=>'10', 'id'=>'genes', 'placeholder'=>'Enter the gene symbol separated by semicolon']) !!}
             </div>
         </div>
 
