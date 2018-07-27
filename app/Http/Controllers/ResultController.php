@@ -21,6 +21,11 @@ class ResultController extends Controller{
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
     public function index(){
+        if(!isset($_SERVER['HTTP_REFERER'])){
+            return redirect()->route('home');
+        }
+
+
         womanPercentage();
         $previousPath = str_replace(url('/'), '', url()->previous());
 
@@ -265,7 +270,7 @@ class ResultController extends Controller{
                                                                       s.SampleType_Name, '-', t.Technical_Name,'-',
                                                                       m.Molecule_Name, ') - ', cid.CID_Name,' - 1') as item, 
                             e.value1 as valeur
-                     FROM experiments_positive e, ea_analyse a, cids cid, cid_patient cp, patients p, genes g
+                     FROM experiments e, ea_analyse a, cids cid, cid_patient cp, patients p, genes g
                      , molecules m, sampletypes s, techniques t
                      WHERE cp.Patient_ID = p.Patient_ID
                      AND cp.CID_ID = cid.CID_ID
@@ -386,7 +391,7 @@ class ResultController extends Controller{
      */
     public function getGeneCidArray(){
             $request = " SELECT e.Experiments_ID as id
-                         FROM experiments_positive e, ea_analyse a
+                         FROM experiments e, ea_analyse a
                          WHERE e.Analyse_ID = a.Analyse_ID
                          AND e.Gene_ID in ".createList(Session::get('geneID'))."                        
                          AND e.Analyse_ID in ".createList(Session::get('analyseID'));
@@ -400,7 +405,7 @@ class ResultController extends Controller{
             $results = DB::SELECT(" SELECT distinct CONCAT(g.Gene_Symbol, ' (',g.Probe_ID, ') (', 
                                                                       s.SampleType_Name, '-', t.Technical_Name,'-',
                                                                       m.Molecule_Name, ') - ', cid.CID_Name,' - 1') as geneCid
-                                                FROM experiments_positive e, ea_analyse a, cids cid, cid_patient cp, genes g
+                                                FROM experiments e, ea_analyse a, cids cid, cid_patient cp, genes g
                                                   , molecules m, sampletypes s, techniques t
                                                 WHERE a.Analyse_ID = e.Analyse_ID
                                                 AND a.CID_ID = cp.CID_ID

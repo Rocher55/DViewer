@@ -6,7 +6,7 @@
 
             <div class="col-md-8 col-md-offset-2 text-center">
                 {!! Form::label('cid-from', 'Clinical Investigation Day')  !!}
-                <select data-placeholder="Choose something..." class="cid-chosen-tag"  multiple="true" name="cid[]">
+                <select data-placeholder="Choose the cid(s) ..." class="cid-chosen-tag"  multiple="true" name="cid[]">
                     <option value=""></option>
                     @foreach($cids as $cid)
                         <option value="{!! $cid->CID_ID !!}">{!! $cid->CID_Name !!}</option>

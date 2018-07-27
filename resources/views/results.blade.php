@@ -1,6 +1,10 @@
 @extends('layouts.template')
 
 @section('content')
+    <div class="help-tip">
+        <p>Correctly import DATA in Excel. <br><br><img src="{{asset('/img/import.png')}}" width="650" /></p>
+    </div>
+
     <div class="boutons">
         <a href="/" class="btn btn-primary">Home</a>
         <a href="/research/export" class="btn btn-primary" >Export</a>

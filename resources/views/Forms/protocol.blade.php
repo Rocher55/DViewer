@@ -1,9 +1,12 @@
 @extends('layouts.template')
 
 @section('content')
+    <div class="help-tip">
+        <p>To use this APP just follow this instructions. <br><br><img src="{{asset('/img/how-to.png')}}" width="650" /></p>
+    </div>
     <div class="container-body">
         {!! Form::open(['url' => 'research/protocol', 'method' => 'post', 'id'=>'form']) !!}
-            <select data-placeholder="Choose something..." class="chosen-tag" multiple="true" name="protocol[]">
+            <select data-placeholder="Choose the protocol(s) ..." class="chosen-tag" multiple="true" name="protocol[]">
                 <option value=""></option>
 
                 //Creation du groupe Longitudinal

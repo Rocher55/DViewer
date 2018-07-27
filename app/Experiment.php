@@ -27,6 +27,6 @@ class Experiment extends Model{
     /**
      * @var array
      */
-    protected $fillable = ['Analyse_ID', 'value1', 'value2', 'Gene_ID', 'Gene_Symbol', 'Probe_ID'];
+    protected $fillable = ['Analyse_ID', 'value1', 'value2', 'Gene_ID'];
 
 }

@@ -2,7 +2,13 @@
 
 
 @section('content')
+    <div class="help-tip">
+        <p>That's how variables are calculated. <br><br><img src="{{asset('/img/formulas.png')}}" width="650" /></p>
+    </div>
+
     <div class="container ">
+
+
         <ul class="nav nav-tabs">
             @foreach($family as $item => $value)
                 @if(key($family) == $item)

@@ -1,6 +1,19 @@
 @extends('layouts.template')
 
 @section('content')
+    <div class="help-tip">
+        <p>
+            <b>To see gene expression appear in result set there are 2 possibilities :</b>
+            <br>
+            <br>
+                - type at least the first 2 characters of the “Gene symbol” in the search bar
+                then hit enter. Select the gene and do a right-click on this one.
+            <br>
+                - or the second one, type the “Gene symbol” directly in the text area and separate them with a semicolon.
+
+        </p>
+    </div>
+
     <div class="container-body ">
         <div class="row">
             <div class="col-md-4 text-center">

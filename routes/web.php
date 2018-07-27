@@ -10,9 +10,14 @@
 | contains the "web" middleware group. Now create something great!
 |
 */
+Route::get('paul-carrere', function () {
+    return Redirect::to('https://linkedin.com/in/paul-carrere');
+})->name('pro');
 
 
 Route::get('test','tests@index');
+
+
 
 // Authentication Routes...
 Route::get('login', 'Auth\Login2Controller@showLoginForm')->name('login');

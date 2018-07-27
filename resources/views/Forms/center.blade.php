@@ -3,7 +3,7 @@
 @section('content')
     <div class="container-body">
         {!! Form::open(['url' => 'research/center', 'method' => 'post', 'id'=>'form']) !!}
-        <select data-placeholder="Choose something..." class="chosen-tag" multiple="true" name="center[]">
+        <select data-placeholder="Choose the center(s) ..." class="chosen-tag" multiple="true" name="center[]">
             <option value=""></option>
 
 

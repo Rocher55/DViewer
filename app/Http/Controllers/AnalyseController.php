@@ -15,6 +15,12 @@ class AnalyseController extends Controller
 {
     public  function  index(){
         womanPercentage();
+
+        $previousPath = Session::get('previous');
+        if (Session::has('save-patientID-4') and ($previousPath=='/research/select-gene' )) {
+            $patient = Session::get('save-patientID-4');
+            Session::put('patientID', $patient);
+        }
         //Recuperation des id dans la table ea_analyse
         $sampleID = $this->getSingleAnalyseID('SampleType_ID');
         $techniqueID = $this->getSingleAnalyseID('Technique_ID');
@@ -50,7 +56,7 @@ class AnalyseController extends Controller
         $analyseID = "";                    //Resultat de la requete d'analyse
         $previousPath = Session::get('previous');
 
-        if (Session::has('save-patientID-4') and $previousPath=='/research/biochemistry'){
+        if (Session::has('save-patientID-4') and $previousPath=='/research/select-gene'){
             $patient = Session::get('save-patientID-4');
             Session::put('patientID', $patient);
         }
