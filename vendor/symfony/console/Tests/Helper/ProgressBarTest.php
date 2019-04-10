@@ -13,8 +13,8 @@ namespace Symfony\Component\Console\Tests\Helper;
 
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Console\Formatter\OutputFormatter;
-use Symfony\Component\Console\Helper\ProgressBar;
 use Symfony\Component\Console\Helper\Helper;
+use Symfony\Component\Console\Helper\ProgressBar;
 use Symfony\Component\Console\Output\ConsoleSectionOutput;
 use Symfony\Component\Console\Output\StreamOutput;
 
@@ -314,7 +314,7 @@ class ProgressBarTest extends TestCase
 
     public function testOverwriteWithSectionOutput()
     {
-        $sections = array();
+        $sections = [];
         $stream = $this->getOutputStream(true);
         $output = new ConsoleSectionOutput($stream->getStream(), $sections, $stream->getVerbosity(), $stream->isDecorated(), new OutputFormatter());
 
@@ -336,7 +336,7 @@ class ProgressBarTest extends TestCase
 
     public function testOverwriteMultipleProgressBarsWithSectionOutputs()
     {
-        $sections = array();
+        $sections = [];
         $stream = $this->getOutputStream(true);
         $output1 = new ConsoleSectionOutput($stream->getStream(), $sections, $stream->getVerbosity(), $stream->isDecorated(), new OutputFormatter());
         $output2 = new ConsoleSectionOutput($stream->getStream(), $sections, $stream->getVerbosity(), $stream->isDecorated(), new OutputFormatter());
@@ -365,7 +365,7 @@ class ProgressBarTest extends TestCase
 
     public function testMultipleSectionsWithCustomFormat()
     {
-        $sections = array();
+        $sections = [];
         $stream = $this->getOutputStream(true);
         $output1 = new ConsoleSectionOutput($stream->getStream(), $sections, $stream->getVerbosity(), $stream->isDecorated(), new OutputFormatter());
         $output2 = new ConsoleSectionOutput($stream->getStream(), $sections, $stream->getVerbosity(), $stream->isDecorated(), new OutputFormatter());
@@ -859,12 +859,12 @@ class ProgressBarTest extends TestCase
      */
     public function provideFormat()
     {
-        return array(
-            array('normal'),
-            array('verbose'),
-            array('very_verbose'),
-            array('debug'),
-        );
+        return [
+            ['normal'],
+            ['verbose'],
+            ['very_verbose'],
+            ['debug'],
+        ];
     }
 
     protected function getOutputStream($decorated = true, $verbosity = StreamOutput::VERBOSITY_NORMAL)

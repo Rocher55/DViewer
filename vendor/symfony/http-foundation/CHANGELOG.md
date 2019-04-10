@@ -1,6 +1,20 @@
 CHANGELOG
 =========
 
+4.2.0
+-----
+
+ * the default value of the "$secure" and "$samesite" arguments of Cookie's constructor
+   will respectively change from "false" to "null" and from "null" to "lax" in Symfony
+   5.0, you should define their values explicitly or use "Cookie::create()" instead.
+ * added `matchPort()` in RequestMatcher
+
+4.1.3
+-----
+
+ * [BC BREAK] Support for the IIS-only `X_ORIGINAL_URL` and `X_REWRITE_URL`
+   HTTP headers has been dropped for security reasons.
+
 4.1.0
 -----
 
