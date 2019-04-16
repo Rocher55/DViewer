@@ -2,11 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Protocol;
 use Illuminate\Http\Request;
-
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Session;
 
 class HomeController extends Controller
 {
@@ -17,7 +13,7 @@ class HomeController extends Controller
      */
     public function __construct()
     {
-        //$this->middleware('auth');
+        $this->middleware('auth');
     }
 
     /**

@@ -519,7 +519,6 @@ class ComposerStaticInit0e42e571cf8d6d5f6a16bc026d1fb058
         'App\\Http\\Controllers\\AjaxController' => __DIR__ . '/../..' . '/app/Http/Controllers/AjaxController.php',
         'App\\Http\\Controllers\\AnalyseController' => __DIR__ . '/../..' . '/app/Http/Controllers/AnalyseController.php',
         'App\\Http\\Controllers\\Auth\\Login2Controller' => __DIR__ . '/../..' . '/app/Http/Controllers/Auth/Login2Controller.php',
-        'App\\Http\\Controllers\\Auth\\LoginController' => __DIR__ . '/../..' . '/app/Http/Controllers/Auth/LoginController.php',
         'App\\Http\\Controllers\\BiochemistryController' => __DIR__ . '/../..' . '/app/Http/Controllers/BiochemistryController.php',
         'App\\Http\\Controllers\\CenterController' => __DIR__ . '/../..' . '/app/Http/Controllers/CenterController.php',
         'App\\Http\\Controllers\\CidController' => __DIR__ . '/../..' . '/app/Http/Controllers/CidController.php',

@@ -16,7 +16,7 @@ class AjaxController extends Controller
 
 
 
-        //Requete sans tri ormis le gene_symbol
+        //Requete sans tri hormis le gene_symbol
        $results = DB::select("SELECT g.Gene_Symbol as gene FROM genes g WHERE g.Gene_Symbol LIKE '".$term."%' GROUP BY 1" );
 
        //Requete avec tri sur l'id de l'analyse

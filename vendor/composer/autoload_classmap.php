@@ -128,7 +128,6 @@ return array(
     'App\\Http\\Controllers\\AjaxController' => $baseDir . '/app/Http/Controllers/AjaxController.php',
     'App\\Http\\Controllers\\AnalyseController' => $baseDir . '/app/Http/Controllers/AnalyseController.php',
     'App\\Http\\Controllers\\Auth\\Login2Controller' => $baseDir . '/app/Http/Controllers/Auth/Login2Controller.php',
-    'App\\Http\\Controllers\\Auth\\LoginController' => $baseDir . '/app/Http/Controllers/Auth/LoginController.php',
     'App\\Http\\Controllers\\BiochemistryController' => $baseDir . '/app/Http/Controllers/BiochemistryController.php',
     'App\\Http\\Controllers\\CenterController' => $baseDir . '/app/Http/Controllers/CenterController.php',
     'App\\Http\\Controllers\\CidController' => $baseDir . '/app/Http/Controllers/CidController.php',

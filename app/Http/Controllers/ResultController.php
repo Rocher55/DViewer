@@ -17,6 +17,11 @@ class ResultController extends Controller{
     private $foodDiariesID = array();
     private $activitiesID = array();
 
+    public function __construct()
+    {
+        $this->middleware('auth');
+    }
+
     /**
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
