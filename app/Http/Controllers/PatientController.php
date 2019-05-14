@@ -16,6 +16,7 @@ class PatientController extends Controller
      *
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
+
     public function index(){
 
         //Recupere les patients concernes par un centre et protocole

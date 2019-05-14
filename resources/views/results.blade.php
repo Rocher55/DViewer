@@ -7,7 +7,7 @@
 
     <div class="boutons">
         <a href="/" class="btn btn-primary">Home</a>
-        <a href="/research/export" class="btn btn-primary" >Export</a>
+        <a href="{{ route('export') }}" class="btn btn-primary" >Export</a>
     </div>
 
     <div class="container table-responsive">
