@@ -61,7 +61,15 @@ textarea {
     resize: none;
 }
 
+/*-------------------------------------
+                custom list
+------------------------------------ */
 
+.list-group {
+    overflow: auto;
+    max-height: 450px;
+    scroll-behavior: smooth;
+}
 
 /*Navbar & font*/
 .navbar {

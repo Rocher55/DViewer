@@ -1,13 +1,9 @@
 <?php
-
 namespace App\Http\Controllers;
-
 use App\Protocol;
 use Illuminate\Http\Request;
-
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Session;
-
 class HomeController extends Controller
 {
     /**
@@ -17,9 +13,8 @@ class HomeController extends Controller
      */
     public function __construct()
     {
-        //$this->middleware('auth');
+       $this->middleware('auth');
     }
-
     /**
      * Show the application dashboard.
      *
@@ -33,7 +28,6 @@ class HomeController extends Controller
                                          WHERE prot.Protocol_ID = cp.Protocol_ID 
                                          AND cp.Protocol_ID = p.Protocol_ID 
                                          GROUP BY 1");
-
         Session::flush();
         Session::regenerate();
         return view('start', compact('protocols'));

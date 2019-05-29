@@ -51,8 +51,16 @@
                 <div class="collapse navbar-collapse" id="app-navbar-collapse">
                     <!--A gauche-->
                     <ul class="nav navbar-nav navbar-left">
-                        <li class="nav-item "><a href="{{ url('/research/protocol') }}"> Research </a></li>
+                        <li class="nav-item "><a href="{{ route('protocol') }}"> Research </a></li>
 
+                    </ul>
+                    @if(Auth::user()->isAdminOrAdmiral())
+                    <ul class="nav navbar-nav navbar-left">
+                        <li class="nav-item "><a href="{{ route('voyager.login')}}"> Admin </a></li>
+                    </ul>
+                    @endif
+                    <ul class="nav navbar-nav navbar-left">
+                        <li class="nav-item "><a href="{{ route('logout')}}"> Logout </a></li>
                     </ul>
 
                 </div>

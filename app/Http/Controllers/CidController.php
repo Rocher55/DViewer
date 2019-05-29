@@ -13,7 +13,10 @@ class CidController extends Controller{
 
 
 
-
+    public function __construct()
+    {
+        $this->middleware('auth');
+    }
     /**
      *  Recupere les cids qui concernent les patients
      *

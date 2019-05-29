@@ -6,7 +6,6 @@ use Illuminate\Config\Repository as AppConfig;
 use Illuminate\Console\Command;
 use Krlove\EloquentModelGenerator\Config;
 use Krlove\EloquentModelGenerator\Generator;
-use Krlove\EloquentModelGenerator\TypeRegistry;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputOption;
 
@@ -110,6 +109,7 @@ class GenerateModelCommand extends Command
             ['no-timestamps', 'ts', InputOption::VALUE_NONE, 'Set timestamps property to false', null],
             ['date-format', 'df', InputOption::VALUE_OPTIONAL, 'dateFormat property', null],
             ['connection', 'cn', InputOption::VALUE_OPTIONAL, 'Connection property', null],
+            ['backup', 'b', InputOption::VALUE_NONE, 'Backup existing model', null]
         ];
     }
 }

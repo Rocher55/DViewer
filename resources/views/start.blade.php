@@ -10,8 +10,8 @@
                         <tr>
                             <th scope="col">Protocols</th>
                             <th scope="col">Number of patients</th>
-                            <th scope="col">Classes</th>
                             <th scope="col">Sex</th>
+							<th scope="col">Classes</th>
                         </tr>
                     </thead>
                     <tbody>

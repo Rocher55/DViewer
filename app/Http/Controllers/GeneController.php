@@ -11,6 +11,10 @@ use Illuminate\Support\Facades\Input;
 
 class GeneController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('auth');
+    }
 
 
     public function index(){
@@ -25,7 +29,7 @@ class GeneController extends Controller
 
         if(isset($request)){
             //Suppression des espaces et explosion selon ';'
-            $geneArray = explode(";",strtoupper(str_replace(" ","",$request)));
+            $geneArray = explode(",",$request);
             $geneArray = array_unique($geneArray);
 
 

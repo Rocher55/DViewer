@@ -13,6 +13,11 @@ class BiochemistryController extends Controller{
     /** Recuperation des données pour affichage
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
+    public function __construct()
+    {
+        $this->middleware('auth');
+    }
+
     public  function  index(){
         womanPercentage();
         Session::forget('biochemistryToView');

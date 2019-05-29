@@ -16,22 +16,21 @@
             </select>
         </div>
 
-        <div class="col-md-4 offset-md-2">
-            {!! Form::label('technique', 'Technique')  !!}
-            <select data-placeholder="Choose a technique ..." class="analyse-chosen-tag" multiple="true" name="technique[]"  >
-                @foreach($technique as $item)
-                    <option value="{!! $item->Technique_ID !!}">{!! $item->Technical_Name !!}</option>
-                @endforeach
-            </select>
-        </div>
-
-
 
         <div class="col-md-4 offset-md-2">
             {!! Form::label('molecule', 'Molecule')  !!}
             <select data-placeholder="Choose a molecule ..." class="analyse-chosen-tag" multiple="true" name="molecule[]"  >
                 @foreach($molecule as $item)
                     <option value="{!! $item->Molecule_ID !!}">{!! $item->Molecule_Name !!}</option>
+                @endforeach
+            </select>
+        </div>
+
+        <div class="col-md-4 offset-md-2">
+            {!! Form::label('technique', 'Technique')  !!}
+            <select data-placeholder="Choose a technique ..." class="analyse-chosen-tag" multiple="true" name="technique[]"  >
+                @foreach($technique as $item)
+                    <option value="{!! $item->Technique_ID !!}">{!! $item->Technical_Name !!}</option>
                 @endforeach
             </select>
         </div>

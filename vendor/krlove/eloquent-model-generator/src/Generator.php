@@ -45,6 +45,9 @@ class Generator
         $content = $model->render();
 
         $outputPath = $this->resolveOutputPath($config);
+        if ($config->get('backup') && file_exists($outputPath)) {
+            rename($outputPath, $outputPath . '~');
+        }
         file_put_contents($outputPath, $content);
 
         return $model;
@@ -59,7 +62,11 @@ class Generator
     {
         $path = $config->get('output_path');
         if ($path === null || stripos($path, '/') !== 0) {
-            $path = app_path($path);
+            if (function_exists('app_path')) {
+                $path = app_path($path);
+            } else {
+                $path = app('path') . ($path ? DIRECTORY_SEPARATOR . $path : $path);
+            }
         }
 
         if (!is_dir($path)) {

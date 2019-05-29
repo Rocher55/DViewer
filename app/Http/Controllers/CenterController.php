@@ -10,6 +10,11 @@ use Illuminate\Support\Facades\Input;
 
 class CenterController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('auth');
+    }
+
     public function index(){
         //Recupere les centres tries par pays, ville & acronym croissant
         $centersId = Center_protocol::whereIn('Protocol_ID', Session::get('protocolID'))->get(['Center_ID']);

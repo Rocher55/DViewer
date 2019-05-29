@@ -14,7 +14,6 @@ use Illuminate\Database\Eloquent\Model;
  * @property int $Unite_Mesure_ID
  * @property CidPatient $cidPatient
  * @property Nomenclature $nomenclature
- * @property CidPatient $cidPatient
  * @property UniteMesure $uniteMesure
  */
 class Biochemistry extends Model

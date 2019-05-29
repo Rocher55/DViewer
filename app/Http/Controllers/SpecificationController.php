@@ -8,6 +8,16 @@ use Illuminate\Support\Facades\Session;
 
 class SpecificationController extends Controller
 {
+    /**
+     * Create a new controller instance.
+     *
+     * @return void
+     */
+    public function __construct()
+    {
+       // $this->middleware('auth');
+    }
+
     public function index($id){
         Session::flush();
         Session::regenerate();
