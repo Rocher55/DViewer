@@ -36,4 +36,18 @@ class User extends \TCG\Voyager\Models\User
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+    /*public function roles(){
+        return $this->belongsToMany('App\Role','user_roles');
+    }
+
+    public function role(){
+        return $this->belongsTo('App\Role');
+    }
+    */
+
+    public function isAdminOrAdmiral(){
+        return ($this->roles()->whereIn('name', ['admin','Amiral'])->exists()
+            or $this->role()->whereIn('name', ['admin','Amiral'])->exists());
+    }
 }

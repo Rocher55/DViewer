@@ -16,6 +16,10 @@ class PatientController extends Controller
      *
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
+    public function __construct()
+    {
+      $this->middleware('auth');
+    }
 
     public function index(){
 

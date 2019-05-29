@@ -25,14 +25,19 @@
 
                 <div class="row">
                     {!! Form::label('gene', 'Gene')  !!}
-                    <select placeholder="Select a gene ..." class="select-gene" name="gene">
-                    </select>
+                    <ul class="list-group" name="gene">
+                    </ul>
+                    <!--<select placeholder="Select a gene ..." class="select-gene" name="gene">
+                    </select> -->
                 </div>
             </div>
 
             {!! Form::open(['url' => 'research/select-gene', 'method' => 'post', 'id'=>'form']) !!}
+            {{ Form::hidden('genes', '',['cols'=>'50', 'rows'=>'10', 'id'=>'genes']) }}
             <div class="col-md-8 text-center">
-                {!! Form::textarea('genes', '',['cols'=>'50', 'rows'=>'10', 'id'=>'genes', 'placeholder'=>'Enter the gene symbol separated by semicolon']) !!}
+                <!--{!! Form::textarea('genes', '',['cols'=>'50', 'rows'=>'10', 'id'=>'genes', 'placeholder'=>'Enter the gene symbol separated by semicolon']) !!}-->
+                <ul class="list-group" name="SelectedGenes">
+                </ul>
             </div>
         </div>
 

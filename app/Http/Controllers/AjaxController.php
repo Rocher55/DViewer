@@ -15,10 +15,11 @@ class AjaxController extends Controller
 
 
 
-
         //Requete sans tri hormis le gene_symbol
-       $results = DB::select("SELECT g.Gene_Symbol as gene FROM genes g WHERE g.Gene_Symbol LIKE '".$term."%' GROUP BY 1" );
+        //whereRaw protege des injections SQL si les variables sont passées en paramètres apparemment
+       $results=DB::table('genes')->select('Gene_Symbol')->whereRaw('Gene_Symbol like ?',array("%".$term."%"))->orderBy('Gene_Symbol')->distinct()->get();
 
+      // $results = DB::select("SELECT distinct g.Gene_Symbol as gene FROM genes g WHERE g.Gene_Symbol LIKE '".$term."%' ORDER BY gene" );
        //Requete avec tri sur l'id de l'analyse
        /*$results = DB::select("SELECT Gene_Symbol as gene
                                      FROM genes
@@ -33,7 +34,7 @@ class AjaxController extends Controller
 
 
 
-       $return = createArray($results, 'gene');
+       $return = createArray($results, 'Gene_Symbol');
        return response()->json($return);
    }
 

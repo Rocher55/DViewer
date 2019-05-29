@@ -6,7 +6,7 @@
     </div>
 
     <div class="boutons">
-        <a href="/" class="btn btn-primary">Home</a>
+        <a href={{ route('home') }} class="btn btn-primary">Home</a>
         <a href="{{ route('export') }}" class="btn btn-primary" >Export</a>
     </div>
 
