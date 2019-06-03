@@ -4,36 +4,54 @@ $.ajaxSetup({
     }
 });
 
+path = window.location.pathname;
 $(document).ready(function () {
     $('#recherche').on("change keyup", function(){
         if($('#recherche').val().length >= 2){
             $('[name="gene"]').css('border-color','');
-            $.get(
-                '/ajax-genes',
-                {
-                    recherche : $('#recherche').val()
-                },
-                function(data){
-                    let dropdown = $('[name="gene"]');
-                    dropdown.find('li').remove().end();
-
-                    if(data.length > 0){
-                        $.each(data, function (i, item) {
-                            //dropdown.append($('<option>', { value: item, text : item }));
-                            dropdown.append($('<li class = "list-group-item">').html(item));
-                        });
-                        dropdown.css('border-color','');
-                    }else{
-                        dropdown.css('border-color','red');
+            if(path.indexOf('webDV')>=0){
+                $.get(
+                    '/webDV/ajax-genes',
+                    {
+                        recherche : $('#recherche').val()
+                    },
+                    function(data){
+                        displayGenesInLeftArray(data)
                     }
-                },
-                'json'
-            );
+                    ,
+                    'json'
+                );
+            }else{
+                $.get(
+                    '/ajax-genes',
+                    {
+                        recherche : $('#recherche').val()
+                    },
+                    function(data){
+                        displayGenesInLeftArray(data)
+                    },
+                    'json'
+                );
+            }
+
         }
     });
 });
 
+function displayGenesInLeftArray(data){
+    let dropdown = $('[name="gene"]');
+    dropdown.find('li').remove().end();
 
+    if(data.length > 0){
+        $.each(data, function (i, item) {
+            //dropdown.append($('<option>', { value: item, text : item }));
+            dropdown.append($('<li class = "list-group-item">').html(item));
+        });
+        dropdown.css('border-color','');
+    }else{
+        dropdown.css('border-color','red');
+    }
+}
 
 //contextmenu == clic droit
 //doit toujours retourner false

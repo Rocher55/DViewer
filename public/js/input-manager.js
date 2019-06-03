@@ -18,7 +18,7 @@ let path = window.location.pathname;
 $( "input[type=checkbox]" ).on( "click", function(){
     var n = $( "input:checked" ).length;    //Nombre de case cochees
 
-    if(path == '/research/biochemistry'){
+    if(path.indexOf('/research/biochemistry')>=0) {
         if(n == 0  ){
             error.push('nb');
         }else{
@@ -35,7 +35,15 @@ $( "input[type=checkbox]" ).on( "click", function(){
 $( "input[type=number]" ).on( "change", function(){
         var elt = this;
         //En fonction de notre position actuelle
-        switch(path){
+    if(
+        (path.indexOf('/research/patient')>=0) || (path.indexOf('/research/food')>=0)
+    ){
+        twoPartsVerif(elt);
+    }
+    else if (path.indexOf('/research/biochemistry')>=0){
+        threePartsVerif(elt);
+    }
+       /* switch(path){
             case '/research/patient':
                 twoPartsVerif(elt);
                 break;
@@ -46,6 +54,7 @@ $( "input[type=number]" ).on( "change", function(){
                 threePartsVerif(elt);
                 break;
         }
+        */
 });
 
 
@@ -162,14 +171,13 @@ function threePartsVerif(elt){
 //Change l'etat du bouton suivant en fonction du nombre
 //d'erreurs et du nombre de cases cochees
 function reactToErrors(){
-
-    if(path != '/research/biochemistry'){
+    if (path.indexOf('/research/biochemistry')<0){
         var n = 1;
     }else{
         var n = $( "input:checked" ).length;    //Nombre de case cochees
     }
 
-    if(error.length == 0 && n > 0){
+    if(error.length == 0 && n > 0) {
         $(".next-button").prop("disabled", false);
     }else{
         $(".next-button").prop("disabled",true);
@@ -197,8 +205,7 @@ function remove(toRemove){
 * -----------------------------------------------------------------------------
 */
 function resetFields(){
-    switch(path){
-        case '/research/protocol':
+    /*switch(path){
         case '/research/center':
             $(".chosen-tag").val([]).trigger('chosen:updated');
             break;
@@ -226,6 +233,35 @@ function resetFields(){
         case '/research/select-gene':
             $("#form")[0].reset()
             break;
+    }
+
+     */
+    if (path.indexOf('/research/center')>=0){
+        $(".chosen-tag").val([]).trigger('chosen:updated');
+
+    } else if (path.indexOf('/research/patient')>=0){
+        $(".single-chosen-tag").val([]).trigger('chosen:updated');
+        $("#form")[0].reset()
+
+    } else if (path.indexOf('/research/cid')>=0){
+        $(".cid-chosen-tag").val([]).trigger("chosen:updated");
+
+    } else if (path.indexOf('/research/food')>=0){
+        $(".unite-chosen-tag").val([]).trigger("chosen:updated");
+        $("#form")[0].reset()
+
+    } else if (path.indexOf('/research/biochemistry')>=0){
+        reactToErrors();
+        $("#form")[0].reset()
+
+    } else if (path.indexOf('/research/activities')>=0){
+        $("#form")[0].reset()
+
+    } else if (path.indexOf('/research/analyse')>=0){
+        $(".analyse-chosen-tag").val([]).trigger("chosen:updated");
+
+    } else if (path.indexOf('/research/select-gene')>=0){
+        $("#form")[0].reset()
     }
     reactToErrors();
 }
