@@ -45,7 +45,7 @@
 
 
         <div class="buttons-group" >
-            <a type="button" class="button btn"  href="{{ URL::to('/research/protocol')}}">Begin a study</a>
+            <a type="button" class="button btn"  href="{{ URL::to('/research/protocol')}}">Extract data</a>
         </div>
 
 

@@ -134,7 +134,7 @@ return [
                 'icon_class' => 'voyager-person',
             ],
             'voyager::generic.home' => [
-                'route'        => '/',
+                'route'        => env('VOYAGER_HOME_ROUTE'),
                 'icon_class'   => 'voyager-home',
                 'target_blank' => true,
             ],
