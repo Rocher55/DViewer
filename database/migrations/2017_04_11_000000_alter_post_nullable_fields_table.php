@@ -13,6 +13,7 @@ class AlterPostNullableFieldsTable extends Migration
      */
     public function up()
     {
+        /*
         $platform = \DB::getDoctrineSchemaManager()->getDatabasePlatform();
         $platform->registerDoctrineTypeMapping('enum', 'string');
 
@@ -21,6 +22,7 @@ class AlterPostNullableFieldsTable extends Migration
             $table->text('meta_description')->nullable()->change();
             $table->text('meta_keywords')->nullable()->change();
         });
+        */
     }
 
     /**

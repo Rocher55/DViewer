@@ -13,6 +13,7 @@ class CreatePagesTable extends Migration
      */
     public function up()
     {
+        /*
         // Create table for storing roles
         Schema::create('pages', function (Blueprint $table) {
             $table->increments('id');
@@ -27,6 +28,7 @@ class CreatePagesTable extends Migration
             $table->enum('status', Page::$statuses)->default(Page::STATUS_INACTIVE);
             $table->timestamps();
         });
+        */
     }
 
     /**

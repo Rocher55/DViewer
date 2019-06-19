@@ -11,7 +11,7 @@ class CreateCategoriesTable extends Migration
      * @return void
      */
     public function up()
-    {
+    {/*
         // Create table for storing categories
         Schema::create('categories', function (Blueprint $table) {
             $table->increments('id');
@@ -22,6 +22,7 @@ class CreateCategoriesTable extends Migration
             $table->string('slug')->unique();
             $table->timestamps();
         });
+    */
     }
 
     /**

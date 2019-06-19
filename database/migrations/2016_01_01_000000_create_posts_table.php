@@ -12,6 +12,7 @@ class CreatePostsTable extends Migration
      */
     public function up()
     {
+        /*
         // Create table for storing roles
         Schema::create('posts', function (Blueprint $table) {
             $table->increments('id');
@@ -31,7 +32,9 @@ class CreatePostsTable extends Migration
 
             //$table->foreign('author_id')->references('id')->on('users');
         });
+        */
     }
+
 
     /**
      * Reverse the migrations.
