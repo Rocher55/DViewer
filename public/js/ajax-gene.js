@@ -9,7 +9,7 @@ $(document).ready(function () {
     $('#recherche').on("change keyup", function(){
         if($('#recherche').val().length >= 2){
             $('[name="gene"]').css('border-color','');
-            if(path.indexOf('webDV')>=0){
+            if(path.indexOf('webDV')>=0){ // si on est en prod ('webDV' est contenu dans l'URL de la prod)
                 $.get(
                     '/webDV/ajax-genes',
                     {
