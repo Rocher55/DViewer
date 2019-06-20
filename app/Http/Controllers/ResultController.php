@@ -64,8 +64,9 @@ class ResultController extends Controller{
             if(Session::has('foodToView')){
                 //foodWeek
                 $foodWeek = $this->createFoodWeekArray();
-                $requestFood = $this->createRequestFood();
-                $resultsFood = DB::SELECT($requestFood);
+               // $requestFood = $this->createRequestFood();
+                //$resultsFood = DB::SELECT($requestFood);
+                $resultsFood=$this->createFoodWeekArray();
                 //Pour chaque resultat le mettre dans
                 //le tableau à l'indice 1 : Patient_ID
                 //et 2 : item
@@ -226,7 +227,10 @@ class ResultController extends Controller{
      * @return string
      */
     public function createRequestFood(){
-        $request = " SELECT p.Patient_ID as Patient_ID, CONCAT(n.NameN,' (',u.NameUM ,') - ', w.WK_NAME) as item, f.value as valeur
+        if (empty($this->foodDiariesID)){
+         $result=[];
+        }else {
+            $request = " SELECT p.Patient_ID as Patient_ID, CONCAT(n.NameN,' (',u.NameUM ,') - ', w.WK_NAME) as item, f.value as valeur
                      FROM food_diaries f, patient_week pw, weeks w, nomenclatures n, unite_mesure u, patients p
                      WHERE f.WK_ID = pw.WK_ID
                      AND pw.WK_ID = w.WK_ID
@@ -234,10 +238,11 @@ class ResultController extends Controller{
                      AND pw.Patient_ID = p.Patient_ID
                      AND f.Nomenclature_ID = n.Nomenclature_ID
                      AND f.unite_mesure_id = u.unite_mesure_id";
-        $request .= " AND f.food_diaries_id in".createStringList($this->foodDiariesID)
-                    ." ORDER BY p.Patient_ID ";
-
-        return $request;
+            $request .= " AND f.food_diaries_id in" . createStringList($this->foodDiariesID)
+                . " ORDER BY p.Patient_ID ";
+            $result=DB::select($request);
+        }
+        return $result;
     }
 
     /**
@@ -344,18 +349,22 @@ class ResultController extends Controller{
                                       WHERE CONCAT(f.Nomenclature_ID,'-', f.Unite_Mesure_ID) in ".createStringList(Session::get('foodToView'))."
                                       AND f.Patient_ID in ".$patients ." ORDER BY f.Patient_ID");
 
-        $this->foodDiariesID = createArray($food_ID, 'id');
-        //Je ne garde que ceux qui ont bien des valeurs dans food_diaries
-        $results = DB::SELECT("SELECT distinct CONCAT(n.NameN,' (',u.NameUM ,') - ', w.WK_NAME) AS foodWeek
+       if(empty($food_ID)){
+           $return=array();
+       } else {
+           $this->foodDiariesID = createArray($food_ID, 'id');
+           //Je ne garde que ceux qui ont bien des valeurs dans food_diaries
+           $results = DB::SELECT("SELECT distinct CONCAT(n.NameN,' (',u.NameUM ,') - ', w.WK_NAME) AS foodWeek
                                     FROM food_diaries f, nomenclatures n, unite_mesure u, weeks w, patient_week pw
                                     WHERE pw.WK_ID = w.WK_ID
                                     AND f.WK_ID = pw.WK_ID
                                     AND f.Nomenclature_ID = n.Nomenclature_ID
                                     AND f.Unite_Mesure_ID = u.Unite_Mesure_ID 
                                     AND f.value is not null 
-                                    AND f.food_diaries_ID in ".createList($this->foodDiariesID)
-                                 ." ORDER BY n.NameN ASC, u.NameUM ASC, w.WK_ID ASC ");
-        $return = createArray($results,'foodWeek');
+                                    AND f.food_diaries_ID in " . createList($this->foodDiariesID)
+               . " ORDER BY n.NameN ASC, u.NameUM ASC, w.WK_ID ASC ");
+           $return = createArray($results, 'foodWeek');
+       }
 
         return $return;
     }
