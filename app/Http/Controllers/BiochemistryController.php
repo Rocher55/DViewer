@@ -200,7 +200,7 @@ class BiochemistryController extends Controller{
      * @return mixed
      */
     public function getConcernedBIO(){
-        $concerned = DB::SELECT('SELECT DISTINCT b.Nomenclature_ID, n.NameN, u.Unite_Mesure_ID, u.NameUM, f.NameF, f.Family_ID,
+        $concerned = DB::SELECT('SELECT  b.Nomenclature_ID, n.NameN, u.Unite_Mesure_ID, u.NameUM, f.NameF, f.Family_ID,
                                   min(b.value) as min, max(b.value) as max
                                  FROM biochemistry b, nomenclatures n, unite_mesure u, families f
                                  WHERE b.Unite_Mesure_ID = u.Unite_Mesure_ID
@@ -209,7 +209,7 @@ class BiochemistryController extends Controller{
                                  AND b.Patient_ID in'. createList(Session::get('patientID')).
                                 'AND b.CID_ID in'. createList(Session::get('cidID')).
                                 ' GROUP BY 1,2,3,4,5,6
-                                ORDER BY n.Priority ASC,n.NameN');
+                                ORDER BY n.NameN');
         return $concerned;
     }
 }

@@ -3,7 +3,7 @@
 
 @section('content')
     <div class="help-tip">
-        <p>That's how variables are calculated. <br><br><img src="{{asset('/img/formulas.png')}}" width="650" /></p>
+        <p>That is how variables are calculated. <br><br><img src="{{asset('/img/formulas.png')}}" width="650" /></p>
     </div>
 
     <div class="container ">
@@ -12,6 +12,7 @@
         <ul class="nav nav-tabs">
             @foreach($family as $item => $value)
                 @if(key($family) == $item)
+
                     <li class="active"><a data-toggle="tab" href={!! "#".$item !!}>{!! $value !!}</a></li>
 
                     @else
@@ -24,7 +25,7 @@
 
             <div class="tab-content biochemistry">
                 @foreach($family as $item => $value)
-
+                <!-- inutile à mon humble avis-->
                 @if(key($family) == $item)
                     <div id={!!'"'.$item.'"' !!} class="tab-pane fade in active">
 
@@ -33,6 +34,7 @@
                 @endif
 
                     @foreach($concerned as $itemC)
+
                         @if($itemC->Family_ID == $item)
                         <div class="col-md-6 text-right">
 
