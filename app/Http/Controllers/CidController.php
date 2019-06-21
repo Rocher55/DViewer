@@ -26,16 +26,23 @@ class CidController extends Controller{
         womanPercentage();
         Session::put('save-patientID-2', Session::get('save-patientID-1'));
 
-        //Recuperation et cretion d'une liste des tous les CID_ID
-        $cid_id = Cid_patient::whereIn('Patient_ID', Session::get('patientID'))
+        //Recuperation et creation d'une liste de tous les CID_ID
+        /*$cid_id = Cid_patient::whereIn('Patient_ID', Session::get('patientID'))
                                 ->orderBy('CID_ID', 'ASC')
                                 ->distinct()
                                 ->get(['CID_ID']);
 
         //Recuperation des infos sur les CID_ID
-        $cids = Cid::whereIn('CID_ID', $cid_id )->get(['CID_ID', 'CID_Name']);
+        $kids = Cid::whereIn('CID_ID', $cid_id )->get(['CID_ID', 'CID_Name']);
+        */
+        $cids= Cid::Select('cids.CID_ID','CID_Name')
+            ->distinct()
+            ->join('Cid_patient','cids.CID_ID','=','Cid_Patient.CID_ID')
+            ->whereIn('Cid_Patient.CID_ID',Session::get('patientID'))
+            ->get();
 
-        Session::put('cidID',createArray($cid_id, 'CID_ID'));
+
+        Session::put('cidID',createArray($cids, 'CID_ID'));
 
         return view('Forms.cid', compact('cids'));
     }
@@ -78,8 +85,8 @@ class CidController extends Controller{
             //Ajout des resultats dans les sesions
             Session::put('patientID', createArray($results_p, 'Patient_ID'));
             Session::put('save-patientID-2', createArray($results_p, 'Patient_ID'));
-
             Session::put('cidID', createArray($results_c, 'CID_ID'));
+
         } else {
             $results_c = $this->getCID($patientID,$paramReq="");
             Session::put('patientID',Session::get('save-patientID-1'));

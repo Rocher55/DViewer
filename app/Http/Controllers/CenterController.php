@@ -17,9 +17,22 @@ class CenterController extends Controller
 
     public function index(){
         //Recupere les centres tries par pays, ville & acronym croissant
-        $centersId = Center_protocol::whereIn('Protocol_ID', Session::get('protocolID'))->get(['Center_ID']);
-        $centers = Center::whereIn('Center_ID', $centersId)->orderBy('Center_Country', 'ASC')->orderBy('Center_City', 'ASC')->orderBy('Center_Acronym', 'ASC')->get();
-
+        //$centersId = Center_protocol::whereIn('Protocol_ID', Session::get('protocolID'))->get(['Center_ID']);
+       /* $centers = Center::Select('Center_ID','Center_Country','Center_City','Center_Acronym')
+            ->whereIn('Center_ID', $centersId)
+            ->orderBy('Center_Country', 'ASC')
+            ->orderBy('Center_City', 'ASC')
+            ->orderBy('Center_Acronym', 'ASC')
+            ->get();
+       */
+        $centers=Center::Select('centers.Center_ID','Center_Country','Center_City','Center_Acronym')
+            ->join('center_protocol','center_protocol.Center_ID','=','centers.Center_ID')
+            ->join('protocols','protocols.Protocol_ID','=','center_protocol.Protocol_ID')
+            ->whereIn('protocols.Protocol_ID', Session::get('protocolID'))
+            ->orderBy('Center_Country', 'ASC')
+            ->orderBy('Center_City', 'ASC')
+            ->orderBy('Center_Acronym', 'ASC')
+            ->get();
         return view('Forms.center', compact('centers'));
     }
 
@@ -40,6 +53,7 @@ class CenterController extends Controller
         //sinon
 
         if (isset($data)) {
+
             $cid = Center_protocol::whereIn('Protocol_ID', Session::get('protocolID'))
                 ->whereIn('Center_ID', $data)
                 ->distinct()
@@ -50,8 +64,10 @@ class CenterController extends Controller
                 ->distinct()
                 ->get(['Protocol_ID']);
 
-            Session::put('centerID', createArray($cid, 'Center_ID'));
-            Session::put('protocolID', createArray($pid, 'Protocol_ID'));
+
+           Session::put('centerID', createArray($cid, 'Center_ID'));
+           Session::put('protocolID', createArray($pid, 'Protocol_ID'));
+
 
         } else {
 

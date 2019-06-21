@@ -58,9 +58,13 @@ class FoodController extends Controller{
             $seenID = array();                      //tableau permettant de savoir si une id a deja ete vue
             $end=false;                             //variable pour savoir si l'on peut faire la fin de la requete
                                                             //(car sinon generation de la partie "patient" meme sans valeur)
-
+            //dd($params);
             //Pour chaque parametres
+            //$i=0;
             foreach ($params as $item => $value) {
+              //  $i=$i+1;
+
+
                 //Decouper le nom du champ en fonction du "-"
                 $actualElt = explode("-", $item);
 
@@ -91,6 +95,9 @@ class FoodController extends Controller{
                             $request .= $this->createRequestPart($actualElt[1], $value);
                         }
                         $end = true;
+                       // if($i>20){
+                       //     dd($request);
+                        //}
                     }else{
                         Session::push('foodToView', $actualElt[0].'-'.$actualElt[2]);
                     }

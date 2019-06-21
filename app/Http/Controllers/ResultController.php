@@ -54,8 +54,11 @@ class ResultController extends Controller{
             //Pour chaque resultat le mettre dans
             //le tableau à l'indice 1 : Patient_ID
             //et 2 : item
+
             foreach ($resultsBio as $item) {
-                $array[strval($item->Patient_ID)][$item->item] = $item->valeur;
+
+                    $array[strval($item->Patient_ID)][$item->item] = $item->valeur;
+
             }
 
 
@@ -64,14 +67,16 @@ class ResultController extends Controller{
             if(Session::has('foodToView')){
                 //foodWeek
                 $foodWeek = $this->createFoodWeekArray();
-               // $requestFood = $this->createRequestFood();
+                //$requestFood = $this->createRequestFood();
                 //$resultsFood = DB::SELECT($requestFood);
-                $resultsFood=$this->createFoodWeekArray();
+                $resultsFood=$this->createRequestFood();
                 //Pour chaque resultat le mettre dans
                 //le tableau à l'indice 1 : Patient_ID
                 //et 2 : item
                 foreach ($resultsFood as $item){
+
                     $array[strval($item->Patient_ID)][$item->item] = $item->valeur;
+
                 }
             }
 
