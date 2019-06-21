@@ -22,8 +22,8 @@ class ProtocolController extends Controller
         Session::regenerate();
 
         //Recupere les protocoles tries par type & nom croissant
-        $protocols = Protocol::orderBy('Protocol_Type','ASC')->orderBy('Protocol_Name', 'ASC')->get() ;
-
+        //$protocols = Protocol::orderBy('Protocol_Type','ASC')->orderBy('Protocol_Name', 'ASC')->get() ;
+        $protocols = Protocol::select('Protocol_Type','Protocol_ID','Protocol_Name')->orderBy('Protocol_Name','ASC')->get();
         return view('Forms.protocol',compact('protocols'));
     }
 

@@ -107,7 +107,6 @@ class PatientController extends Controller
             //Pour chaque parametre
             foreach ($params as $param => $value) {
                 $req = "";
-
                 //Si la clef et valide ainsi que la valeur alors
                 //Separer la chaine (clef) en fonction du "-" (marche pas avec ".")
                 if (isset($param) && isset($value)){
@@ -128,6 +127,7 @@ class PatientController extends Controller
                     } else {
                         //sinon requete avec simple =
                         $req = " AND " . $param . " = " . $value;
+                        dd($req);
                     }
                 }
                 //Concatenation des differents bouts de requete
