@@ -127,7 +127,7 @@ class PatientController extends Controller
                     } else {
                         //sinon requete avec simple =
                         $req = " AND " . $param . " = " . $value;
-                        dd($req);
+                        //dd($req);
                     }
                 }
                 //Concatenation des differents bouts de requete
