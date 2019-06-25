@@ -41,9 +41,7 @@ class CidController extends Controller{
             ->whereIn('cid_patient.CID_ID',Session::get('patientID'))
             ->get();
 
-
         Session::put('cidID',createArray($cids, 'CID_ID'));
-
         return view('Forms.cid', compact('cids'));
     }
 
