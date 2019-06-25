@@ -99,7 +99,7 @@ class BiochemistryController extends Controller{
                         $end = true;
                     }else{ //Sinon ajout dans la sesion des id d biochemistry a voir
                         Session::push('biochemistryToView', $actualElt[0].'-'.$actualElt[2]);
-                        dd(Session::get('biochemistryToView'));
+                        //dd(Session::get('biochemistryToView'));
                     }
                 }
             }
