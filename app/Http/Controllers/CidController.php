@@ -37,8 +37,8 @@ class CidController extends Controller{
         */
         $cids= Cid::Select('cids.CID_ID','CID_Name')
             ->distinct()
-            ->join('Cid_patient','cids.CID_ID','=','Cid_Patient.CID_ID')
-            ->whereIn('Cid_Patient.CID_ID',Session::get('patientID'))
+            ->join('cid_patient','cids.CID_ID','=','cid_patient.CID_ID')
+            ->whereIn('cid_patient.CID_ID',Session::get('patientID'))
             ->get();
 
 
