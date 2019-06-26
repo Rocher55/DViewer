@@ -9,7 +9,6 @@ use Illuminate\Database\Eloquent\Model;
  * @property int $Protocol_ID
  * @property Center $center
  * @property Patient[] $patients
- * @property Patient[] $patients
  * @property Protocol $protocol
  */
 class Center_protocol extends Model

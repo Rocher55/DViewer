@@ -25,6 +25,7 @@ class CidController extends Controller{
     public function index(){
         womanPercentage();
         Session::put('save-patientID-2', Session::get('save-patientID-1'));
+        //dd(Session::get('patientID'));
 
         //Recuperation et creation d'une liste de tous les CID_ID
         /*$cid_id = Cid_patient::whereIn('Patient_ID', Session::get('patientID'))
@@ -38,9 +39,9 @@ class CidController extends Controller{
         $cids= Cid::Select('cids.CID_ID','CID_Name')
             ->distinct()
             ->join('cid_patient','cids.CID_ID','=','cid_patient.CID_ID')
-            ->whereIn('cid_patient.CID_ID',Session::get('patientID'))
+            ->whereIn('cid_patient.Patient_ID',Session::get('patientID'))
             ->get();
-
+        //dd($cids);
         Session::put('cidID',createArray($cids, 'CID_ID'));
         return view('Forms.cid', compact('cids'));
     }
