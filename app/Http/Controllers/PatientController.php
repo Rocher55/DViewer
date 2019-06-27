@@ -27,6 +27,7 @@ class PatientController extends Controller
         $patient = Patient::whereIn('Protocol_ID', Session::get('protocolID'))
             ->whereIn('Center_ID', Session::get('centerID'))
             ->get(['Patient_ID']);
+        //dd(createList($patient,'Patient_ID'));
 
         $min= Patient::whereIn('Protocol_ID', Session::get('protocolID'))
             ->whereIn('Center_ID', Session::get('centerID'))

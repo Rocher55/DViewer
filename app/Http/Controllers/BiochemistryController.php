@@ -129,8 +129,9 @@ class BiochemistryController extends Controller{
         }
 
 
-
+        //dd(session::get('biochemistryToView'));
         return redirect()->route('activities');
+
     }
 
 

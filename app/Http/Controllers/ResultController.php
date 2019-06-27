@@ -212,6 +212,7 @@ class ResultController extends Controller{
      * @return string
      */
     public function createRequestBio(){
+
         $request = " SELECT p.patient_id as Patient_ID, 
                             CONCAT(n.NameN,' (',u.NameUM ,') - ', cid.CID_NAME) as item, b.value as valeur 
                      FROM  patients p, cid_patient cp, cids cid, biochemistry b, nomenclatures n, unite_mesure u
@@ -323,7 +324,7 @@ class ResultController extends Controller{
                                              WHERE CONCAT(b.Nomenclature_ID,'-', b.Unite_Mesure_ID) in ".createStringList(Session::get('biochemistryToView'))."
                                              AND b.Patient_ID in ".$patients ." ORDER BY b.Patient_ID");
 
-        $this->biochemistryID = createArray($biochemistry_ID,'id');;
+        $this->biochemistryID = createArray($biochemistry_ID,'id');
 
         //Je ne garde que ceux qui ont bien des valeurs dans biochemistry
         $results = DB::SELECT("SELECT distinct CONCAT(n.NameN,' (',u.NameUM ,') - ', cid.CID_NAME) AS bioCid

@@ -13,6 +13,7 @@
 
 
     <!--Feuilles CSS-->
+    <!--<link rel="stylesheet" href="{{asset('/css/app.css')}}">-->
     <link rel="stylesheet" href="{{asset('/css/font-awesome.min.css') }}">
     <link rel="stylesheet" href="{{asset('/css/bootstrap.min.css') }}">
     <link rel="stylesheet" href="{{asset('/css/style.css') }}">
@@ -20,6 +21,7 @@
     <link rel="stylesheet" href="{{asset('/css/jquery.auto-complete.css') }}">
 
     <!-- Scripts -->
+
     <script src="{!! asset('js/jquery-3.3.1.js') !!}"></script>
     <script src="{!! asset('js/chosen.js') !!}"></script>
     <script src="{!! asset('js/chosen.jquery.js') !!}"></script>
@@ -38,7 +40,7 @@
                 <div class="navbar-header">
                     <button type="button" class="navbar-toggle collapsed" data-toggle="collapse"
                             data-target="#app-navbar-collapse" aria-expanded="false">
-                        <span class="sr-only">Toggle Navigation</span>
+                        <spanre class="sr-only">Toggle Navigation</spanre>
                         <span class="icon-bar"></span>
                         <span class="icon-bar"></span>
                         <span class="icon-bar"></span>

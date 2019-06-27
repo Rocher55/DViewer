@@ -11,7 +11,7 @@ $(document).ready(function () {
             $('[name="gene"]').css('border-color','');
             if(path.indexOf('webDV')>=0){ // si on est en prod ('webDV' est contenu dans l'URL de la prod)
                 $.get(
-                    '/webDV/ajax-genes',
+                    '/webDV/api/ajax-genes',
                     {
                         recherche : $('#recherche').val()
                     },
@@ -23,7 +23,7 @@ $(document).ready(function () {
                 );
             }else{
                 $.get(
-                    '/ajax-genes',
+                    '/api/ajax-genes',
                     {
                         recherche : $('#recherche').val()
                     },

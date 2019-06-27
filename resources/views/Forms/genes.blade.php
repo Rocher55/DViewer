@@ -26,6 +26,9 @@
                 <div class="row">
                     {!! Form::label('gene', 'Gene')  !!}
                     <ul class="list-group" name="gene">
+                       <!-- <GeneListComponent v-for="gene in genes">
+
+                        </GeneListComponent> -->
                     </ul>
                     <!--<select placeholder="Select a gene ..." class="select-gene" name="gene">
                     </select> -->
@@ -51,5 +54,6 @@
 
 @section('script')
     <script src="{!! asset('js/ajax-gene.js') !!}"></script>
+    <!--<script src="{!! asset('js/app.js') !!}"></script>-->
 @endsection
 
