@@ -7,7 +7,9 @@
     </div>
 
     <div class="container container-widtherer">
-
+        <h4>
+            You have to tick at least one checkbox to proceed
+        </h4>
 
         <ul class="nav nav-tabs">
             @foreach($family as $item => $value)

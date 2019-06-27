@@ -2,6 +2,10 @@
 /*-------------------------------------
                Common
 ---------------------------------------*/
+h4{
+    text-align: center;
+    color: crimson;
+}
 body{
     color: black;
 }
@@ -121,6 +125,9 @@ textarea {
     overflow-x: scroll;
     max-height: 100%;
 }
+.theadhome{
+  background-color: #2A9CFF;
+}
 
 
 
@@ -239,7 +246,8 @@ textarea {
     max-height: 31px;
 }
 .container-widtherer{
-    width: 90%
+    width: 90%;
+    padding-bottom: 150px;
 
 }
 

@@ -6,7 +6,7 @@
         <div class="col-md-6">
             <div class="container table-responsive table-home">
                 <table class="table table-bordered" style="width: 100px;">
-                    <thead>
+                    <thead class="theadhome">
                         <tr>
                             <th scope="col">Protocols</th>
                             <th scope="col">Number of patients</th>
