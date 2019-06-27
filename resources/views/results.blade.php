@@ -10,10 +10,10 @@
         <a href="{{ route('export') }}" class="btn btn-primary" >Export</a>
     </div>
 
-    <div class="container table-responsive">
-    <table class="table table-bordered" style="width: 100px;">
-        <thead>
-            <tr>
+    <div class="tableFixHead">
+    <table >
+        <thead >
+            <tr class="border_bottom">
                 <th scope="col">SUBJID</th>
                 <th scope="col">Sex</th>
                 <th scope="col">Center</th>
@@ -27,7 +27,7 @@
         <tbody>
 
                 @foreach($keys as $key)
-                    <tr>
+                    <tr class="border_bottom">
                     <th scope="row">{{$array[$key]['SUBJID']}}</th>
                     <td>{{$array[$key]['Sex']}}</td>
                     <td>{{$array[$key]['Center']}}</td>

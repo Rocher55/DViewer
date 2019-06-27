@@ -1,3 +1,4 @@
+
 /*-------------------------------------
                Common
 ---------------------------------------*/
@@ -111,8 +112,8 @@ textarea {
     font-weight: bold;
 }
 .home{
-    margin-left: 10%;
-    margin-right: 10%;
+    margin-left: 5%;
+    margin-right: 5%;
     margin-bottom: 10%;
 }
 .table-home{
@@ -237,15 +238,39 @@ textarea {
     margin-bottom: 50px;
     max-height: 31px;
 }
+.container-widtherer{
+    width: 90%
 
+}
 
 
 
 /*--------------------------------
              Results
 ----------------------------------*/
-table{
-    height: 250px;
+tr.border_bottom td {
+
+    border:1pt solid gainsboro ;
+}
+
+.tableFixHead          {
+    overflow-y: auto;
+    height:600px;
+}
+.tableFixHead thead th {
+    position: sticky; top: 0;
+}
+
+/* Just common table stuff. Really. */
+table  {
+    border-collapse: collapse;
+    width: 100%;
+}
+th, td {
+    padding: 8px 16px;
+}
+th     {
+    background:#eee;
 }
  tr>th{
      font-size: 15px;

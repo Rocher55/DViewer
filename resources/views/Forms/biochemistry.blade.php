@@ -6,7 +6,7 @@
         <p>That is how variables are calculated. <br><br><img src="{{asset('/img/formulas.png')}}" width="650" /></p>
     </div>
 
-    <div class="container ">
+    <div class="container container-widtherer">
 
 
         <ul class="nav nav-tabs">
