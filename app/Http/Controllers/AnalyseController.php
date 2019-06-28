@@ -85,6 +85,7 @@ class AnalyseController extends Controller
             $patientID = DB::SELECT($requestPatient."
                          AND a.CID_ID in ".createList(Session::get('cidID')));
 
+
             //Si il y a des resultats -> session
             //sinon message d'erreur et retour arriere avec les données
             if(count($patientID)){

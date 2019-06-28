@@ -21,6 +21,7 @@ class FoodController extends Controller{
         Session::forget('foodToView');
 
         $previousPath = Session::get('previous');
+        //dd($previousPath);
         if (Session::has('save-patientID-2') and $previousPath=='/research/biochemistry'){
             $patient = Session::get('save-patientID-2');
             Session::put('patientID', $patient);

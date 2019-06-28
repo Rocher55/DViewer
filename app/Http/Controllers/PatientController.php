@@ -50,7 +50,6 @@ class PatientController extends Controller
             array_push($allSex, $item->Sex);
         }
         $uniqueSex = array_keys(array_flip($allSex));
-
         womanPercentage();
         return view('Forms.patient', compact('uniqueSex', 'min', 'max'));
     }
