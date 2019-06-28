@@ -41,10 +41,16 @@ class GeneController extends Controller
 
             //les ids des genes correspondat à la table ea_analyse
             $matchingGenes=DB::select("select genes.Gene_ID from genes,experiments,ea_analyse 
-                                        WHERE genes.Gene_ID=experiments.Analyse_ID
+                                        WHERE genes.Gene_ID=experiments.Gene_ID
                                         AND experiments.Analyse_ID=ea_analyse.Analyse_ID
-                                        AND  ea_analyse.Analyse_iD in".createList(Session::get('analyseID'))) ;
+                                        AND  ea_analyse.Analyse_iD in".createList(Session::get('analyseID'))
+                                        ." AND genes.Gene_ID in".createList(createArray($id,'Gene_ID'))) ;
             //dd( Session::get('analyseID'));
+
+            if(count($matchingGenes)==0){
+                Session::flash('nothing',"No patients found for the selected genes");
+                return redirect()->route('select-gene')->withInput();
+            }
 
             if(count($id)>0){
                 Session::put('geneID', createArray($id, 'Gene_ID'));
@@ -54,10 +60,7 @@ class GeneController extends Controller
                 return redirect()->route('select-gene')->withInput();
             }
 
-            if(count($matchingGenes)==0){
-                Session::flash('nothing',"No patients found for the selected genes");
-                return redirect()->route('select-gene')->withInput();
-            }
+
 
         }
 
