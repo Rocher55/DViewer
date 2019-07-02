@@ -61,6 +61,7 @@ class ResultController extends Controller{
                     $array[strval($item->Patient_ID)][$item->item] = $item->valeur;
 
                 }
+                //dd($array);
 
             }
 
@@ -115,11 +116,13 @@ class ResultController extends Controller{
                 //PCYT1A (A_24_P106057) (3-7-2) - CID2 - 1
                 //Gene_Symbol (Probe_ID) (SampleType_ID-Technique_ID-Molecule_ID) - CID_Name - indice
                 $geneCid = $this->getGeneCidArray();
+                //dd($geneCid);
 
                 if(count($this->experimentsID)>0){
                     //Creation et execution de la requete
                     $requestGene = $this->createRequestGene();
                     $resultsGene = DB::SELECT($requestGene);
+                    //dd($resultsGene);
 
                     //Pour chaque resultat
                     foreach ($resultsGene as $item) {
@@ -423,6 +426,7 @@ class ResultController extends Controller{
      * @return array
      */
     public function getGeneCidArray(){
+        // les ids des experiments, liés à la table ea_analyse pour les genes_Ids selectionnés et pour le triplet sample molecules:techniques choisis
             $request = " SELECT e.Experiments_ID as id
                          FROM experiments e, ea_analyse a
                          WHERE e.Analyse_ID = a.Analyse_ID
@@ -458,6 +462,7 @@ class ResultController extends Controller{
         }
             return $return;
     }
+
 
 
 
