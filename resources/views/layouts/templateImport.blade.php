@@ -12,25 +12,33 @@
 
 
     <!--Feuilles CSS-->
-    <link rel="stylesheet" href="{{asset('/css/font-awesome.min.css') }}">
-    <link rel="stylesheet" href="{{asset('/css/bootstrap.min.css') }}">
+
+    <link rel="stylesheet" href="{{asset('/css/app.css')}}">
+   <!-- <link rel="stylesheet" href="{{asset('/css/font-awesome.min.css') }}">
+    <link rel="stylesheet" href="{{asset('/css/bootstrap.min.css') }}">i
     <link rel="stylesheet" href="{{asset('/css/style.css') }}">
     <link rel="stylesheet" href="{{asset('/css/chosen.css') }}">
-    <link rel="stylesheet" href="{{asset('/css/jquery.auto-complete.css') }}">
+    -->
 
-    <!-- Scripts -->
-    <script src="{!! asset('js/jquery-3.3.1.js') !!}"></script>
-    <script src="{!! asset('js/chosen.js') !!}"></script>
-    <script src="{!! asset('js/chosen.jquery.js') !!}"></script>
-    <script src="{!! asset('js/bootstrap.min.js') !!}"></script>
 
 
 </head>
 
 <body>
-    @yield('importSidebar')
+    <div id="app">
+        @yield('importSidebar')
 
-    <div>
-        @yield('importForm')
+        <div>
+            @yield('importForm')
+        </div>
     </div>
 </body>
+
+
+<!-- Scripts -->
+<script src="{!! asset('js/app.js') !!}"></script>
+<!-- <script src="{!! asset('js/chosen.js') !!}"></script>
+     <script src="{!! asset('js/chosen.jquery.js') !!}"></script>
+    <script src="{!! asset('js/bootstrap.min.js') !!}"></script>
+    -->
+

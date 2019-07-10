@@ -19,3 +19,6 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 Route::get('/ajax-genes', 'AjaxController@genes')->name('ajax-genes');
 Route::post('/ajax-previous', 'AjaxController@pathThatDemandPrevious')->name('ajax-previous');
 
+Route::get('/protocols', 'AjaxController@protocols')->name('api/protocols');
+Route::get('/centers', 'AjaxController@centers')->name('api/centers');
+

@@ -164,6 +164,7 @@ class ComposerStaticInit03b5600f8dc7290bfdfa2d401aed1d41
         ),
         'A' => 
         array (
+            'Aspera\\Spreadsheet\\XLSX\\' => 24,
             'Arrilot\\Widgets\\' => 16,
             'App\\' => 4,
         ),
@@ -468,6 +469,10 @@ class ComposerStaticInit03b5600f8dc7290bfdfa2d401aed1d41
         array (
             0 => __DIR__ . '/..' . '/barryvdh/laravel-ide-helper/src',
         ),
+        'Aspera\\Spreadsheet\\XLSX\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/aspera/xlsx-reader/lib',
+        ),
         'Arrilot\\Widgets\\' => 
         array (
             0 => __DIR__ . '/..' . '/arrilot/laravel-widgets/src',
@@ -551,11 +556,13 @@ class ComposerStaticInit03b5600f8dc7290bfdfa2d401aed1d41
         'App\\Http\\Controllers\\FoodController' => __DIR__ . '/../..' . '/app/Http/Controllers/FoodController.php',
         'App\\Http\\Controllers\\GeneController' => __DIR__ . '/../..' . '/app/Http/Controllers/GeneController.php',
         'App\\Http\\Controllers\\HomeController' => __DIR__ . '/../..' . '/app/Http/Controllers/HomeController.php',
+        'App\\Http\\Controllers\\ImportController' => __DIR__ . '/../..' . '/app/Http/Controllers/ImportController.php',
         'App\\Http\\Controllers\\PatientController' => __DIR__ . '/../..' . '/app/Http/Controllers/PatientController.php',
         'App\\Http\\Controllers\\PhysicalController' => __DIR__ . '/../..' . '/app/Http/Controllers/PhysicalController.php',
         'App\\Http\\Controllers\\ProtocolController' => __DIR__ . '/../..' . '/app/Http/Controllers/ProtocolController.php',
         'App\\Http\\Controllers\\ResultController' => __DIR__ . '/../..' . '/app/Http/Controllers/ResultController.php',
         'App\\Http\\Controllers\\SpecificationController' => __DIR__ . '/../..' . '/app/Http/Controllers/SpecificationController.php',
+        'App\\Http\\Controllers\\UploadController' => __DIR__ . '/../..' . '/app/Http/Controllers/UploadController.php',
         'App\\Http\\Controllers\\tests' => __DIR__ . '/../..' . '/app/Http/Controllers/tests.php',
         'App\\Http\\Kernel' => __DIR__ . '/../..' . '/app/Http/Kernel.php',
         'App\\Http\\Middleware\\AjaxRequestOnly' => __DIR__ . '/../..' . '/app/Http/Middleware/AjaxRequestOnly.php',
@@ -603,6 +610,14 @@ class ComposerStaticInit03b5600f8dc7290bfdfa2d401aed1d41
         'Arrilot\\Widgets\\WidgetGroup' => __DIR__ . '/..' . '/arrilot/laravel-widgets/src/WidgetGroup.php',
         'Arrilot\\Widgets\\WidgetGroupCollection' => __DIR__ . '/..' . '/arrilot/laravel-widgets/src/WidgetGroupCollection.php',
         'Arrilot\\Widgets\\WidgetId' => __DIR__ . '/..' . '/arrilot/laravel-widgets/src/WidgetId.php',
+        'Aspera\\Spreadsheet\\XLSX\\OoxmlReader' => __DIR__ . '/..' . '/aspera/xlsx-reader/lib/OoxmlReader.php',
+        'Aspera\\Spreadsheet\\XLSX\\Reader' => __DIR__ . '/..' . '/aspera/xlsx-reader/lib/Reader.php',
+        'Aspera\\Spreadsheet\\XLSX\\RelationshipData' => __DIR__ . '/..' . '/aspera/xlsx-reader/lib/RelationshipData.php',
+        'Aspera\\Spreadsheet\\XLSX\\RelationshipElement' => __DIR__ . '/..' . '/aspera/xlsx-reader/lib/RelationshipElement.php',
+        'Aspera\\Spreadsheet\\XLSX\\SharedStrings' => __DIR__ . '/..' . '/aspera/xlsx-reader/lib/SharedStrings.php',
+        'Aspera\\Spreadsheet\\XLSX\\SharedStringsConfiguration' => __DIR__ . '/..' . '/aspera/xlsx-reader/lib/SharedStringsConfiguration.php',
+        'Aspera\\Spreadsheet\\XLSX\\SharedStringsOptimizedFile' => __DIR__ . '/..' . '/aspera/xlsx-reader/lib/SharedStringsOptimizedFile.php',
+        'Aspera\\Spreadsheet\\XLSX\\Worksheet' => __DIR__ . '/..' . '/aspera/xlsx-reader/lib/Worksheet.php',
         'Barryvdh\\LaravelIdeHelper\\Alias' => __DIR__ . '/..' . '/barryvdh/laravel-ide-helper/src/Alias.php',
         'Barryvdh\\LaravelIdeHelper\\Console\\EloquentCommand' => __DIR__ . '/..' . '/barryvdh/laravel-ide-helper/src/Console/EloquentCommand.php',
         'Barryvdh\\LaravelIdeHelper\\Console\\GeneratorCommand' => __DIR__ . '/..' . '/barryvdh/laravel-ide-helper/src/Console/GeneratorCommand.php',

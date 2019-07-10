@@ -80,6 +80,7 @@ return array(
     'Carbon\\' => array($vendorDir . '/nesbot/carbon/src/Carbon'),
     'BeyondCode\\DumpServer\\' => array($vendorDir . '/beyondcode/laravel-dump-server/src'),
     'Barryvdh\\LaravelIdeHelper\\' => array($vendorDir . '/barryvdh/laravel-ide-helper/src'),
+    'Aspera\\Spreadsheet\\XLSX\\' => array($vendorDir . '/aspera/xlsx-reader/lib'),
     'Arrilot\\Widgets\\' => array($vendorDir . '/arrilot/laravel-widgets/src'),
     'App\\' => array($baseDir . '/app'),
 );

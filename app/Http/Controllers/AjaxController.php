@@ -38,12 +38,6 @@ class AjaxController extends Controller
        return response()->json($return);
    }
 
-
-
-
-
-
-
           /**
            * Recupere le chemin de l'url demandant a revenir à la page precedente
            *
@@ -54,7 +48,14 @@ class AjaxController extends Controller
        //Session::put('previous', str_replace(url('/'), '', $_SERVER['HTTP_REFERER']));
    }
 
-
+    public function protocols(Request $request){
+       $results=DB::table('protocols')->orderby('Protocol_Name')->get();
+       return response()->json($results);
+    }
+    public function centers(Request $request){
+        $results=DB::table('centers')->orderby('Center_Acronym')->orderBy()->get();
+        return response()->json($results);
+    }
 
 
 }

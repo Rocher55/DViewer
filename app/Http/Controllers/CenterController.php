@@ -26,6 +26,7 @@ class CenterController extends Controller
             ->get();
        */
         $centers=Center::Select('centers.Center_ID','Center_Country','Center_City','Center_Acronym')
+            ->distinct()
             ->join('center_protocol','center_protocol.Center_ID','=','centers.Center_ID')
             ->join('protocols','protocols.Protocol_ID','=','center_protocol.Protocol_ID')
             ->whereIn('protocols.Protocol_ID', Session::get('protocolID'))
