@@ -1869,7 +1869,11 @@ __webpack_require__.r(__webpack_exports__);
       }).then(function (response) {
         console.log(response.data);
 
-        if (response.data.length === 0) {}
+        if (response.data.length === 0) {
+          _app__WEBPACK_IMPORTED_MODULE_2__["default"].$emit('warn-center-protocol', false);
+        } else {
+          _app__WEBPACK_IMPORTED_MODULE_2__["default"].$emit('warn-center-protocol', true);
+        }
       });
     }
   },
@@ -2160,6 +2164,7 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
@@ -2170,6 +2175,8 @@ __webpack_require__.r(__webpack_exports__);
   props: ['up-url', 'down-url'],
   data: function data() {
     return {
+      isWarningHidden: true,
+      isHidden: true,
       ids: {
         protocolID: -1,
         centerID: -1,
@@ -2179,15 +2186,21 @@ __webpack_require__.r(__webpack_exports__);
     };
   },
   created: function created() {
-    _app__WEBPACK_IMPORTED_MODULE_1__["default"].$on('proto-center-confirmed', this.fillID);
+    _app__WEBPACK_IMPORTED_MODULE_1__["default"].$on('proto-center-confirmed', this.fillIDAndShow);
+    _app__WEBPACK_IMPORTED_MODULE_1__["default"].$on('warn-center-protocol', this.updateIsWarningHidden);
   },
   beforeDestroy: function beforeDestroy() {
     _app__WEBPACK_IMPORTED_MODULE_1__["default"].$off('proto-center-confirmed', this.fillID);
+    _app__WEBPACK_IMPORTED_MODULE_1__["default"].$off('warn-center-protocol', this.updateIsWarningHidden);
   },
   methods: {
-    fillID: function fillID($event) {
+    fillIDAndShow: function fillIDAndShow($event) {
       this.ids.protocolID = $event.protocolID;
       this.ids.centerID = $event.centerID;
+      this.isHidden = false;
+    },
+    updateIsWarningHidden: function updateIsWarningHidden($event) {
+      this.isWarningHidden = $event;
     }
   }
 });
@@ -68481,6 +68494,10 @@ var render = function() {
   return _c(
     "div",
     [
+      _c("p", { attrs: { hidden: _vm.isWarningHidden } }, [
+        _vm._v("Warning: no link between protocol and center detected yet")
+      ]),
+      _vm._v(" "),
       _c(
         "upload-component",
         {
@@ -68489,7 +68506,8 @@ var render = function() {
             downurl: _vm.downUrl,
             filetype: "patient",
             header: "patient",
-            ids: _vm.ids
+            ids: _vm.ids,
+            hidden: _vm.isHidden
           }
         },
         [_vm._t("default")],

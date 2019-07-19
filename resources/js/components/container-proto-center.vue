@@ -46,7 +46,9 @@
                     .then(function(response){
                         console.log(response.data)
                         if(response.data.length===0){
-            
+                            eventHub.$emit('warn-center-protocol',false)
+                        }else{
+                            eventHub.$emit('warn-center-protocol',true)
                         }
 
 
