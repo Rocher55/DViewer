@@ -53,9 +53,26 @@ class AjaxController extends Controller
        return response()->json($results);
     }
     public function centers(Request $request){
-        $results=DB::table('centers')->orderby('Center_Acronym')->orderBy()->get();
+        $results=DB::table('centers')->orderby('Center_Acronym')->get();
         return response()->json($results);
     }
+    public function cids(Request $request){
+        $results=DB::table('cids')->get();
+        return response()->json($results);
+    }
+    public function existsCenterProtocol(Request $request){
+       $protocolID=$request->protocolID;
+       $centerID=$request->centerID;
+        try {
+            $results=DB::table('center_protocol')
+                ->where('Center_ID','=',$centerID)
+                ->where('Protocol_ID','=',$protocolID)
+                ->get();
 
+        } catch (\Illuminate\Database\QueryException $e) {
+            return response()->json($e->getMessage());
+        }
+        return response()->json($results);
+    }
 
 }

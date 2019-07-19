@@ -1,6 +1,6 @@
 <template>
     <div>
-        <select data-placeholder="Choose the protocol(s) ..."  >
+        <select data-placeholder="Choose the protocol(s) ..." v-on:change="$emit('update-protocol-id',selected)" v-model="selected" >
             <optgroup label="Longitudinal">
                 <option v-bind:value="protocol.id" v-for="protocol in protocols" :key="protocol.id" v-if="protocol.type==='Longitudinal'">
                     {{ protocol.name }}
@@ -12,9 +12,10 @@
                 </option>
             </optgroup>
         </select>
+        <p>select protocompo{{selected}}</p>
     </div>
 </template>
-
+<!--
 <select data-placeholder="Choose the protocol(s) ..." class="chosen-tag" multiple="true" name="protocol[]">
 
     //Creation du groupe Longitudinal
@@ -35,20 +36,23 @@
         @endforeach
     </optgroup>
 </select>
-
+-->
 <script>
+    import eventHub from '../app'
     export default {
-        name: "select-protocol-component",
+        name: "selectProtocolComponent",
         data(){
             return {
                 protocols: [
                     //{id: '', name: ''}
-                ]
+                ],
+                selected:0
+
             }
         },
         mounted() {
             let that=this;
-            axios.get('api/protocols',{})
+            axios.get(routeToProtocolsApi,{})
                 .then(function(response){
                     Object.keys(response.data).forEach(key =>
                         that.protocols.push({
@@ -60,7 +64,13 @@
 
 
                 })
+        },
+        methods:{
+            emit(){
+
+            }
         }
+
     }
 
 </script>

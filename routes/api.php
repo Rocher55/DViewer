@@ -21,4 +21,6 @@ Route::post('/ajax-previous', 'AjaxController@pathThatDemandPrevious')->name('aj
 
 Route::get('/protocols', 'AjaxController@protocols')->name('api/protocols');
 Route::get('/centers', 'AjaxController@centers')->name('api/centers');
+Route::get('/cids', 'AjaxController@cids')->name('api/cids');
+Route::get('/does-that-exists/center-protocol', 'AjaxController@existsCenterProtocol')->name('api/exists/center-protocol');
 
