@@ -47,9 +47,9 @@ class ImportController extends Controller
             if ($file->getClientOriginalExtension()=='xlsx'){
                 Session::flash('flash_message',"file uploaded successfully");
                 //convertir le fichier xlsx en csv
-                $file=$this->convertXLSXtoCSV($file);
+                $file2=$this->convertXLSXtoCSV($file);
 
-                $this->processFile($file,$fileType,$ids);
+                $this->processFile($file2,$fileType,$ids,$file);
 
 
 
@@ -71,7 +71,7 @@ class ImportController extends Controller
 
 
 
-    public function  processFile($file,$filetype,$ids){
+    public function  processFile($file,$filetype,$ids,$file2=null){
 
         switch ($filetype){
             case"patient":
@@ -210,11 +210,15 @@ class ImportController extends Controller
 
                         $binaryHandle=fopen($file->getPathname(),'rb');
                         $binaryHandleTempFile=fopen($file->getPath().'/temporaryFileUsedForCSVWriting.csv','rb');
-
+                        if (isset($file2)){
+                            $originalName=$file2->getClientOriginalName();
+                        }else{
+                            $originalName=$file->getClientOriginalName();
+                        }
                         try {
                             //original file
                             DB::table('history')->insert(array(
-                                'name' => $file->getClientOriginalName(),
+                                'name' => $originalName,
                                 'file' => fread($binaryHandle,filesize($file->getPathname())),
                                 "created_at" =>  \Carbon\Carbon::now(), # new \Datetime()
                                 "updated_at" => \Carbon\Carbon::now()  # new \Datetime()
@@ -419,7 +423,8 @@ class ImportController extends Controller
         //options used for XLSX-reader
         $options=array(
             'TempDir'=>env('TMP_DIRECTORY'),
-            'SkipEmptyCells'             => false
+            'SkipEmptyCells'             => false,
+            'ForceDateFormat'=> 'd/m/Y'
         );
         $reader=new Reader($options);
         $reader->open($file);
