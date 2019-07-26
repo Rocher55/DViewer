@@ -1,21 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="d12d2948-6e98-417c-b253-1417b459f2a7" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/csv-plugin.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/database/migrations/2019_07_26_092718_create_history_table.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/Http/Controllers/AjaxController.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Controllers/AjaxController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/Http/Controllers/ImportController.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Controllers/ImportController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/functions/functions.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/functions/functions.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/config/database.php" beforeDir="false" afterPath="$PROJECT_DIR$/config/database.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/package-lock.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/public/js/app.js" beforeDir="false" afterPath="$PROJECT_DIR$/public/js/app.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/views/layouts/template.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/layouts/template.blade.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/views/layouts/templateImport.blade.php" beforeDir="false" afterPath="$PROJECT_DIR$/resources/views/layouts/templateImport.blade.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/routes/api.php" beforeDir="false" afterPath="$PROJECT_DIR$/routes/api.php" afterDir="false" />
-    </list>
+    <list default="true" id="d12d2948-6e98-417c-b253-1417b459f2a7" name="Default Changelist" comment="" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -66,7 +52,7 @@
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="true">
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/app/Http/Controllers/ImportController.php">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="459">
@@ -121,11 +107,11 @@
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="false">
+      <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/.env">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="442">
-              <caret line="26" column="48" selection-start-line="26" selection-start-column="48" selection-end-line="26" selection-end-column="48" />
+            <state relative-caret-position="382">
+              <caret line="26" column="48" lean-forward="true" selection-start-line="26" selection-start-column="48" selection-end-line="26" selection-end-column="48" />
             </state>
           </provider>
         </entry>
@@ -371,10 +357,10 @@
     </include_path>
   </component>
   <component name="ProjectFrameBounds" extendedState="6">
-    <option name="x" value="82" />
-    <option name="y" value="41" />
+    <option name="x" value="-260" />
+    <option name="y" value="14" />
     <option name="width" value="1183" />
-    <option name="height" value="1010" />
+    <option name="height" value="1005" />
   </component>
   <component name="ProjectView">
     <navigator proportions="" version="1">
@@ -669,7 +655,7 @@
       <workItem from="1563870315808" duration="20922000" />
       <workItem from="1563957557042" duration="16127000" />
       <workItem from="1564042944919" duration="22400000" />
-      <workItem from="1564130534722" duration="9234000" />
+      <workItem from="1564130534722" duration="10737000" />
     </task>
     <task id="LOCAL-00001" summary="implementation de Voyager&#10;inversion class / sex sur l ecran d accueil">
       <created>1557845680811</created>
@@ -825,17 +811,23 @@
       <option name="project" value="LOCAL" />
       <updated>1563555039063</updated>
     </task>
-    <option name="localTasksCounter" value="23" />
+    <task id="LOCAL-00023" summary="import patient semble fonctionnel, load infile, history, auth sur import et lien depuis écran accueil">
+      <created>1564144588799</created>
+      <option name="number" value="00023" />
+      <option name="presentableId" value="LOCAL-00023" />
+      <option name="project" value="LOCAL" />
+      <updated>1564144588799</updated>
+    </task>
+    <option name="localTasksCounter" value="24" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="652555000" />
+    <option name="totallyTimeSpent" value="654058000" />
   </component>
   <component name="ToolWindowManager">
-    <frame x="-8" y="-8" width="1696" height="1026" extended-state="6" />
-    <editor active="true" />
+    <frame x="-260" y="14" width="1183" height="1005" extended-state="1" />
     <layout>
-      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.19559902" />
+      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.28495103" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
@@ -848,8 +840,8 @@
       <window_info anchor="bottom" id="Docker" order="7" show_stripe_button="false" />
       <window_info anchor="bottom" id="Database Changes" order="8" />
       <window_info anchor="bottom" id="Version Control" order="9" weight="0.32997763" />
-      <window_info anchor="bottom" id="Terminal" order="10" sideWeight="0.73533005" visible="true" weight="0.28970918" />
-      <window_info anchor="bottom" id="Event Log" order="11" sideWeight="0.26466992" side_tool="true" visible="true" weight="0.28970918" />
+      <window_info active="true" anchor="bottom" id="Terminal" order="10" sideWeight="0.73463935" visible="true" weight="0.29667813" />
+      <window_info anchor="bottom" id="Event Log" order="11" sideWeight="0.26536065" side_tool="true" visible="true" weight="0.29667813" />
       <window_info active="true" anchor="bottom" id="Messages" order="12" sideWeight="0.49938875" visible="true" weight="0.32997763" />
       <window_info anchor="bottom" id="TypeScript" order="13" />
       <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
@@ -908,7 +900,8 @@
     <MESSAGE value="fix des multiples centers (distinct)&#10;ajout début vue + début import" />
     <MESSAGE value="ajout de point d'API pour vérifier liaison centre proto&#10;avance sur le script de traitement du fichier importé&#10;Maj des composants vueJS&#10;création de constantes pour les routes dynamiques de l'API" />
     <MESSAGE value="caché-coucou actif, et avertissement center-protocol aussi" />
-    <option name="LAST_COMMIT_MESSAGE" value="caché-coucou actif, et avertissement center-protocol aussi" />
+    <MESSAGE value="import patient semble fonctionnel, load infile, history, auth sur import et lien depuis écran accueil" />
+    <option name="LAST_COMMIT_MESSAGE" value="import patient semble fonctionnel, load infile, history, auth sur import et lien depuis écran accueil" />
   </component>
   <component name="editorHistoryManager">
     <entry file="file://$USER_HOME$/Desktop/CASTANIE_Pierre/Database_backup/test.sql">
@@ -1186,13 +1179,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/.env">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="442">
-          <caret line="26" column="48" selection-start-line="26" selection-start-column="48" selection-end-line="26" selection-end-column="48" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/app/functions/functions.php">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="1190">
@@ -1259,6 +1245,13 @@
             <element signature="e#15605#16632#0#PHP" />
             <element signature="e#16638#17297#0#PHP" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/.env">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="382">
+          <caret line="26" column="48" lean-forward="true" selection-start-line="26" selection-start-column="48" selection-end-line="26" selection-end-column="48" />
         </state>
       </provider>
     </entry>
