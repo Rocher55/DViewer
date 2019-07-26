@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Response;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class AjaxController extends Controller
 {
@@ -38,12 +39,6 @@ class AjaxController extends Controller
        return response()->json($return);
    }
 
-
-
-
-
-
-
           /**
            * Recupere le chemin de l'url demandant a revenir à la page precedente
            *
@@ -54,7 +49,34 @@ class AjaxController extends Controller
        //Session::put('previous', str_replace(url('/'), '', $_SERVER['HTTP_REFERER']));
    }
 
+    public function protocols(Request $request){
+       $results=DB::table('protocols')->orderby('Protocol_Name')->get();
+       return response()->json($results);
+    }
+    public function centers(Request $request){
+        $results=DB::table('centers')->orderby('Center_Acronym')->get();
+        return response()->json($results);
+    }
+    public function cids(Request $request){
+        $results=DB::table('cids')->get();
+        return response()->json($results);
+    }
+    public function existsCenterProtocol(Request $request){
+       $protocolID=$request->protocolID;
+       $centerID=$request->centerID;
+        try {
+            $results=DB::table('center_protocol')
+                ->where('Center_ID','=',$centerID)
+                ->where('Protocol_ID','=',$protocolID)
+                ->get();
 
+        } catch (\Illuminate\Database\QueryException $e) {
+            return response()->json($e->getMessage());
+        }
+        return response()->json($results);
+    }
 
-
+    public function patientTemplate(){
+       return Storage::download('patientTemplate.csv');
+    }
 }

@@ -48,19 +48,22 @@ class ResultController extends Controller{
 
             //bioCid
             $bioCid = $this->createBioCidArray();
-            $requestBio = $this->createRequestBio();
-            //Execution de la requete
-            $resultsBio = DB::SELECT($requestBio);
-            //Pour chaque resultat le mettre dans
-            //le tableau à l'indice 1 : Patient_ID
-            //et 2 : item
+            if (!empty($bioCid)) {
+                $requestBio = $this->createRequestBio();
+                //Execution de la requete
+                $resultsBio = DB::SELECT($requestBio);
+                //Pour chaque resultat le mettre dans
+                //le tableau à l'indice 1 : Patient_ID
+                //et 2 : item
 
-            foreach ($resultsBio as $item) {
+                foreach ($resultsBio as $item) {
 
                     $array[strval($item->Patient_ID)][$item->item] = $item->valeur;
 
-            }
+                }
+                //dd($array);
 
+            }
 
             //Recuperation des donnees de food_diaries
             $foodWeek = array();
@@ -102,6 +105,8 @@ class ResultController extends Controller{
                 }
             }
 
+
+
             //geneCid
             $geneCid = array();
             $newCols = array();
@@ -111,11 +116,13 @@ class ResultController extends Controller{
                 //PCYT1A (A_24_P106057) (3-7-2) - CID2 - 1
                 //Gene_Symbol (Probe_ID) (SampleType_ID-Technique_ID-Molecule_ID) - CID_Name - indice
                 $geneCid = $this->getGeneCidArray();
+                //dd($geneCid);
 
                 if(count($this->experimentsID)>0){
                     //Creation et execution de la requete
                     $requestGene = $this->createRequestGene();
                     $resultsGene = DB::SELECT($requestGene);
+                    //dd($resultsGene);
 
                     //Pour chaque resultat
                     foreach ($resultsGene as $item) {
@@ -154,6 +161,7 @@ class ResultController extends Controller{
 
 
             $base = $this->createBase(array_keys($array));
+
             foreach ($base as $item){
                 $array[strval($item->Patient_ID)]['SUBJID'] = $item->SUBJID;
                 $array[strval($item->Patient_ID)]['Sex'] = $item->Sex;
@@ -188,19 +196,21 @@ class ResultController extends Controller{
      * @return array
      */
     public function createBase($patient_ids){
-        $request = "SELECT  p.Patient_ID, p.SUBJID, CASE WHEN p.Sex =1 THEN 'M' ELSE 'F' END as Sex,
+        $result=null;
+        if(!empty($patient_ids)) {
+            $request = "SELECT  p.Patient_ID, p.SUBJID, CASE WHEN p.Sex =1 THEN 'M' ELSE 'F' END as Sex,
                             CONCAT(c.Center_Acronym, ' - ', c.Center_City, ' - ', c.Center_Country) AS Center,
                             prot.Protocol_Name as Protocol, p.Class as Class
-                    FROM patients p, centers c, protocols prot, center_protocol cp
-                    WHERE prot.protocol_id = cp.protocol_id
-                    AND cp.protocol_id = p.protocol_id
-                    AND p.center_id = cp.center_id
-                    AND cp.center_id = c.center_id
-                    AND p.patient_id in".createList($patient_ids).
-                  "GROUP BY 1 ORDER BY p.Patient_ID asc
+                        FROM patients p, centers c, protocols prot, center_protocol cp
+                        WHERE prot.protocol_id = cp.protocol_id
+                        AND cp.protocol_id = p.protocol_id
+                        AND p.center_id = cp.center_id
+                        AND cp.center_id = c.center_id
+                        AND p.patient_id in" . createList($patient_ids) .
+                "GROUP BY 1 ORDER BY p.Patient_ID asc
                   ";
-        $result = DB::select($request);
-
+            $result = DB::select($request);
+        }
         return $result;
     }
 
@@ -323,22 +333,28 @@ class ResultController extends Controller{
                                              FROM biochemistry b
                                              WHERE CONCAT(b.Nomenclature_ID,'-', b.Unite_Mesure_ID) in ".createStringList(Session::get('biochemistryToView'))."
                                              AND b.Patient_ID in ".$patients ." ORDER BY b.Patient_ID");
+        if (!empty($biochemistry_ID)) {
 
-        $this->biochemistryID = createArray($biochemistry_ID,'id');
 
-        //Je ne garde que ceux qui ont bien des valeurs dans biochemistry
-        $results = DB::SELECT("SELECT distinct CONCAT(n.NameN,' (',u.NameUM ,') - ', cid.CID_NAME) AS bioCid
+            $this->biochemistryID = createArray($biochemistry_ID, 'id');
+
+            //Je ne garde que ceux qui ont bien des valeurs dans biochemistry
+            $results = DB::SELECT("SELECT distinct CONCAT(n.NameN,' (',u.NameUM ,') - ', cid.CID_NAME) AS bioCid
                                     FROM biochemistry b, nomenclatures n, unite_mesure u, cids cid, cid_patient cp
                                     WHERE cp.CID_ID = cid.CID_ID
                                     AND b.CID_ID = cp.CID_ID
                                     AND b.Nomenclature_ID = n.Nomenclature_ID
                                     AND b.Unite_Mesure_ID = u.Unite_Mesure_ID 
-                                    AND b.biochemistry_ID in ".createList($this->biochemistryID)
-                                 ." AND cid.CID_ID in".createList(Session::get('cidID'))
-                                 ." ORDER BY n.NameN ASC, u.NameUM ASC, cid.CID_ID ASC ");
-        $return = createArray($results,'bioCid');
+                                    AND b.biochemistry_ID in " . createList($this->biochemistryID)
+                . " AND cid.CID_ID in" . createList(Session::get('cidID'))
+                . " ORDER BY n.NameN ASC, u.NameUM ASC, cid.CID_ID ASC ");
+            $return = createArray($results, 'bioCid');
 
-        return $return;
+            return $return;
+        }
+        else{
+            return null;
+        }
     }
 
     /**
@@ -410,6 +426,7 @@ class ResultController extends Controller{
      * @return array
      */
     public function getGeneCidArray(){
+        // les ids des experiments, liés à la table ea_analyse pour les genes_Ids selectionnés et pour le triplet sample molecules:techniques choisis
             $request = " SELECT e.Experiments_ID as id
                          FROM experiments e, ea_analyse a
                          WHERE e.Analyse_ID = a.Analyse_ID
@@ -445,6 +462,7 @@ class ResultController extends Controller{
         }
             return $return;
     }
+
 
 
 

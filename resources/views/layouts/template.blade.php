@@ -13,7 +13,7 @@
 
 
     <!--Feuilles CSS-->
-    <!--<link rel="stylesheet" href="{{asset('/css/app.css')}}">-->
+<!--<link rel="stylesheet" href="{{asset('/css/app.css')}}">-->
     <link rel="stylesheet" href="{{asset('/css/font-awesome.min.css') }}">
     <link rel="stylesheet" href="{{asset('/css/bootstrap.min.css') }}">
     <link rel="stylesheet" href="{{asset('/css/style.css') }}">
@@ -33,60 +33,63 @@
 </head>
 
 <body>
-    <div id="app">
-        <nav class="navbar navbar-default navbar-static-top">
-            <!--Nom du site-->
-            <div class="container">
-                <div class="navbar-header">
-                    <button type="button" class="navbar-toggle collapsed" data-toggle="collapse"
-                            data-target="#app-navbar-collapse" aria-expanded="false">
-                        <spanre class="sr-only">Toggle Navigation</spanre>
-                        <span class="icon-bar"></span>
-                        <span class="icon-bar"></span>
-                        <span class="icon-bar"></span>
-                    </button>
-                    <a class="navbar-brand" href="{{ url('/') }}">
-                        {{ config('app.name', 'Data Viewer') }}
-                    </a>
-                </div>
-                <!--Contenu de la navBar-->
-                <div class="collapse navbar-collapse" id="app-navbar-collapse">
-                    <!--A gauche-->
-                    <ul class="nav navbar-nav navbar-left">
-                        <li class="nav-item "><a href="{{ route('protocol') }}"> Research </a></li>
+<div id="app">
+    <nav class="navbar navbar-default navbar-static-top">
+        <!--Nom du site-->
+        <div class="container">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse"
+                        data-target="#app-navbar-collapse" aria-expanded="false">
+                    <spanre class="sr-only">Toggle Navigation</spanre>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="{{ url('/') }}">
+                    {{ config('app.name', 'Data Viewer') }}
+                </a>
+            </div>
+            <!--Contenu de la navBar-->
+            <div class="collapse navbar-collapse" id="app-navbar-collapse">
+                <!--A gauche-->
+                <ul class="nav navbar-nav navbar-left">
+                    <li class="nav-item "><a href="{{ route('protocol') }}"> Research </a></li>
 
-                    </ul>
-                    @if(Auth::user()->isAdminOrAdmiral())
+                </ul>
+                @if(Auth::user()->isAdminOrAdmiral())
                     <ul class="nav navbar-nav navbar-left">
                         <li class="nav-item "><a href="{{ route('voyager.login')}}"> Admin </a></li>
                     </ul>
-                    @endif
                     <ul class="nav navbar-nav navbar-left">
-                        <li class="nav-item "><a href="{{ route('logout')}}"> Logout </a></li>
+                        <li class="nav-item "><a href="{{ route('import')}}"> Import </a></li>
                     </ul>
-
-                </div>
-            </div>
-        </nav>
-        @php($path = explode('/', url()->current()))
-        @if(in_array('research', $path))
-            <div class="path">
-                {{str_replace(url('/'), '', url()->current())}}
-            </div>
-            <div class="number">
-                @if(Session::has('patientID'))
-                    {{count(Session::get('patientID'))}}
-                    remaining
-                    @if(count(Session::get('patientID'))==1)
-                        patient
-                    @else
-                        patients
-                    @endif
-                <br>
-                    Woman % : {{Session::get('percentage')}}
-                <br>
-                    Man % : {{100-Session::get('percentage')}}
                 @endif
+                <ul class="nav navbar-nav navbar-left">
+                    <li class="nav-item "><a href="{{ route('logout')}}"> Logout </a></li>
+                </ul>
+
+            </div>
+        </div>
+    </nav>
+    @php($path = explode('/', url()->current()))
+    @if(in_array('research', $path))
+        <div class="path">
+            {{str_replace(url('/'), '', url()->current())}}
+        </div>
+        <div class="number">
+            @if(Session::has('patientID'))
+                {{count(Session::get('patientID'))}}
+                remaining
+                @if(count(Session::get('patientID'))==1)
+                    patient
+                @else
+                    patients
+                @endif
+                <br>
+                Woman % : {{Session::get('percentage')}}
+                <br>
+                Man % : {{100-Session::get('percentage')}}
+            @endif
             @endif
         </div>
 
@@ -113,11 +116,11 @@
             </div>
         @endif
         @yield("content")
-    </div>
+</div>
 
 
-    <script src="{!! asset('js/input-manager.js') !!}"></script>
-    @yield("script")
+<script src="{!! asset('js/input-manager.js') !!}"></script>
+@yield("script")
 
 
 </body>

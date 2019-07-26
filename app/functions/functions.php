@@ -47,6 +47,34 @@ use App\Patient;
         return $return;
     }
 
+/**
+ * Permet de generer une chaine de caractère à partir d'un tableau.
+ * cette chaine ressemble à :
+ * "('valeur 1','valeur 2'...)"
+ *
+ * @param $data
+ * @return string
+ */
+function createQuotedList($data){
+    $return=" ( ";
+    foreach ($data as $item){
+        $return .= "'".$item ."', ";
+    }
+    $return = substr($return, 0, -2) ." ) ";
+
+    return $return;
+}
+
+function createBackQuotedList($data){
+    $return=" ( ";
+    foreach ($data as $item){
+        $return .= "`".$item ."`, ";
+    }
+    $return = substr($return, 0, -2) ." ) ";
+
+    return $return;
+}
+
 
 
 /**
