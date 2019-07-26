@@ -22,7 +22,7 @@ class ImportController extends Controller
         $this->middleware('auth');
     }
     public  function  index(){
-        return view('forms.importForm');
+        return view('Forms.importForm');
     }
 
 
