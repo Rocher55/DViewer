@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Response;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class AjaxController extends Controller
 {
@@ -75,4 +76,7 @@ class AjaxController extends Controller
         return response()->json($results);
     }
 
+    public function patientTemplate(){
+       return Storage::download('patientTemplate.csv');
+    }
 }

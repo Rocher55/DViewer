@@ -23,7 +23,7 @@
     <!-- Script but before-->
     <script>
         //this is a way to pass routes to JS, as the same routes are not used in production and in dev
-        //do not mind the error PHPstorm shows in that case, it's a little buggy when you're mixing up PHP and JS
+        //do not mind the error PHPstorm shows in that case, it's a little buggy when you're mimùpixing up PHP and JS
         const routeToExistsApi= {!!  json_encode(route('api/exists/center-protocol'),JSON_HEX_TAG) !!};
         const routeToCentersApi={!!  json_encode(route('api/centers')) !!};
         const routeToProtocolsApi={!!  json_encode(route('api/protocols')) !!};
